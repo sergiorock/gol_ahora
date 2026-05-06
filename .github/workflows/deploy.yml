@@ -52,6 +52,8 @@ jobs:
           fi
           git merge --ff-only origin/main
 
-          docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build --remove-orphans
-          docker compose --env-file .env.production -f docker-compose.prod.yml exec -T web bin/rails db:prepare
+          docker compose --env-file .env.production -f docker-compose.prod.yml build web
+          docker compose --env-file .env.production -f docker-compose.prod.yml up -d db
+          docker compose --env-file .env.production -f docker-compose.prod.yml run --rm --no-deps web bin/rails db:prepare
+          docker compose --env-file .env.production -f docker-compose.prod.yml up -d web caddy --remove-orphans
           EOF
