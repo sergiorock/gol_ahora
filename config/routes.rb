@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
-    resources :usuarios
+    resources :users
   end
 
   root to: "home#index"

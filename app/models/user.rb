@@ -2,27 +2,26 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  enum :role, { admin: 0, cliente: 1 }, default: :cliente
+  enum :role, { admin: 0, client: 1 }, default: :client
 
-  # Relaciones (diagrama: Usuario tiene historial de reservas, asistencias, inscripciones, equipos)
-  has_many :reservas, dependent: :destroy
-  has_many :asistencias, dependent: :destroy
-  has_many :inscripciones, dependent: :destroy
-  has_many :equipos, dependent: :destroy
+  has_many :reservations, dependent: :destroy
+  has_many :attendances, dependent: :destroy
+  has_many :enrollments, dependent: :destroy
+  has_many :teams, dependent: :destroy
 
-  validates :nombres, presence: true
-  validates :apellido, presence: true
+  validates :first_name, presence: true
+  validates :last_name,  presence: true
   validates :dni, uniqueness: true, allow_blank: true
 
-  def nombre_completo
-    "#{nombres} #{apellido}"
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
   def admin?
     role == "admin"
   end
 
-  def cliente?
-    role == "cliente"
+  def client?
+    role == "client"
   end
 end

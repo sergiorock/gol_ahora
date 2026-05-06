@@ -38,7 +38,7 @@
                 <span class="nav-link text-muted small text-uppercase fw-bold">Usuarios</span>
               </li>
               <li class="nav-item">
-                <%= link_to admin_usuarios_path, class: "nav-link #{controller_name == 'usuarios' ? 'active' : ''}" do %>
+                <%= link_to admin_users_path, class: "nav-link #{controller_name == 'users' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-users"></i></span>
                   <span class="nav-link-title">Usuarios</span>
                 <% end %>
@@ -140,7 +140,7 @@
             <div class="mt-auto pt-3 border-top">
               <div class="d-flex align-items-center px-3 py-2">
                 <div class="flex-fill">
-                  <div class="fw-semibold text-white small"><%= current_user.nombre_completo %></div>
+                  <div class="fw-semibold text-white small"><%= current_user.full_name %></div>
                   <div class="text-muted small"><%= current_user.email %></div>
                 </div>
                 <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-ghost-light btn-sm", title: "Cerrar sesión" do %>

@@ -34,7 +34,7 @@
             <% if user_signed_in? %>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                  <i class="bi bi-person-circle"></i> <%= current_user.nombres %>
+                  <i class="bi bi-person-circle"></i> <%= current_user.first_name %>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li><%= link_to "Mis Reservas", "#", class: "dropdown-item" %></li>

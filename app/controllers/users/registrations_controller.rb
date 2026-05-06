@@ -4,16 +4,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def sign_up_params
     params.require(:user).permit(
       :email, :password, :password_confirmation,
-      :nombres, :apellido, :dni, :edad, :telefono,
-      :domicilio, :codigo_postal, :pais, :localidad
+      :first_name, :last_name, :dni, :age, :phone,
+      :address, :postal_code, :country, :city
     )
   end
 
   def account_update_params
     params.require(:user).permit(
       :email, :password, :password_confirmation, :current_password,
-      :nombres, :apellido, :dni, :edad, :telefono,
-      :domicilio, :codigo_postal, :pais, :localidad
+      :first_name, :last_name, :dni, :age, :phone,
+      :address, :postal_code, :country, :city
     )
   end
 end
