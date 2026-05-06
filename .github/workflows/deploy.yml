@@ -21,18 +21,17 @@ jobs:
           install -m 700 -d ~/.ssh
           printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_vps
           chmod 600 ~/.ssh/id_vps
-          ssh-keyscan -H 187.77.46.31 >> ~/.ssh/known_hosts
 
       - name: Upload production env file
         env:
           APP_ENV_FILE: ${{ secrets.APP_ENV_FILE }}
         run: |
-          ssh -i ~/.ssh/id_vps deploy@187.77.46.31 "mkdir -p /home/deploy/apps/gol_ahora"
-          printf '%s' "$APP_ENV_FILE" | ssh -i ~/.ssh/id_vps deploy@187.77.46.31 "cat > /home/deploy/apps/gol_ahora/.env.production"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps deploy@187.77.46.31 "mkdir -p /home/deploy/apps/gol_ahora"
+          printf '%s' "$APP_ENV_FILE" | ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps deploy@187.77.46.31 "cat > /home/deploy/apps/gol_ahora/.env.production"
 
       - name: Deploy on VPS
         run: |
-          ssh -i ~/.ssh/id_vps deploy@187.77.46.31 <<'EOF'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps deploy@187.77.46.31 <<'EOF'
           set -eu
 
           APP_DIR=/home/deploy/apps/gol_ahora
