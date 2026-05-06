@@ -60,18 +60,16 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: gol_ahora_production
-    username: gol_ahora
-    password: <%= ENV["GOL_AHORA_DATABASE_PASSWORD"] %>
+    url: <%= ENV.fetch("DATABASE_URL") %>
   cache:
-    <<: *primary_production
-    database: gol_ahora_production_cache
+    <<: *default
+    url: <%= ENV.fetch("CACHE_DATABASE_URL") %>
     migrations_paths: db/cache_migrate
   queue:
-    <<: *primary_production
-    database: gol_ahora_production_queue
+    <<: *default
+    url: <%= ENV.fetch("QUEUE_DATABASE_URL") %>
     migrations_paths: db/queue_migrate
   cable:
-    <<: *primary_production
-    database: gol_ahora_production_cable
+    <<: *default
+    url: <%= ENV.fetch("CABLE_DATABASE_URL") %>
     migrations_paths: db/cable_migrate
