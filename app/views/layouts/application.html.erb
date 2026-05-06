@@ -7,72 +7,88 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <link rel="icon" href="/icon.png" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              field: '#16a34a',
+              'field-light': '#22c55e',
+              'field-dark': '#15803d',
+              pitch: '#030712',
+            },
+            fontFamily: {
+              display: ['Bebas Neue', 'sans-serif'],
+              body: ['Outfit', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag :app %>
+    <style>
+      body { font-family: 'Outfit', sans-serif; }
+      .font-display { font-family: 'Bebas Neue', sans-serif; }
+    </style>
+    <%= yield :head %>
   </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-      <div class="container">
-        <%= link_to "⚽ Gol Ahora", root_path, class: "navbar-brand fw-bold" %>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <%= link_to "Canchas", "#", class: "nav-link" %>
-            </li>
-            <li class="nav-item">
-              <%= link_to "Ligas y Torneos", "#", class: "nav-link" %>
-            </li>
-            <li class="nav-item">
-              <%= link_to "Clases", "#", class: "nav-link" %>
-            </li>
-          </ul>
-          <ul class="navbar-nav">
+  <body class="bg-pitch text-white antialiased">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-pitch/80 backdrop-blur-md border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <%= link_to root_path, class: "flex items-center gap-2 group" do %>
+            <span class="text-field-light text-2xl">⚽</span>
+            <span class="font-display text-2xl tracking-wider text-white group-hover:text-field-light transition-colors">GOL AHORA</span>
+          <% end %>
+
+          <div class="hidden md:flex items-center gap-8">
+            <%= link_to "Canchas", "#", class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+            <%= link_to "Ligas y Torneos", "#", class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+            <%= link_to "Clases", "#", class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+          </div>
+
+          <div class="flex items-center gap-3">
             <% if user_signed_in? %>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                  <i class="bi bi-person-circle"></i> <%= current_user.first_name %>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li><%= link_to "Mis Reservas", "#", class: "dropdown-item" %></li>
-                  <li><%= link_to "Mis Inscripciones", "#", class: "dropdown-item" %></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, class: "dropdown-item border-0 bg-transparent w-100 text-start" %></li>
-                </ul>
-              </li>
+              <div class="relative group">
+                <button class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors">
+                  <span class="w-8 h-8 rounded-full bg-field flex items-center justify-center text-xs font-bold">
+                    <%= current_user.first_name[0].upcase %>
+                  </span>
+                  <span class="hidden sm:block"><%= current_user.first_name %></span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="absolute right-0 mt-2 w-48 bg-gray-900 border border-white/10 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <%= link_to "Mis Reservas", "#", class: "block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 rounded-t-lg" %>
+                  <%= link_to "Mis Inscripciones", "#", class: "block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5" %>
+                  <div class="border-t border-white/10 my-1"></div>
+                  <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-white/5 rounded-b-lg bg-transparent border-0 cursor-pointer" %>
+                </div>
+              </div>
             <% else %>
-              <li class="nav-item">
-                <%= link_to "Iniciar sesión", new_user_session_path, class: "nav-link" %>
-              </li>
-              <li class="nav-item">
-                <%= link_to "Registrarse", new_user_registration_path, class: "btn btn-outline-light ms-2" %>
-              </li>
+              <%= link_to "Iniciar sesión", new_user_session_path, class: "text-sm text-white/80 hover:text-white transition-colors font-medium" %>
+              <%= link_to "Registrarse", new_user_registration_path, class: "text-sm bg-field hover:bg-field-dark text-white font-semibold px-4 py-2 rounded-lg transition-colors" %>
             <% end %>
-          </ul>
+          </div>
         </div>
       </div>
     </nav>
 
-    <main class="container py-4">
-      <% if notice %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <%= notice %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      <% end %>
-      <% if alert %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%= alert %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      <% end %>
+    <% if notice %>
+      <div class="fixed top-20 right-4 z-50 bg-field text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium">
+        <%= notice %>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="fixed top-20 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium">
+        <%= alert %>
+      </div>
+    <% end %>
 
-      <%= yield %>
-    </main>
+    <%= yield %>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

@@ -1,66 +1,94 @@
-<div class="row justify-content-center my-4">
-  <div class="col-md-8">
-    <div class="card shadow-sm">
-      <div class="card-body p-4">
-        <h2 class="card-title text-center mb-1">⚽ Gol Ahora</h2>
-        <p class="text-center text-muted mb-4">Creá tu cuenta</p>
+<div class="min-h-screen flex items-center justify-center px-4 pt-20 pb-12">
+  <div class="w-full max-w-2xl">
+    <div class="text-center mb-8">
+      <h1 class="font-display text-5xl text-white mb-2">CREAR CUENTA</h1>
+      <p class="text-white/50">Unite al complejo El Buen Deporte</p>
+    </div>
 
-        <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-          <%= f.error_notification %>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-8">
+      <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= f.error_notification message: f.object.errors.full_messages.first, class: "text-red-400 text-sm mb-4 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3" %>
 
-          <h5 class="mb-3 text-muted">Datos de acceso</h5>
-          <div class="row g-3 mb-4">
-            <div class="col-md-12">
-              <%= f.input :email, label: "Email", autofocus: true, input_html: { autocomplete: "email" } %>
+        <div class="mb-8">
+          <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Datos de acceso</h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Email</label>
+              <%= f.input_field :email, autofocus: true, autocomplete: "email",
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "tu@email.com" %>
             </div>
-            <div class="col-md-6">
-              <%= f.input :password, label: "Contraseña",
-                          hint: ("Mínimo #{@minimum_password_length} caracteres" if @minimum_password_length),
-                          input_html: { autocomplete: "new-password" } %>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Contraseña</label>
+              <%= f.input_field :password, autocomplete: "new-password",
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "••••••••",
+                  hint: ("Mínimo #{@minimum_password_length} caracteres" if @minimum_password_length) %>
             </div>
-            <div class="col-md-6">
-              <%= f.input :password_confirmation, label: "Confirmar contraseña",
-                          input_html: { autocomplete: "new-password" } %>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Confirmar contraseña</label>
+              <%= f.input_field :password_confirmation, autocomplete: "new-password",
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "••••••••" %>
             </div>
           </div>
-
-          <h5 class="mb-3 text-muted">Datos personales</h5>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <%= f.input :first_name, label: "Nombres" %>
-            </div>
-            <div class="col-md-6">
-              <%= f.input :last_name, label: "Apellido" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.input :dni, label: "DNI" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.input :phone, label: "Teléfono" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.input :age, label: "Edad" %>
-            </div>
-            <div class="col-md-12">
-              <%= f.input :address, label: "Domicilio" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.input :postal_code, label: "Código postal" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.input :city, label: "Ciudad" %>
-            </div>
-            <div class="col-md-4">
-              <%= f.input :country, label: "País" %>
-            </div>
-          </div>
-
-          <%= f.button :submit, "Registrarse", class: "btn btn-success w-100 mt-4" %>
-        <% end %>
-
-        <div class="text-center mt-3 text-muted small">
-          <%= render "devise/shared/links" %>
         </div>
+
+        <div>
+          <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Datos personales</h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Nombres</label>
+              <%= f.input_field :first_name,
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "Juan" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Apellido</label>
+              <%= f.input_field :last_name,
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "Pérez" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">DNI</label>
+              <%= f.input_field :dni,
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "12345678" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Teléfono</label>
+              <%= f.input_field :phone,
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "1112345678" %>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Domicilio</label>
+              <%= f.input_field :address,
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "Av. Siempreviva 742" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">Ciudad</label>
+              <%= f.input_field :city,
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "Buenos Aires" %>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1.5">País</label>
+              <%= f.input_field :country,
+                  class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                  placeholder: "Argentina",
+                  value: resource.country.presence || "Argentina" %>
+            </div>
+          </div>
+        </div>
+
+        <%= f.button :submit, "Crear cuenta",
+            class: "w-full mt-8 bg-field hover:bg-field-dark text-white font-semibold py-3 px-4 rounded-xl transition-colors" %>
+      <% end %>
+
+      <div class="mt-6 pt-6 border-t border-white/10 text-center">
+        <%= link_to "Ya tengo cuenta", new_user_session_path, class: "text-sm text-field-light hover:text-field font-medium transition-colors" %>
       </div>
     </div>
   </div>
