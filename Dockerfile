@@ -32,6 +32,17 @@ RUN bundle install
 
 COPY --chown=app:app . .
 
+# Genera los assets de Propshaft en build para que producción no dependa
+# de compilarlos en runtime ni devuelva 404 para application.css.
+RUN SECRET_KEY_BASE_DUMMY=1 \
+    RAILS_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/gol_ahora_production \
+    CACHE_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/gol_ahora_production_cache \
+    QUEUE_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/gol_ahora_production_queue \
+    CABLE_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/gol_ahora_production_cable \
+    bundle exec rails assets:precompile
+
 EXPOSE 3000
 
 ENTRYPOINT ["/rails/entrypoint.sh"]
