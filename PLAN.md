@@ -3,8 +3,8 @@
 ## Etapa 0 — Base técnica
 - [x] Agregar gems (devise, pundit, aasm, simple_form, prawn, prawn-table, annotate)
 - [x] Rebuild Docker con nuevas gems
-- [ ] Instalar Devise (`rails generate devise:install`)
-- [ ] Generar modelo User con Devise + campos de Persona + role enum
+- [x] Instalar Devise (`rails generate devise:install`)
+- [x] Generar modelo User con Devise + campos de Persona + role enum
 - [ ] Instalar Pundit (`rails generate pundit:install`)
 - [ ] Instalar simple_form con Bootstrap
 - [ ] Layout `admin.html.erb` con Tabler (CDN)
