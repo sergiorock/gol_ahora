@@ -77,7 +77,7 @@
               <label class="block text-sm font-medium text-white/70 mb-1.5">País</label>
               <%= f.country_select :country,
                   { priority_countries: %w[AR UY CL BR PY BO], selected: resource.country.presence || "AR", include_blank: "Seleccioná un país" },
-                  { class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" } %>
+                  { class: "w-full bg-gray-900 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors cursor-pointer" } %>
             </div>
           </div>
         </div>
