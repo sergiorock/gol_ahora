@@ -7,17 +7,64 @@
   <div class="absolute inset-0 bg-pitch">
     <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 60% at 60% 50%, #052e16 0%, #030712 70%);"></div>
     <%# Líneas de cancha %>
+    <%#
+      SVG cancha de fútbol — medidas escaladas a 6px por metro (campo 105x68m)
+      Campo SVG: x=100..700 (600px) × y=80..520 (440px)
+      Escala horizontal: 600/105 ≈ 5.7px/m  |  Escala vertical: 440/68 ≈ 6.5px/m
+      Usamos 6px/m uniforme para proporciones correctas
+
+      Medidas reglamentarias:
+        Círculo central:     r=9.15m  →  55px
+        Área grande:         16.5m prof × 40.32m ancho  →  99px × 242px
+        Área chica:          5.5m prof × 18.32m ancho   →  33px × 110px
+        Punto del penal:     11m del arco                →  66px
+        Radio medialuna:     r=9.15m                    →  55px
+        Arcos de esquina:    r=1m                        →  6px
+    %>
     <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+      <%# Borde del campo %>
       <rect x="100" y="80" width="600" height="440" fill="none" stroke="#16a34a" stroke-width="2"/>
+      <%# Línea del medio %>
       <line x1="400" y1="80" x2="400" y2="520" stroke="#16a34a" stroke-width="2"/>
-      <circle cx="400" cy="300" r="70" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <circle cx="400" cy="300" r="4" fill="#16a34a"/>
-      <rect x="100" y="210" width="80" height="180" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <rect x="620" y="210" width="80" height="180" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <rect x="100" y="250" width="40" height="100" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <rect x="660" y="250" width="40" height="100" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <path d="M 180 210 A 70 70 0 0 1 180 390" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <path d="M 620 210 A 70 70 0 0 0 620 390" fill="none" stroke="#16a34a" stroke-width="2"/>
+      <%# Círculo central %>
+      <circle cx="400" cy="300" r="55" fill="none" stroke="#16a34a" stroke-width="2"/>
+      <%# Punto central %>
+      <circle cx="400" cy="300" r="3" fill="#16a34a"/>
+
+      <%# Área grande izquierda (16.5m prof, 20.16m a cada lado del centro del arco) %>
+      <rect x="100" y="179" width="99" height="242" fill="none" stroke="#16a34a" stroke-width="2"/>
+      <%# Área grande derecha %>
+      <rect x="601" y="179" width="99" height="242" fill="none" stroke="#16a34a" stroke-width="2"/>
+
+      <%# Área chica izquierda (5.5m prof, 9.16m a cada lado) %>
+      <rect x="100" y="245" width="33" height="110" fill="none" stroke="#16a34a" stroke-width="2"/>
+      <%# Área chica derecha %>
+      <rect x="667" y="245" width="33" height="110" fill="none" stroke="#16a34a" stroke-width="2"/>
+
+      <%# Punto del penal izquierdo (11m del arco) %>
+      <circle cx="166" cy="300" r="3" fill="#16a34a"/>
+      <%# Punto del penal derecho %>
+      <circle cx="634" cy="300" r="3" fill="#16a34a"/>
+
+      <%#
+        Medialuna izquierda: arco de círculo r=55px centrado en el punto del penal (166,300)
+        Solo la parte FUERA del área grande (derecha de x=199)
+        Intersección con x=199: y = 300 ± sqrt(55²-33²) = 300 ± 44 → y=256 y y=344
+        sweep=1 → sentido horario en SVG → el arco curva hacia la derecha (hacia centro cancha)
+      %>
+      <path d="M 199 256 A 55 55 0 0 1 199 344" fill="none" stroke="#16a34a" stroke-width="2"/>
+      <%#
+        Medialuna derecha: centrada en (634,300), fuera de x=601
+        Intersección con x=601: y = 300 ± 44 → y=256 y y=344
+        sweep=0 → sentido antihorario → arco curva hacia la izquierda (hacia centro cancha)
+      %>
+      <path d="M 601 256 A 55 55 0 0 0 601 344" fill="none" stroke="#16a34a" stroke-width="2"/>
+
+      <%# Arcos de esquina (r=6px) %>
+      <path d="M 100 86  A 6 6 0 0 0 106 80"  fill="none" stroke="#16a34a" stroke-width="2"/>
+      <path d="M 694 80  A 6 6 0 0 0 700 86"  fill="none" stroke="#16a34a" stroke-width="2"/>
+      <path d="M 100 514 A 6 6 0 0 1 106 520" fill="none" stroke="#16a34a" stroke-width="2"/>
+      <path d="M 694 520 A 6 6 0 0 1 700 514" fill="none" stroke="#16a34a" stroke-width="2"/>
     </svg>
     <%# Glow verde %>
     <div class="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-field/20 rounded-full blur-3xl"></div>
