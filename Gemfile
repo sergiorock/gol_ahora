@@ -37,6 +37,7 @@ gem "image_processing", "~> 1.2"
 # Auth y autorización
 gem "devise"
 gem "pundit"
+gem "country_select"
 
 # Máquina de estados para Reserva
 gem "aasm"
