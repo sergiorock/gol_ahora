@@ -4,26 +4,30 @@
 
 /* ── Tom Select — tema oscuro ───────────────────────────────────── */
 
-/* El wrapper hereda el ancho del select original */
+/* El wrapper ocupa todo el ancho pero SIN estilos visuales propios */
+.country-tomselect + .ts-wrapper,
 .ts-wrapper {
   width: 100% !important;
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
 }
 
-.ts-wrapper.single .ts-control,
-.ts-wrapper.single.input-active .ts-control {
+/* El control interno es el que tiene la apariencia del input */
+.ts-wrapper .ts-control {
   background-color: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 0.75rem !important;
-  /* Misma altura y padding que los inputs de Tailwind (py-3 px-4) */
   padding: 0.625rem 1rem !important;
   min-height: unset !important;
   color: #ffffff !important;
   box-shadow: none !important;
   cursor: pointer;
   line-height: 1.5rem;
+  gap: 0;
 }
 
-.ts-wrapper.single.focus .ts-control {
+.ts-wrapper.focus .ts-control {
   border-color: #22c55e !important;
   box-shadow: 0 0 0 1px #22c55e !important;
 }
