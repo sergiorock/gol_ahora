@@ -64,3 +64,13 @@
     <%= link_to "Cancelar", user.persisted? ? admin_user_path(user) : admin_users_path, class: "btn btn-secondary" %>
   </div>
 <% end %>
+
+<script>
+  new TomSelect('#user_country', {
+    allowEmptyOption: true,
+    searchField: ['text'],
+    render: {
+      no_results: () => '<div class="no-results px-3 py-2 text-muted">Sin resultados</div>'
+    }
+  });
+</script>
