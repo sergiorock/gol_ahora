@@ -37,6 +37,8 @@
 
 # Claude Code
 /.claude/
+/CLAUDE.md
+/PLAN.md
 
 # Sistema operativo
 .DS_Store
