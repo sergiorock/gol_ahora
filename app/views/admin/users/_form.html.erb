@@ -13,7 +13,9 @@
           <%= f.input :password_confirmation, label: "Confirmar contraseña" %>
         </div>
         <div class="col-md-3">
-          <%= f.input :role, label: "Rol", collection: User.roles.keys.map { |r| [r.capitalize, r] }, include_blank: false %>
+          <%= f.input :role, label: "Rol",
+                collection: [["Admin", "admin"], ["Cliente", "client"]],
+                include_blank: false %>
         </div>
       </div>
     </div>
