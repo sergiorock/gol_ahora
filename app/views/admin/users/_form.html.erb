@@ -1,0 +1,64 @@
+<%= simple_form_for [:admin, user] do |f| %>
+  <div class="card mb-3">
+    <div class="card-header"><h3 class="card-title">Datos de acceso</h3></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.input :email, label: "Email" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :password, label: "Contraseña", hint: user.persisted? ? "Dejá en blanco para no cambiarla" : nil %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :password_confirmation, label: "Confirmar contraseña" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :role, label: "Rol", collection: User.roles.keys.map { |r| [r.capitalize, r] }, include_blank: false %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header"><h3 class="card-title">Datos personales</h3></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <%= f.input :first_name, label: "Nombres" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :last_name, label: "Apellido" %>
+        </div>
+        <div class="col-md-2">
+          <%= f.input :dni, label: "DNI" %>
+        </div>
+        <div class="col-md-2">
+          <%= f.input :age, label: "Edad" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :phone, label: "Teléfono" %>
+        </div>
+        <div class="col-md-8">
+          <%= f.input :address, label: "Domicilio" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :postal_code, label: "Código postal" %>
+        </div>
+        <div class="col-md-5">
+          <%= f.input :city, label: "Ciudad" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :country, label: "País" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :joined_at, label: "Fecha de ingreso", as: :datetime, wrapper_html: { id: "joined_at_field" } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= f.button :submit, user.persisted? ? "Guardar cambios" : "Crear usuario", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", user.persisted? ? admin_user_path(user) : admin_users_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

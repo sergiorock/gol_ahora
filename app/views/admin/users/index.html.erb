@@ -1,0 +1,77 @@
+<% content_for :page_title, "Usuarios" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_user_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Nuevo usuario
+  <% end %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <div class="input-group">
+      <input type="text" id="search" class="form-control" placeholder="Buscar por nombre, apellido o email...">
+      <span class="input-group-text"><i class="ti ti-search"></i></span>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>DNI</th>
+          <th>Teléfono</th>
+          <th>Rol</th>
+          <th class="w-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="users-table">
+        <% @users.each do |user| %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                <span class="avatar avatar-sm me-2 bg-primary-lt">
+                  <%= user.first_name[0].upcase %><%= user.last_name[0].upcase %>
+                </span>
+                <div>
+                  <div class="fw-semibold"><%= user.full_name %></div>
+                </div>
+              </div>
+            </td>
+            <td class="text-muted"><%= user.email %></td>
+            <td class="text-muted"><%= user.dni.presence || "—" %></td>
+            <td class="text-muted"><%= user.phone.presence || "—" %></td>
+            <td>
+              <% if user.admin? %>
+                <span class="badge bg-red-lt">Admin</span>
+              <% else %>
+                <span class="badge bg-blue-lt">Cliente</span>
+              <% end %>
+            </td>
+            <td>
+              <div class="btn-group">
+                <%= link_to admin_user_path(user), class: "btn btn-sm btn-ghost-secondary", title: "Ver" do %>
+                  <i class="ti ti-eye"></i>
+                <% end %>
+                <%= link_to edit_admin_user_path(user), class: "btn btn-sm btn-ghost-secondary", title: "Editar" do %>
+                  <i class="ti ti-pencil"></i>
+                <% end %>
+                <%= link_to admin_user_path(user), data: { turbo_method: :delete, turbo_confirm: "¿Eliminar a #{user.full_name}?" }, class: "btn btn-sm btn-ghost-danger", title: "Eliminar" do %>
+                  <i class="ti ti-trash"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  document.getElementById('search').addEventListener('input', function() {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('#users-table tr').forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
+  });
+</script>

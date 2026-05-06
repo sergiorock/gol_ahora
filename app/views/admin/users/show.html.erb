@@ -1,0 +1,65 @@
+<% content_for :page_title, @user.full_name %>
+<% content_for :header_actions do %>
+  <%= link_to edit_admin_user_path(@user), class: "btn btn-secondary" do %>
+    <i class="ti ti-pencil"></i> Editar
+  <% end %>
+  <%= link_to admin_user_path(@user), data: { turbo_method: :delete, turbo_confirm: "¿Eliminar este usuario?" }, class: "btn btn-danger" do %>
+    <i class="ti ti-trash"></i> Eliminar
+  <% end %>
+<% end %>
+
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body text-center py-4">
+        <span class="avatar avatar-xl bg-primary-lt fs-1 mb-3">
+          <%= @user.first_name[0].upcase %><%= @user.last_name[0].upcase %>
+        </span>
+        <h3 class="mb-1"><%= @user.full_name %></h3>
+        <div class="text-muted"><%= @user.email %></div>
+        <div class="mt-2">
+          <% if @user.admin? %>
+            <span class="badge bg-red-lt">Admin</span>
+          <% else %>
+            <span class="badge bg-blue-lt">Cliente</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Datos personales</h3></div>
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-4">DNI</dt>
+          <dd class="col-sm-8"><%= @user.dni.presence || "—" %></dd>
+
+          <dt class="col-sm-4">Edad</dt>
+          <dd class="col-sm-8"><%= @user.age.presence || "—" %></dd>
+
+          <dt class="col-sm-4">Teléfono</dt>
+          <dd class="col-sm-8"><%= @user.phone.presence || "—" %></dd>
+
+          <dt class="col-sm-4">Domicilio</dt>
+          <dd class="col-sm-8"><%= @user.address.presence || "—" %></dd>
+
+          <dt class="col-sm-4">Código postal</dt>
+          <dd class="col-sm-8"><%= @user.postal_code.presence || "—" %></dd>
+
+          <dt class="col-sm-4">Ciudad</dt>
+          <dd class="col-sm-8"><%= @user.city.presence || "—" %></dd>
+
+          <dt class="col-sm-4">País</dt>
+          <dd class="col-sm-8"><%= @user.country.presence || "—" %></dd>
+
+          <% if @user.admin? %>
+            <dt class="col-sm-4">Fecha de ingreso</dt>
+            <dd class="col-sm-8"><%= @user.joined_at&.strftime("%d/%m/%Y") || "—" %></dd>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
