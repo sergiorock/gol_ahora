@@ -53,7 +53,8 @@
                 priority_countries: %w[AR UY CL BR PY BO] %>
         </div>
         <div class="col-md-4">
-          <%= f.input :joined_at, label: "Fecha de ingreso", as: :datetime, wrapper_html: { id: "joined_at_field" } %>
+          <%= f.input :joined_at, label: "Fecha de ingreso", as: :string,
+                input_html: { type: "datetime-local", value: f.object.joined_at&.strftime("%Y-%m-%dT%H:%M") } %>
         </div>
       </div>
     </div>
