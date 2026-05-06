@@ -32,6 +32,25 @@ Trabajo Práctico de Ingeniería de Software I — UNAJ, Comisión 1.
 - Inglés para: métodos Rails estándar, columnas de DB genéricas
 - No comentar lo que el código ya expresa; solo comentar el "por qué" cuando no es obvio
 
+## Modelo User (basado en diagrama de clases del TP)
+Herencia del diagrama: Persona → Usuario → Administrador
+En Rails se unifica en un solo modelo User con role enum.
+
+Campos:
+- email, encrypted_password (Devise)
+- role: enum (admin: 0, cliente: 1)
+- nombres, apellido, dni, edad (integer)
+- telefono, domicilio, codigo_postal, pais, localidad
+- fecha_ingreso: datetime (solo admin)
+
+Relaciones (has_many):
+- reservas, asistencias, inscripciones, equipos
+
+PersonalDeportivo (Profesor/Entrenador del diagrama):
+- modelo separado, no es usuario del sistema web
+- tipo: enum (profesor, entrenador)
+- campos propios + certificacion_deportiva
+
 ## Arquitectura
 - Namespace Admin:: para todo el backoffice (controllers, views, policies)
 - Controllers del cliente en nivel raíz
