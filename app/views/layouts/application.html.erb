@@ -94,5 +94,28 @@
 
     <%= yield %>
 
+    <script>
+      (() => {
+        const initCountryTomSelect = () => {
+          if (typeof TomSelect === 'undefined') return;
+
+          document.querySelectorAll('select.country-tomselect').forEach((element) => {
+            if (element.tomselect) return;
+
+            new TomSelect(element, {
+              allowEmptyOption: true,
+              searchField: ['text'],
+              placeholder: element.dataset.placeholder || '',
+              render: {
+                no_results: () => '<div class="no-results" style="padding:0.6rem 1rem;color:rgba(255,255,255,0.4);font-size:0.875rem;">Sin resultados</div>'
+              }
+            });
+          });
+        };
+
+        document.addEventListener('DOMContentLoaded', initCountryTomSelect);
+        document.addEventListener('turbo:load', initCountryTomSelect);
+      })();
+    </script>
   </body>
 </html>

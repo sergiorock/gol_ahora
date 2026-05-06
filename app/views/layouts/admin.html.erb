@@ -210,5 +210,28 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+    <script>
+      (() => {
+        const initCountryTomSelect = () => {
+          if (typeof TomSelect === 'undefined') return;
+
+          document.querySelectorAll('select.country-tomselect').forEach((element) => {
+            if (element.tomselect) return;
+
+            new TomSelect(element, {
+              allowEmptyOption: true,
+              searchField: ['text'],
+              placeholder: element.dataset.placeholder || '',
+              render: {
+                no_results: () => '<div class="no-results px-3 py-2 text-muted">Sin resultados</div>'
+              }
+            });
+          });
+        };
+
+        document.addEventListener('DOMContentLoaded', initCountryTomSelect);
+        document.addEventListener('turbo:load', initCountryTomSelect);
+      })();
+    </script>
   </body>
 </html>

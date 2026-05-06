@@ -8,6 +8,32 @@ button, [type="submit"], [type="button"], [role="button"], a {
 
 /* ── Tom Select — tema oscuro ───────────────────────────────────── */
 
+select.country-tomselect {
+  width: 100%;
+  appearance: none;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.75rem 2.75rem 0.75rem 1rem;
+  line-height: 1.5rem;
+  background-image: linear-gradient(45deg, transparent 50%, rgba(255, 255, 255, 0.5) 50%), linear-gradient(135deg, rgba(255, 255, 255, 0.5) 50%, transparent 50%);
+  background-position: calc(100% - 1.15rem) calc(1.25rem), calc(100% - 0.85rem) calc(1.25rem);
+  background-size: 0.35rem 0.35rem, 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+}
+
+select.country-tomselect:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 1px #22c55e;
+}
+
+select.country-tomselect option {
+  background: #111827;
+  color: #ffffff;
+}
+
 /* El wrapper ocupa todo el ancho pero SIN estilos visuales propios */
 .country-tomselect + .ts-wrapper,
 .ts-wrapper {

@@ -77,7 +77,7 @@
               <label class="block text-sm font-medium text-white/70 mb-1.5">País</label>
               <%= f.country_select :country,
                   { priority_countries: %w[AR UY CL BR PY BO], selected: resource.country.presence || "AR", include_blank: "Seleccioná un país" },
-                  { class: "country-tomselect" } %>
+                  { class: "country-tomselect", data: { placeholder: "Seleccioná un país" } } %>
             </div>
           </div>
         </div>
@@ -92,14 +92,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  new TomSelect('#user_country', {
-    allowEmptyOption: true,
-    searchField: ['text'],
-    placeholder: 'Seleccioná un país',
-    render: {
-      no_results: () => '<div class="no-results" style="padding:0.6rem 1rem;color:rgba(255,255,255,0.4);font-size:0.875rem;">Sin resultados</div>'
-    }
-  });
-</script>
