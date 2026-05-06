@@ -1,0 +1,78 @@
+<% content_for :title, "Editar perfil — Gol Ahora" %>
+
+<div class="max-w-3xl mx-auto pt-24 pb-12 px-4">
+  <div class="flex items-center gap-4 mb-8">
+    <%= link_to profile_path, class: "text-white/40 hover:text-white transition-colors" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    <% end %>
+    <h1 class="font-display text-4xl text-white">EDITAR PERFIL</h1>
+  </div>
+
+  <div class="bg-white/5 border border-white/10 rounded-2xl p-8">
+    <%= form_with model: current_user, url: profile_path, method: :patch do |f| %>
+      <% if current_user.errors.any? %>
+        <div class="bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3 mb-6">
+          <% current_user.errors.full_messages.each do |msg| %>
+            <p class="text-red-400 text-sm"><%= msg %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Nombres</label>
+          <%= f.text_field :first_name, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Apellido</label>
+          <%= f.text_field :last_name, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">DNI</label>
+          <%= f.text_field :dni, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Teléfono</label>
+          <%= f.text_field :phone, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Edad</label>
+          <%= f.number_field :age, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Código postal</label>
+          <%= f.text_field :postal_code, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Domicilio</label>
+          <%= f.text_field :address, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Ciudad</label>
+          <%= f.text_field :city, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">País</label>
+          <%= f.country_select :country,
+              { priority_countries: %w[AR UY CL BR PY BO], selected: current_user.country.presence || "AR", include_blank: "Seleccioná un país" },
+              { class: "country-tomselect" } %>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <%= f.submit "Guardar cambios", class: "bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-colors" %>
+        <%= link_to "Cancelar", profile_path, class: "text-white/50 hover:text-white font-medium px-6 py-3 transition-colors" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  new TomSelect('#user_country', {
+    allowEmptyOption: true,
+    searchField: ['text'],
+    render: {
+      no_results: () => '<div style="padding:0.6rem 1rem;color:rgba(255,255,255,0.4);font-size:0.875rem;">Sin resultados</div>'
+    }
+  });
+</script>

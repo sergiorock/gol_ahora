@@ -1,0 +1,60 @@
+<% content_for :title, "Mi perfil — Gol Ahora" %>
+
+<div class="max-w-4xl mx-auto pt-24 pb-12 px-4">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="font-display text-4xl text-white">MI PERFIL</h1>
+    <%= link_to edit_profile_path, class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      Editar perfil
+    <% end %>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <%# Avatar y datos principales %>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+      <div class="w-20 h-20 rounded-full bg-field/30 border-2 border-field flex items-center justify-center text-3xl font-display text-white mx-auto mb-4">
+        <%= current_user.first_name[0].upcase %><%= current_user.last_name[0].upcase %>
+      </div>
+      <h2 class="text-white font-semibold text-lg"><%= current_user.full_name %></h2>
+      <p class="text-white/50 text-sm mt-1"><%= current_user.email %></p>
+      <span class="inline-block mt-3 text-xs bg-field/20 text-field-light px-3 py-1 rounded-full">Cliente</span>
+    </div>
+
+    <%# Datos personales %>
+    <div class="md:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-5">Datos personales</h3>
+      <dl class="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+
+        <div>
+          <dt class="text-white/40 text-xs mb-1">DNI</dt>
+          <dd class="text-white font-medium"><%= current_user.dni.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">Edad</dt>
+          <dd class="text-white font-medium"><%= current_user.age.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">Teléfono</dt>
+          <dd class="text-white font-medium"><%= current_user.phone.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">Domicilio</dt>
+          <dd class="text-white font-medium"><%= current_user.address.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">Ciudad</dt>
+          <dd class="text-white font-medium"><%= current_user.city.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">País</dt>
+          <dd class="text-white font-medium"><%= current_user.country.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">Código postal</dt>
+          <dd class="text-white font-medium"><%= current_user.postal_code.presence || "—" %></dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>

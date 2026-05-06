@@ -1,35 +1,60 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<% content_for :title, "Seguridad — Gol Ahora" %>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= f.error_notification %>
-
-  <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true %>
-
-    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-      <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
+<div class="max-w-2xl mx-auto pt-24 pb-12 px-4">
+  <div class="flex items-center gap-4 mb-8">
+    <%= link_to profile_path, class: "text-white/40 hover:text-white transition-colors" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
     <% end %>
-
-    <%= f.input :password,
-                hint: "leave it blank if you don't want to change it",
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: false,
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :current_password,
-                hint: "we need your current password to confirm your changes",
-                required: true,
-                input_html: { autocomplete: "current-password" } %>
+    <h1 class="font-display text-4xl text-white">SEGURIDAD</h1>
   </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Update" %>
+  <div class="bg-white/5 border border-white/10 rounded-2xl p-8 mb-6">
+    <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-5">Cambiar email o contraseña</h3>
+
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Email</label>
+          <%= f.input_field :email, autofocus: true,
+              class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">
+            Nueva contraseña
+            <span class="text-white/30 font-normal">(dejá en blanco para no cambiarla)</span>
+          </label>
+          <%= f.input_field :password, autocomplete: "new-password",
+              class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+              placeholder: "••••••••" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Confirmar nueva contraseña</label>
+          <%= f.input_field :password_confirmation, autocomplete: "new-password",
+              class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+              placeholder: "••••••••" %>
+        </div>
+        <div class="pt-2 border-t border-white/10">
+          <label class="block text-sm font-medium text-white/70 mb-1.5">
+            Contraseña actual
+            <span class="text-white/30 font-normal">(requerida para confirmar cambios)</span>
+          </label>
+          <%= f.input_field :current_password, autocomplete: "current-password",
+              class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+              placeholder: "••••••••" %>
+        </div>
+      </div>
+
+      <%= f.button :submit, "Guardar cambios",
+          class: "mt-6 bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-colors" %>
+    <% end %>
   </div>
-<% end %>
 
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+  <div class="bg-red-500/5 border border-red-500/20 rounded-2xl p-6">
+    <h3 class="text-red-400 font-semibold mb-2">Zona de peligro</h3>
+    <p class="text-white/40 text-sm mb-4">Una vez que eliminés tu cuenta no hay vuelta atrás.</p>
+    <%= button_to "Eliminar mi cuenta", registration_path(resource_name),
+        data: { confirm: "¿Estás seguro? Esta acción no se puede deshacer." },
+        method: :delete,
+        class: "text-sm text-red-400 hover:text-red-300 border border-red-500/30 hover:border-red-400/50 px-4 py-2 rounded-lg transition-colors bg-transparent" %>
+  </div>
+</div>
