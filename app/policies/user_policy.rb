@@ -6,4 +6,5 @@ class UserPolicy < ApplicationPolicy
   def edit?    = user.admin?
   def update?  = user.admin?
   def destroy? = user.admin?
+  def pdf?     = user.admin?
 end
