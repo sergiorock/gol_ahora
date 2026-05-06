@@ -35,6 +35,9 @@
 /node_modules/
 /yarn-error.log
 
+# Claude Code
+/.claude/
+
 # Sistema operativo
 .DS_Store
 Thumbs.db
