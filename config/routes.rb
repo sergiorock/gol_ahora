@@ -5,7 +5,9 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
-    resources :users
+    resources :users do
+      member { get :pdf }
+    end
   end
 
   resource :profile, only: [:show, :edit, :update]

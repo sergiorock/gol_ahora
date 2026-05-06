@@ -45,6 +45,15 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
+  def pdf
+    authorize @user
+    pdf = UserPdf.new(@user)
+    send_data pdf.render,
+      filename: "usuario_#{@user.id}_#{@user.last_name.parameterize}.pdf",
+      type: "application/pdf",
+      disposition: "inline"
+  end
+
   def destroy
     authorize @user
     @user.destroy

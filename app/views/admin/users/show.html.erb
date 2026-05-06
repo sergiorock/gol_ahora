@@ -1,5 +1,8 @@
 <% content_for :page_title, @user.full_name %>
 <% content_for :header_actions do %>
+  <%= link_to pdf_admin_user_path(@user), class: "btn btn-secondary", target: "_blank" do %>
+    <i class="ti ti-file-type-pdf"></i> Imprimir PDF
+  <% end %>
   <%= link_to edit_admin_user_path(@user), class: "btn btn-secondary" do %>
     <i class="ti ti-pencil"></i> Editar
   <% end %>
