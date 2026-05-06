@@ -36,14 +36,21 @@ jobs:
 
           APP_DIR=/home/deploy/apps/gol_ahora
 
+          mkdir -p "$APP_DIR"
+
           if [ ! -d "$APP_DIR/.git" ]; then
-            git clone https://github.com/sergiorock/gol_ahora.git "$APP_DIR"
+            git -C "$APP_DIR" init
+            git -C "$APP_DIR" remote add origin https://github.com/sergiorock/gol_ahora.git
           fi
 
           cd "$APP_DIR"
           git fetch origin main
-          git checkout main
-          git pull --ff-only origin main
+          if git show-ref --verify --quiet refs/heads/main; then
+            git checkout main
+          else
+            git checkout -b main origin/main
+          fi
+          git merge --ff-only origin/main
 
           docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build --remove-orphans
           docker compose --env-file .env.production -f docker-compose.prod.yml exec -T web bin/rails db:prepare
