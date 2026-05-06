@@ -1,0 +1,40 @@
+# Ignorar bundler config
+/.bundle
+
+# Variables de entorno
+/.env*
+!/.env*.erb
+!/.env.example
+
+# Logs
+/log/*
+!/log/.keep
+
+# Temporales
+/tmp/*
+!/tmp/.keep
+!/tmp/pids/
+!/tmp/pids/.keep
+!/tmp/storage/
+!/tmp/storage/.keep
+
+# Storage (archivos subidos)
+/storage/*
+!/storage/.keep
+
+# Assets compilados
+/public/assets
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Credenciales y claves
+/config/master.key
+/config/credentials/*.key
+
+# Node
+/node_modules/
+/yarn-error.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
