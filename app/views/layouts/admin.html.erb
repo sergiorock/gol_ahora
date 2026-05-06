@@ -143,7 +143,7 @@
                   <div class="fw-semibold text-white small"><%= current_user.full_name %></div>
                   <div class="text-muted small"><%= current_user.email %></div>
                 </div>
-                <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-ghost-light btn-sm", title: "Cerrar sesión" do %>
+                <%= button_to destroy_user_session_path, method: :delete, class: "btn btn-ghost-light btn-sm", title: "Cerrar sesión" do %>
                   <i class="ti ti-logout"></i>
                 <% end %>
               </div>

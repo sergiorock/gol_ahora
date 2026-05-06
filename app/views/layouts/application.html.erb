@@ -40,7 +40,7 @@
                   <li><%= link_to "Mis Reservas", "#", class: "dropdown-item" %></li>
                   <li><%= link_to "Mis Inscripciones", "#", class: "dropdown-item" %></li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><%= link_to "Cerrar sesión", destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item" %></li>
+                  <li><%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, class: "dropdown-item border-0 bg-transparent w-100 text-start" %></li>
                 </ul>
               </li>
             <% else %>
