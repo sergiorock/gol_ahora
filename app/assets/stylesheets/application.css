@@ -2,6 +2,10 @@
  * Estilos globales del layout cliente (Tailwind + custom)
  */
 
+button, [type="submit"], [type="button"], [role="button"], a {
+  cursor: pointer;
+}
+
 /* ── Tom Select — tema oscuro ───────────────────────────────────── */
 
 /* El wrapper ocupa todo el ancho pero SIN estilos visuales propios */
