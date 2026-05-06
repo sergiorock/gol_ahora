@@ -21,12 +21,6 @@ services:
         GROUP_ID: ${GROUP_ID:-1000}
     volumes:
       - .:/rails
-      # Volúmenes nombrados para dirs que el container escribe en runtime.
-      # Así no aparecen archivos del container en el host (Linux, Mac, Windows).
-      # Las gems NO van acá — están en la imagen y no tocan el host.
-      - rails_tmp:/rails/tmp
-      - rails_log:/rails/log
-      - rails_storage:/rails/storage
     ports:
       - "3000:3000"
     environment:
@@ -41,6 +35,3 @@ services:
 
 volumes:
   postgres_data:
-  rails_tmp:
-  rails_log:
-  rails_storage:
