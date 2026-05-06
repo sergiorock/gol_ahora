@@ -27,23 +27,23 @@
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20">
     <div class="max-w-3xl">
 
-      <div class="inline-flex items-center gap-2 bg-field/20 border border-field/40 rounded-full px-4 py-1.5 text-field-light text-sm font-medium mb-8">
+      <div id="hero-badge" class="inline-flex items-center gap-2 bg-field/20 border border-field/40 rounded-full px-4 py-1.5 text-field-light text-sm font-medium mb-8">
         <span class="w-2 h-2 bg-field-light rounded-full animate-pulse"></span>
         Canchas disponibles ahora
       </div>
 
-      <h1 class="font-display text-7xl sm:text-8xl lg:text-9xl leading-none tracking-wide mb-6">
+      <h1 id="hero-title" class="font-display text-7xl sm:text-8xl lg:text-9xl leading-none tracking-wide mb-6">
         <span class="text-white">RESERVÁ</span><br>
         <span class="text-field-light">TU CANCHA.</span><br>
         <span class="text-white/40">JUGÁ AHORA.</span>
       </h1>
 
-      <p class="text-white/60 text-lg sm:text-xl max-w-xl mb-10 leading-relaxed font-light">
+      <p id="hero-sub" class="text-white/60 text-lg sm:text-xl max-w-xl mb-10 leading-relaxed font-light">
         El complejo deportivo <span class="text-white font-medium">El Buen Deporte</span> — canchas de fútbol 5, 7 y 11,
         ligas, torneos y clases con entrenadores certificados.
       </p>
 
-      <div class="flex flex-col sm:flex-row gap-4">
+      <div id="hero-cta" class="flex flex-col sm:flex-row gap-4">
         <%= link_to new_user_registration_path, class: "inline-flex items-center justify-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:shadow-lg hover:shadow-field/30 hover:-translate-y-0.5" do %>
           Reservar cancha
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
@@ -54,7 +54,7 @@
       </div>
 
       <%# Stats %>
-      <div class="flex gap-8 mt-16 pt-8 border-t border-white/10">
+      <div id="hero-stats" class="flex gap-8 mt-16 pt-8 border-t border-white/10">
         <div>
           <p class="font-display text-4xl text-field-light">3</p>
           <p class="text-white/50 text-sm mt-1">Tipos de cancha</p>
@@ -87,7 +87,7 @@
       <h2 class="font-display text-5xl sm:text-6xl text-white">NUESTROS SERVICIOS</h2>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-6">
+    <div id="services-grid" class="grid md:grid-cols-3 gap-6">
 
       <div class="group relative bg-white/5 hover:bg-white/8 border border-white/10 hover:border-field/40 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
         <div class="w-12 h-12 bg-field/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-field/30 transition-colors">
@@ -159,7 +159,7 @@
         <% end %>
       </div>
 
-      <div class="space-y-4">
+      <div id="court-types" class="space-y-4">
         <div class="flex items-center gap-6 bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-field/40 transition-colors">
           <div class="font-display text-5xl text-field-light w-16 text-center">5</div>
           <div class="flex-1">
@@ -202,6 +202,36 @@
   </div>
 </section>
 <% end %>
+
+<%# ── ANIMACIONES (Motion vanilla) ───────────────────────────────── %>
+<script type="module">
+  import { animate, inView, stagger } from 'https://cdn.jsdelivr.net/npm/motion@latest/+esm'
+
+  // Hero: entrada escalonada al cargar
+  animate('#hero-badge', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.1 })
+  animate('#hero-title', { opacity: [0, 1], y: [60, 0] }, { duration: 0.7, delay: 0.25, easing: [0.16, 1, 0.3, 1] })
+  animate('#hero-sub',   { opacity: [0, 1], y: [30, 0] }, { duration: 0.6, delay: 0.5  })
+  animate('#hero-cta',   { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.7  })
+  animate('#hero-stats', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.9  })
+
+  // SVG del fondo: draw-on effect en las líneas de cancha
+  const lines = document.querySelectorAll('svg line, svg rect, svg circle, svg path')
+  animate(lines, { opacity: [0, 0.1] }, { duration: 1.5, delay: stagger(0.08) })
+
+  // Cards de servicios: aparecen al hacer scroll
+  inView('#services-grid', () => {
+    animate(
+      '#services-grid > div',
+      { opacity: [0, 1], y: [40, 0] },
+      { duration: 0.5, delay: stagger(0.12), easing: [0.16, 1, 0.3, 1] }
+    )
+  }, { amount: 0.2 })
+
+  // Sección de tipos de cancha: desliza desde la izquierda
+  inView('#court-types', () => {
+    animate('#court-types > div', { opacity: [0, 1], x: [-30, 0] }, { duration: 0.5, delay: stagger(0.1) })
+  }, { amount: 0.3 })
+</script>
 
 <%# ── FOOTER ──────────────────────────────────────────────────────── %>
 <footer class="bg-pitch border-t border-white/5 py-8">
