@@ -1,0 +1,43 @@
+<% content_for :title, "Gol Ahora — El Buen Deporte" %>
+
+<div class="py-5 text-center">
+  <h1 class="display-4 fw-bold text-success">⚽ Gol Ahora</h1>
+  <p class="lead text-muted">El complejo deportivo "El Buen Deporte" — Reservá tu cancha online</p>
+
+  <% unless user_signed_in? %>
+    <div class="mt-4">
+      <%= link_to "Reservar una cancha", new_user_session_path, class: "btn btn-success btn-lg me-2" %>
+      <%= link_to "Registrarse", new_user_registration_path, class: "btn btn-outline-success btn-lg" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="row g-4 mt-2">
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-calendar-check fs-1 text-success"></i>
+        <h5 class="card-title mt-3">Reservas Online</h5>
+        <p class="card-text text-muted">Reservá tu cancha con anticipación desde cualquier dispositivo.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-trophy fs-1 text-success"></i>
+        <h5 class="card-title mt-3">Ligas y Torneos</h5>
+        <p class="card-text text-muted">Participá en las competencias del club. Inscribite con tu equipo.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-people fs-1 text-success"></i>
+        <h5 class="card-title mt-3">Clases y Entrenamientos</h5>
+        <p class="card-text text-muted">Mejorá tu nivel con nuestros profesores y entrenadores certificados.</p>
+      </div>
+    </div>
+  </div>
+</div>

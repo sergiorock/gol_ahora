@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= content_for(:title) || "Admin — Gol Ahora" %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+    <%= stylesheet_link_tag :app %>
+  </head>
+  <body class="antialiased">
+    <div class="wrapper">
+
+      <%# Sidebar %>
+      <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <h1 class="navbar-brand navbar-brand-autodark">
+            <%= link_to root_path do %>
+              <span class="text-white fw-bold">⚽ Gol Ahora</span>
+            <% end %>
+          </h1>
+          <div class="collapse navbar-collapse" id="sidebarMenu">
+            <ul class="navbar-nav pt-lg-3">
+              <li class="nav-item">
+                <%= link_to admin_root_path, class: "nav-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-dashboard"></i></span>
+                  <span class="nav-link-title">Dashboard</span>
+                <% end %>
+              </li>
+
+              <li class="nav-item mt-2">
+                <span class="nav-link text-muted small text-uppercase fw-bold">Usuarios</span>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_usuarios_path, class: "nav-link #{controller_name == 'usuarios' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-users"></i></span>
+                  <span class="nav-link-title">Usuarios</span>
+                <% end %>
+              </li>
+
+              <li class="nav-item mt-2">
+                <span class="nav-link text-muted small text-uppercase fw-bold">Canchas</span>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-ball-football"></i></span>
+                  <span class="nav-link-title">Tipos de Cancha</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-map"></i></span>
+                  <span class="nav-link-title">Canchas</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-calendar-off"></i></span>
+                  <span class="nav-link-title">Bloqueos</span>
+                <% end %>
+              </li>
+
+              <li class="nav-item mt-2">
+                <span class="nav-link text-muted small text-uppercase fw-bold">Reservas</span>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
+                  <span class="nav-link-title">Reservas</span>
+                <% end %>
+              </li>
+
+              <li class="nav-item mt-2">
+                <span class="nav-link text-muted small text-uppercase fw-bold">Finanzas</span>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-cash"></i></span>
+                  <span class="nav-link-title">Cobros</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-receipt"></i></span>
+                  <span class="nav-link-title">Recibos</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-discount"></i></span>
+                  <span class="nav-link-title">Descuentos</span>
+                <% end %>
+              </li>
+
+              <li class="nav-item mt-2">
+                <span class="nav-link text-muted small text-uppercase fw-bold">Competencias</span>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-trophy"></i></span>
+                  <span class="nav-link-title">Ligas</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-tournament"></i></span>
+                  <span class="nav-link-title">Torneos</span>
+                <% end %>
+              </li>
+
+              <li class="nav-item mt-2">
+                <span class="nav-link text-muted small text-uppercase fw-bold">Academia</span>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-id-badge"></i></span>
+                  <span class="nav-link-title">Personal Deportivo</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-school"></i></span>
+                  <span class="nav-link-title">Clases</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "#", class: "nav-link" do %>
+                  <span class="nav-link-icon"><i class="ti ti-run"></i></span>
+                  <span class="nav-link-title">Entrenamientos</span>
+                <% end %>
+              </li>
+            </ul>
+
+            <div class="mt-auto pt-3 border-top">
+              <div class="d-flex align-items-center px-3 py-2">
+                <div class="flex-fill">
+                  <div class="fw-semibold text-white small"><%= current_user.nombre_completo %></div>
+                  <div class="text-muted small"><%= current_user.email %></div>
+                </div>
+                <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "btn btn-ghost-light btn-sm", title: "Cerrar sesión" do %>
+                  <i class="ti ti-logout"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <%# Contenido principal %>
+      <div class="page-wrapper">
+        <div class="page-header d-print-none">
+          <div class="container-xl">
+            <div class="row g-2 align-items-center">
+              <div class="col">
+                <h2 class="page-title"><%= content_for(:page_title) { "Dashboard" } %></h2>
+              </div>
+              <% if content_for?(:header_actions) %>
+                <div class="col-auto ms-auto">
+                  <%= yield :header_actions %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-body">
+          <div class="container-xl">
+            <% if notice %>
+              <div class="alert alert-success alert-dismissible mb-3" role="alert">
+                <%= notice %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            <% end %>
+            <% if alert %>
+              <div class="alert alert-danger alert-dismissible mb-3" role="alert">
+                <%= alert %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            <% end %>
+
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+  </body>
+</html>
