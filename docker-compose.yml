@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: gol_ahora
+      POSTGRES_PASSWORD: gol_ahora_dev
+      POSTGRES_DB: gol_ahora_development
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gol_ahora -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    volumes:
+      - .:/rails
+      # Volúmenes nombrados para dirs que el container escribe en runtime.
+      # Así no aparecen archivos del container en el host (Linux, Mac, Windows).
+      # Las gems NO van acá — están en la imagen y no tocan el host.
+      - rails_tmp:/rails/tmp
+      - rails_log:/rails/log
+      - rails_storage:/rails/storage
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://gol_ahora:gol_ahora_dev@db/gol_ahora_development
+      RAILS_ENV: development
+      SECRET_KEY_BASE: desarrollo_secreto_cambiar_en_produccion
+    depends_on:
+      db:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
+  rails_tmp:
+  rails_log:
+  rails_storage:
