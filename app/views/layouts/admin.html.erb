@@ -12,7 +12,23 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <%= stylesheet_link_tag :app %>
-    <%= stylesheet_link_tag :admin %>
+    <style>
+      :root {
+        --tblr-primary:         #16a34a;
+        --tblr-primary-rgb:     22, 163, 74;
+        --tblr-primary-lt:      rgba(22, 163, 74, 0.1);
+        --tblr-link-color:      #16a34a;
+        --tblr-link-hover-color:#15803d;
+      }
+      .btn-primary                          { background-color:#16a34a !important; border-color:#16a34a !important; }
+      .btn-primary:hover                    { background-color:#15803d !important; border-color:#15803d !important; }
+      .navbar-vertical .nav-link.active     { color:#22c55e !important; background-color:rgba(22,163,74,.12) !important; }
+      .navbar-vertical .nav-link:hover      { color:#22c55e !important; }
+      .bg-primary                           { background-color:#16a34a !important; }
+      .text-primary                         { color:#16a34a !important; }
+      .form-control:focus, .form-select:focus { border-color:#16a34a; box-shadow:0 0 0 .2rem rgba(22,163,74,.15); }
+      .avatar.bg-primary-lt                 { background-color:rgba(22,163,74,.15) !important; color:#16a34a !important; }
+    </style>
   </head>
   <body class="antialiased">
     <div class="wrapper">
