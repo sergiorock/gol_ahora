@@ -18,21 +18,21 @@ end
 
 # Tipos de cancha (según el TP: Fútbol 5, 7, 11)
 futbol5 = CourtType.find_or_create_by!(name: "Fútbol 5") do |ct|
-  ct.surface              = "Césped sintético"
+  ct.surface              = :synthetic
   ct.capacity             = 10
   ct.max_duration_minutes = 60
   ct.price_per_hour       = 8000
 end
 
 futbol7 = CourtType.find_or_create_by!(name: "Fútbol 7") do |ct|
-  ct.surface              = "Césped natural"
+  ct.surface              = :natural
   ct.capacity             = 14
   ct.max_duration_minutes = 90
   ct.price_per_hour       = 12000
 end
 
 futbol11 = CourtType.find_or_create_by!(name: "Fútbol 11") do |ct|
-  ct.surface              = "Césped natural"
+  ct.surface              = :natural
   ct.capacity             = 22
   ct.max_duration_minutes = 120
   ct.price_per_hour       = 18000

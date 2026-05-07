@@ -1,7 +1,22 @@
 class CourtType < ApplicationRecord
   has_many :courts, dependent: :restrict_with_error
 
+  enum :surface, {
+    synthetic: "synthetic",
+    natural:   "natural",
+    parquet:   "parquet",
+    cement:    "cement"
+  }
+
+  SURFACE_LABELS = {
+    "synthetic" => "Césped sintético",
+    "natural"   => "Césped natural",
+    "parquet"   => "Parquet",
+    "cement"    => "Cemento"
+  }.freeze
+
   validates :name, presence: true, uniqueness: true
+  validates :surface, presence: true
   validates :capacity, presence: true, numericality: { greater_than: 0 }
   validates :max_duration_minutes, presence: true, numericality: { greater_than: 0 }
   validates :price_per_hour, presence: true, numericality: { greater_than: 0 }

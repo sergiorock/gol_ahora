@@ -28,7 +28,7 @@
           </div>
           <div class="flex justify-between">
             <dt class="text-white/50 text-sm">Superficie</dt>
-            <dd class="text-white text-sm font-medium"><%= @court.court_type.surface.presence || "—" %></dd>
+            <dd class="text-white text-sm font-medium"><%= CourtType::SURFACE_LABELS[@court.court_type.surface] || "—" %></dd>
           </div>
           <div class="flex justify-between">
             <dt class="text-white/50 text-sm">Duración máx.</dt>

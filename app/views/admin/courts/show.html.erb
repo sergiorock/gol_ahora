@@ -17,7 +17,7 @@
           <dt class="col-5 text-muted">Tipo</dt>
           <dd class="col-7"><%= @court.court_type.name %></dd>
           <dt class="col-5 text-muted">Superficie</dt>
-          <dd class="col-7"><%= @court.court_type.surface.presence || "—" %></dd>
+          <dd class="col-7"><%= CourtType::SURFACE_LABELS[@court.court_type.surface] || "—" %></dd>
           <dt class="col-5 text-muted">Capacidad</dt>
           <dd class="col-7"><%= @court.court_type.capacity %> jugadores</dd>
           <dt class="col-5 text-muted">Duración máx.</dt>

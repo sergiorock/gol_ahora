@@ -6,7 +6,9 @@
           <%= f.input :name, label: "Nombre", placeholder: "Ej: Fútbol 5" %>
         </div>
         <div class="col-md-6">
-          <%= f.input :surface, label: "Superficie", placeholder: "Ej: Césped sintético" %>
+          <%= f.input :surface, label: "Superficie",
+                collection: CourtType::SURFACE_LABELS.map { |k, v| [v, k] },
+                include_blank: "Seleccioná superficie" %>
         </div>
         <div class="col-md-4">
           <%= f.input :capacity, label: "Capacidad (jugadores)", placeholder: "10" %>
