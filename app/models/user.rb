@@ -12,10 +12,28 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name,  presence: true
   validates :dni, uniqueness: true, allow_blank: true
+  validate  :must_be_of_legal_age
+
+  def age
+    return nil unless birth_date
+    today = Date.today
+    years = today.year - birth_date.year
+    years -= 1 if today < birth_date + years.years
+    years
+  end
 
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  private
+
+  def must_be_of_legal_age
+    return unless birth_date
+    errors.add(:birth_date, "debes ser mayor de 18 años para registrarte") if age < 18
+  end
+
+  public
 
   def admin?
     role == "admin"

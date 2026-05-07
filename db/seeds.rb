@@ -1,20 +1,38 @@
 # ── Usuarios ────────────────────────────────────────────────────────────────
-User.find_or_create_by!(email: "admin@mail.com") do |u|
-  u.password              = "admin123"
-  u.password_confirmation = "admin123"
-  u.role                  = :admin
-  u.first_name            = "Admin"
-  u.last_name             = "Sistema"
-  u.joined_at             = Time.current
-end
+admin = User.find_or_initialize_by(email: "admin@mail.com")
+admin.assign_attributes(
+  password:              "admin123",
+  password_confirmation: "admin123",
+  role:                  :admin,
+  first_name:            "Carlos",
+  last_name:             "Rodríguez",
+  dni:                   "25123456",
+  birth_date:            Date.new(1985, 6, 15),
+  phone:                 "1145678901",
+  address:               "Av. Mitre 1234",
+  postal_code:           "1870",
+  city:                  "Florencio Varela",
+  country:               "AR",
+  joined_at:             admin.joined_at || Time.current
+)
+admin.save!
 
-User.find_or_create_by!(email: "cliente@mail.com") do |u|
-  u.password              = "cliente123"
-  u.password_confirmation = "cliente123"
-  u.role                  = :client
-  u.first_name            = "Cliente"
-  u.last_name             = "Prueba"
-end
+cliente = User.find_or_initialize_by(email: "cliente@mail.com")
+cliente.assign_attributes(
+  password:              "cliente123",
+  password_confirmation: "cliente123",
+  role:                  :client,
+  first_name:            "Martín",
+  last_name:             "González",
+  dni:                   "38456789",
+  birth_date:            Date.new(1995, 3, 22),
+  phone:                 "1167890123",
+  address:               "Calle 9 de Julio 456",
+  postal_code:           "1888",
+  city:                  "Quilmes",
+  country:               "AR"
+)
+cliente.save!
 
 # ── Tipos de cancha ──────────────────────────────────────────────────────────
 # Una combinación por tamaño (5/7/11) × superficie (synthetic/natural/parquet/cement)

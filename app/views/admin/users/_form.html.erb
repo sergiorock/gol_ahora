@@ -34,8 +34,9 @@
         <div class="col-md-2">
           <%= f.input :dni, label: "DNI" %>
         </div>
-        <div class="col-md-2">
-          <%= f.input :age, label: "Edad" %>
+        <div class="col-md-3">
+          <%= f.input :birth_date, label: "Fecha de nacimiento", as: :string,
+                input_html: { type: "date", value: f.object.birth_date&.strftime("%Y-%m-%d") } %>
         </div>
         <div class="col-md-4">
           <%= f.input :phone, label: "Teléfono" %>

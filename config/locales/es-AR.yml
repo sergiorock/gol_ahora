@@ -17,7 +17,7 @@ es-AR:
         first_name:           Nombres
         last_name:            Apellido
         dni:                  DNI
-        age:                  Edad
+        birth_date:           Fecha de nacimiento
         phone:                Teléfono
         address:              Domicilio
         postal_code:          Código postal

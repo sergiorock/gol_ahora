@@ -39,8 +39,14 @@
           <dt class="col-sm-4">DNI</dt>
           <dd class="col-sm-8"><%= @user.dni.presence || "—" %></dd>
 
-          <dt class="col-sm-4">Edad</dt>
-          <dd class="col-sm-8"><%= @user.age.presence || "—" %></dd>
+          <dt class="col-sm-4">Fecha de nacimiento</dt>
+          <dd class="col-sm-8">
+            <% if @user.birth_date %>
+              <%= l @user.birth_date, format: :long %> (<%= @user.age %> años)
+            <% else %>
+              —
+            <% end %>
+          </dd>
 
           <dt class="col-sm-4">Teléfono</dt>
           <dd class="col-sm-8"><%= @user.phone.presence || "—" %></dd>
