@@ -22,7 +22,14 @@
     </div>
   <% end %>
 
-  <%= form_with url: reservations_path, method: :post, class: "space-y-6" do |f| %>
+  <%# Precios por cancha para el cálculo JS %>
+  <% court_prices = Court.includes(:court_type).available.each_with_object({}) { |c, h| h[c.id.to_s] = c.court_type.price_per_hour.to_f } %>
+
+  <%= form_with url: reservations_path, method: :post,
+        id: "reservation-form",
+        data: { prices: court_prices.to_json, fixed_court: @court&.id },
+        class: "space-y-6" do |f| %>
+
     <%# Cancha %>
     <% if @court %>
       <input type="hidden" name="reservation[court_id]" value="<%= @court.id %>">
@@ -39,7 +46,8 @@
     <% else %>
       <div>
         <label class="block text-white/60 text-sm mb-2">Cancha</label>
-        <select name="reservation[court_id]" class="ts-dark" data-placeholder="Seleccioná una cancha">
+        <select name="reservation[court_id]" id="court-select" class="ts-dark" data-placeholder="Seleccioná una cancha">
+          <option value=""></option>
           <% Court.includes(:court_type).available.each do |c| %>
             <option value="<%= c.id %>"><%= c.name %> — <%= c.court_type.name %></option>
           <% end %>
@@ -62,7 +70,7 @@
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label class="block text-white/60 text-sm mb-2">Hora de inicio</label>
-        <select name="reservation[start_time]" class="ts-dark">
+        <select name="reservation[start_time]" id="start-time-select" class="ts-dark">
           <% (8..22).each do |h| %>
             <% ["00", "30"].each do |m| %>
               <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
@@ -75,7 +83,7 @@
       </div>
       <div>
         <label class="block text-white/60 text-sm mb-2">Hora de fin</label>
-        <select name="reservation[end_time]" class="ts-dark">
+        <select name="reservation[end_time]" id="end-time-select" class="ts-dark">
           <% (8..23).each do |h| %>
             <% ["00", "30"].each do |m| %>
               <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
@@ -88,24 +96,109 @@
       </div>
     </div>
 
-    <%# Notas opcionales %>
-    <div>
-      <label class="block text-white/60 text-sm mb-2">Notas (opcional)</label>
-      <textarea name="reservation[notes]" rows="2"
-                placeholder="Indicaciones especiales, cantidad de jugadores, etc."
-                class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light resize-none"><%= params.dig(:reservation, :notes) %></textarea>
+    <%# Resumen de costos en tiempo real %>
+    <div id="price-summary" class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3 hidden">
+      <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase">Resumen</h3>
+      <div class="flex justify-between text-sm">
+        <span class="text-white/60">Duración</span>
+        <span class="text-white" id="summary-duration">—</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-white/60">Precio/hora</span>
+        <span class="text-white" id="summary-rate">—</span>
+      </div>
+      <div class="flex justify-between border-t border-white/10 pt-3">
+        <span class="text-white/70 font-semibold">Total</span>
+        <span class="text-white font-semibold text-lg" id="summary-total">—</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-white/60 text-sm">Seña a pagar (30%)</span>
+        <span class="text-field-light font-display text-2xl" id="summary-deposit">—</span>
+      </div>
     </div>
 
-    <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-sm text-white/50 space-y-1">
-      <p>• El monto total se calculará según el horario seleccionado.</p>
+    <div id="price-hint" class="bg-white/5 border border-white/10 rounded-xl p-4 text-sm text-white/50 space-y-1">
+      <p>• El monto se calcula según el horario seleccionado.</p>
       <p>• Se requiere el pago de una <strong class="text-white/70">seña del 30%</strong> para confirmar la reserva.</p>
       <p>• Podés reservar con hasta <strong class="text-white/70">30 días de anticipación</strong>.</p>
     </div>
 
-    <button type="submit" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+    <button type="submit" id="submit-btn" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
       Continuar al pago
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
     </button>
   <% end %>
 
 </div>
+
+<script>
+  (() => {
+    const form      = document.getElementById('reservation-form');
+    const prices    = JSON.parse(form.dataset.prices || '{}');
+    const fixedCourt = form.dataset.fixedCourt;
+
+    const startSel  = document.getElementById('start-time-select');
+    const endSel    = document.getElementById('end-time-select');
+    const courtSel  = document.getElementById('court-select');
+    const summary   = document.getElementById('price-summary');
+    const hint      = document.getElementById('price-hint');
+
+    const fmtARS = n => '$' + Math.round(n).toLocaleString('es-AR');
+
+    function getCourtId() {
+      if (fixedCourt) return fixedCourt;
+      return courtSel ? courtSel.value : null;
+    }
+
+    function timeToMinutes(t) {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function recalculate() {
+      const courtId   = getCourtId();
+      const priceHour = courtId ? prices[courtId] : null;
+      const startVal  = startSel ? startSel.value : null;
+      const endVal    = endSel   ? endSel.value   : null;
+
+      if (!priceHour || !startVal || !endVal) {
+        summary.classList.add('hidden');
+        hint.classList.remove('hidden');
+        return;
+      }
+
+      const startMin = timeToMinutes(startVal);
+      const endMin   = timeToMinutes(endVal);
+      const diffMin  = endMin - startMin;
+
+      if (diffMin <= 0) {
+        summary.classList.add('hidden');
+        hint.classList.remove('hidden');
+        return;
+      }
+
+      const hours   = diffMin / 60;
+      const total   = priceHour * hours;
+      const deposit = total * 0.30;
+
+      const durationLabel = diffMin % 60 === 0
+        ? `${diffMin / 60}h`
+        : `${Math.floor(diffMin / 60)}h ${diffMin % 60}min`;
+
+      document.getElementById('summary-duration').textContent = durationLabel;
+      document.getElementById('summary-rate').textContent     = fmtARS(priceHour) + '/hora';
+      document.getElementById('summary-total').textContent    = fmtARS(total);
+      document.getElementById('summary-deposit').textContent  = fmtARS(deposit);
+
+      summary.classList.remove('hidden');
+      hint.classList.add('hidden');
+    }
+
+    // Escucha cambios en los selects nativos (Tom Select emite 'change' en el <select> original)
+    [startSel, endSel, courtSel].forEach(el => {
+      if (el) el.addEventListener('change', recalculate);
+    });
+
+    recalculate();
+  })();
+</script>
