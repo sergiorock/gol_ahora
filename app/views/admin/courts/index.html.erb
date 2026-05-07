@@ -1,0 +1,58 @@
+<% content_for :page_title, "Canchas" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_court_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Nueva cancha
+  <% end %>
+<% end %>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Capacidad</th>
+          <th>Precio/hora</th>
+          <th>Estado</th>
+          <th class="w-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @courts.each do |court| %>
+          <tr>
+            <td class="fw-semibold"><%= court.name %></td>
+            <td class="text-muted"><%= court.court_type.name %></td>
+            <td><%= court.court_type.capacity %> jugadores</td>
+            <td>$<%= number_with_delimiter(court.court_type.price_per_hour) %></td>
+            <td>
+              <% case court.status
+                 when "active" %>
+                <span class="badge bg-green-lt">Activa</span>
+              <% when "inactive" %>
+                <span class="badge bg-gray-lt">Inactiva</span>
+              <% when "maintenance" %>
+                <span class="badge bg-yellow-lt">Mantenimiento</span>
+              <% end %>
+            </td>
+            <td>
+              <div class="btn-group">
+                <%= link_to admin_court_path(court), class: "btn btn-sm btn-ghost-secondary", title: "Ver" do %>
+                  <i class="ti ti-eye"></i>
+                <% end %>
+                <%= link_to edit_admin_court_path(court), class: "btn btn-sm btn-ghost-secondary", title: "Editar" do %>
+                  <i class="ti ti-pencil"></i>
+                <% end %>
+                <%= button_to admin_court_path(court), method: :delete,
+                    form: { data: { confirm: "¿Eliminar #{court.name}?" } },
+                    class: "btn btn-sm btn-ghost-danger" do %>
+                  <i class="ti ti-trash"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

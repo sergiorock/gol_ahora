@@ -1,0 +1,28 @@
+<%= simple_form_for [:admin, court_type] do |f| %>
+  <div class="card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.input :name, label: "Nombre", placeholder: "Ej: Fútbol 5" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :surface, label: "Superficie", placeholder: "Ej: Césped sintético" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :capacity, label: "Capacidad (jugadores)", placeholder: "10" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :max_duration_minutes, label: "Duración máxima (minutos)", placeholder: "60" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :price_per_hour, label: "Precio por hora ($)", placeholder: "5000" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <%= f.button :submit, court_type.persisted? ? "Guardar cambios" : "Crear tipo", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_court_types_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

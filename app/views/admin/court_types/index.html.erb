@@ -1,0 +1,48 @@
+<% content_for :page_title, "Tipos de Cancha" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_court_type_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Nuevo tipo
+  <% end %>
+<% end %>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Superficie</th>
+          <th>Capacidad</th>
+          <th>Duración máx.</th>
+          <th>Precio/hora</th>
+          <th>Canchas</th>
+          <th class="w-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @court_types.each do |ct| %>
+          <tr>
+            <td class="fw-semibold"><%= ct.name %></td>
+            <td class="text-muted"><%= ct.surface.presence || "—" %></td>
+            <td><%= ct.capacity %> jugadores</td>
+            <td><%= ct.duration_label %></td>
+            <td>$<%= number_with_delimiter(ct.price_per_hour) %></td>
+            <td><span class="badge bg-blue-lt"><%= ct.courts.count %></span></td>
+            <td>
+              <div class="btn-group">
+                <%= link_to edit_admin_court_type_path(ct), class: "btn btn-sm btn-ghost-secondary", title: "Editar" do %>
+                  <i class="ti ti-pencil"></i>
+                <% end %>
+                <%= button_to admin_court_type_path(ct), method: :delete,
+                    form: { data: { confirm: "¿Eliminar #{ct.name}?" } },
+                    class: "btn btn-sm btn-ghost-danger" do %>
+                  <i class="ti ti-trash"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

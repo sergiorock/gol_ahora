@@ -1,0 +1,29 @@
+<% content_for :page_title, "Editar bloqueo — #{@court.name}" %>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <%= simple_form_for [:admin, @court, @block] do |f| %>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <%= f.input :starts_at, label: "Desde", as: :string,
+                    input_html: { type: "datetime-local", value: @block.starts_at&.strftime("%Y-%m-%dT%H:%M") } %>
+            </div>
+            <div class="col-md-6">
+              <%= f.input :ends_at, label: "Hasta", as: :string,
+                    input_html: { type: "datetime-local", value: @block.ends_at&.strftime("%Y-%m-%dT%H:%M") } %>
+            </div>
+            <div class="col-12">
+              <%= f.input :reason, label: "Motivo" %>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-3">
+            <%= f.button :submit, "Guardar cambios", class: "btn btn-primary" %>
+            <%= link_to "Cancelar", admin_court_path(@court), class: "btn btn-secondary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

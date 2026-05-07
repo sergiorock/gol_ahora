@@ -1,0 +1,29 @@
+<%= simple_form_for [:admin, court] do |f| %>
+  <div class="card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.input :name, label: "Nombre", placeholder: "Ej: Cancha 1" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :court_type_id, label: "Tipo de cancha",
+                collection: CourtType.order(:name).map { |ct| [ct.name, ct.id] },
+                include_blank: "Seleccioná un tipo" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :status, label: "Estado",
+                collection: [["Activa", "active"], ["Inactiva", "inactive"], ["En mantenimiento", "maintenance"]],
+                include_blank: false %>
+        </div>
+        <div class="col-md-12">
+          <%= f.input :description, label: "Descripción", as: :text, input_html: { rows: 3 } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <%= f.button :submit, court.persisted? ? "Guardar cambios" : "Crear cancha", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_courts_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

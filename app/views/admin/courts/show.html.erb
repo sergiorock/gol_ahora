@@ -1,0 +1,82 @@
+<% content_for :page_title, @court.name %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_court_court_block_path(@court), class: "btn btn-warning" do %>
+    <i class="ti ti-calendar-off"></i> Agregar bloqueo
+  <% end %>
+  <%= link_to edit_admin_court_path(@court), class: "btn btn-secondary" do %>
+    <i class="ti ti-pencil"></i> Editar
+  <% end %>
+<% end %>
+
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">Información</h3>
+        <dl class="row mt-3">
+          <dt class="col-5 text-muted">Tipo</dt>
+          <dd class="col-7"><%= @court.court_type.name %></dd>
+          <dt class="col-5 text-muted">Superficie</dt>
+          <dd class="col-7"><%= @court.court_type.surface.presence || "—" %></dd>
+          <dt class="col-5 text-muted">Capacidad</dt>
+          <dd class="col-7"><%= @court.court_type.capacity %> jugadores</dd>
+          <dt class="col-5 text-muted">Duración máx.</dt>
+          <dd class="col-7"><%= @court.court_type.duration_label %></dd>
+          <dt class="col-5 text-muted">Precio/hora</dt>
+          <dd class="col-7">$<%= number_with_delimiter(@court.court_type.price_per_hour) %></dd>
+          <dt class="col-5 text-muted">Estado</dt>
+          <dd class="col-7">
+            <% case @court.status
+               when "active" %><span class="badge bg-green-lt">Activa</span>
+            <% when "inactive" %><span class="badge bg-gray-lt">Inactiva</span>
+            <% when "maintenance" %><span class="badge bg-yellow-lt">Mantenimiento</span>
+            <% end %>
+          </dd>
+        </dl>
+        <% if @court.description.present? %>
+          <p class="text-muted mt-2 small"><%= @court.description %></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Bloqueos activos y próximos</h3>
+      </div>
+      <% if @upcoming_blocks.any? %>
+        <div class="table-responsive">
+          <table class="table table-vcenter card-table">
+            <thead>
+              <tr>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Motivo</th>
+                <th class="w-1"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @upcoming_blocks.each do |block| %>
+                <tr>
+                  <td><%= block.starts_at.strftime("%d/%m/%Y %H:%M") %></td>
+                  <td><%= block.ends_at.strftime("%d/%m/%Y %H:%M") %></td>
+                  <td><%= block.reason %></td>
+                  <td>
+                    <%= button_to admin_court_block_path(block), method: :delete,
+                        form: { data: { confirm: "¿Eliminar este bloqueo?" } },
+                        class: "btn btn-sm btn-ghost-danger" do %>
+                      <i class="ti ti-trash"></i>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="card-body text-muted">Sin bloqueos próximos.</div>
+      <% end %>
+    </div>
+  </div>
+</div>

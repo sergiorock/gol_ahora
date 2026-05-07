@@ -10,9 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_06_051736) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_152953) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "court_blocks", force: :cascade do |t|
+    t.bigint "court_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "ends_at"
+    t.string "reason"
+    t.datetime "starts_at"
+    t.datetime "updated_at", null: false
+    t.index ["court_id"], name: "index_court_blocks_on_court_id"
+  end
+
+  create_table "court_types", force: :cascade do |t|
+    t.integer "capacity"
+    t.datetime "created_at", null: false
+    t.integer "max_duration_minutes"
+    t.string "name"
+    t.decimal "price_per_hour"
+    t.string "surface"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "courts", force: :cascade do |t|
+    t.bigint "court_type_id", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name"
+    t.integer "status"
+    t.datetime "updated_at", null: false
+    t.index ["court_type_id"], name: "index_courts_on_court_type_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "address"
@@ -36,4 +66,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_051736) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "court_blocks", "courts"
+  add_foreign_key "courts", "court_types"
 end

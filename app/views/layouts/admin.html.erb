@@ -67,21 +67,15 @@
                 <span class="nav-link text-muted small text-uppercase fw-bold">Canchas</span>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_court_types_path, class: "nav-link #{controller_name == 'court_types' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-ball-football"></i></span>
                   <span class="nav-link-title">Tipos de Cancha</span>
                 <% end %>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_courts_path, class: "nav-link #{controller_name == 'courts' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-map"></i></span>
                   <span class="nav-link-title">Canchas</span>
-                <% end %>
-              </li>
-              <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
-                  <span class="nav-link-icon"><i class="ti ti-calendar-off"></i></span>
-                  <span class="nav-link-title">Bloqueos</span>
                 <% end %>
               </li>
 

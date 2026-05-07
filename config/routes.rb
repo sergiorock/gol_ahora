@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     resources :users do
       member { get :pdf }
     end
+    resources :court_types
+    resources :courts do
+      resources :court_blocks, shallow: true
+    end
   end
 
   resource :profile, only: [:show, :edit, :update]
