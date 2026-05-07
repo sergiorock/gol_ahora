@@ -20,11 +20,7 @@ Rails.application.routes.draw do
   resources :courts, only: [:index, :show]
 
   resources :reservations, only: %i[index new create show] do
-    member do
-      get  :pay
-      post :confirm_payment
-      delete :cancel
-    end
+    member { delete :cancel }
   end
 
   root to: "home#index"

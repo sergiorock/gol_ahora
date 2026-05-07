@@ -8,14 +8,15 @@
     <% end %>
     <div>
       <p class="text-white/40 text-sm">Nueva reserva</p>
-      <h1 class="font-display text-4xl text-white">ELEGÍ HORARIO</h1>
+      <h1 class="font-display text-4xl text-white">RESERVAR CANCHA</h1>
     </div>
   </div>
 
-  <% if @reservation.errors.any? %>
+  <% errors = (@reservation.errors.full_messages + @payment.errors.full_messages).uniq %>
+  <% if errors.any? %>
     <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6">
       <ul class="text-red-400 text-sm space-y-1">
-        <% @reservation.errors.full_messages.each do |msg| %>
+        <% errors.each do |msg| %>
           <li>• <%= msg %></li>
         <% end %>
       </ul>
@@ -30,74 +31,83 @@
         data: { prices: court_prices.to_json, fixed_court: @court&.id },
         class: "space-y-6" do |f| %>
 
-    <%# Cancha %>
-    <% if @court %>
-      <input type="hidden" name="reservation[court_id]" value="<%= @court.id %>">
-      <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center gap-4">
-        <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-          <%= court_surface_svg(@court.court_type, css_class: "w-full h-full") %>
+    <%# ── Sección 1: Horario ──────────────────────────────── %>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-5">
+      <h2 class="text-white/50 text-xs font-semibold tracking-widest uppercase">1 · Elegí el horario</h2>
+
+      <%# Cancha %>
+      <% if @court %>
+        <input type="hidden" name="reservation[court_id]" value="<%= @court.id %>">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+            <%= court_surface_svg(@court.court_type, css_class: "w-full h-full") %>
+          </div>
+          <div>
+            <p class="text-white font-semibold"><%= @court.name %></p>
+            <p class="text-white/50 text-sm"><%= @court.court_type.name %> · <%= CourtType::SURFACE_LABELS[@court.court_type.surface] %></p>
+            <p class="text-field-light text-sm">$<%= number_with_delimiter(@court.court_type.price_per_hour.to_i) %>/hora · máx. <%= @court.court_type.duration_label %></p>
+          </div>
+        </div>
+      <% else %>
+        <div>
+          <label class="block text-white/60 text-sm mb-2">Cancha</label>
+          <select name="reservation[court_id]" id="court-select" class="ts-dark" data-placeholder="Seleccioná una cancha">
+            <option value=""></option>
+            <% Court.includes(:court_type).available.each do |c| %>
+              <option value="<%= c.id %>"><%= c.name %> — <%= c.court_type.name %></option>
+            <% end %>
+          </select>
+        </div>
+      <% end %>
+
+      <%# Fecha %>
+      <div>
+        <label class="block text-white/60 text-sm mb-2">Fecha</label>
+        <input type="date"
+               name="reservation[date]"
+               value="<%= params.dig(:reservation, :date) || Date.tomorrow.strftime('%Y-%m-%d') %>"
+               min="<%= Date.today.strftime('%Y-%m-%d') %>"
+               max="<%= 30.days.from_now.strftime('%Y-%m-%d') %>"
+               class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light">
+      </div>
+
+      <%# Hora inicio / fin %>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-white/60 text-sm mb-2">Hora de inicio</label>
+          <select name="reservation[start_time]" id="start-time-select" class="ts-dark">
+            <% (8..22).each do |h| %>
+              <% ["00", "30"].each do |m| %>
+                <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+                <option value="<%= val %>" <%= "selected" if params.dig(:reservation, :start_time) == val %>><%= val %></option>
+              <% end %>
+            <% end %>
+          </select>
         </div>
         <div>
-          <p class="text-white font-semibold"><%= @court.name %></p>
-          <p class="text-white/50 text-sm"><%= @court.court_type.name %> · <%= CourtType::SURFACE_LABELS[@court.court_type.surface] %></p>
-          <p class="text-field-light text-sm">$<%= number_with_delimiter(@court.court_type.price_per_hour.to_i) %>/hora · máx. <%= @court.court_type.duration_label %></p>
+          <label class="block text-white/60 text-sm mb-2">Hora de fin</label>
+          <select name="reservation[end_time]" id="end-time-select" class="ts-dark">
+            <% (8..23).each do |h| %>
+              <% ["00", "30"].each do |m| %>
+                <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+                <option value="<%= val %>" <%= "selected" if params.dig(:reservation, :end_time) == val %>><%= val %></option>
+              <% end %>
+            <% end %>
+          </select>
         </div>
       </div>
-    <% else %>
-      <div>
-        <label class="block text-white/60 text-sm mb-2">Cancha</label>
-        <select name="reservation[court_id]" id="court-select" class="ts-dark" data-placeholder="Seleccioná una cancha">
-          <option value=""></option>
-          <% Court.includes(:court_type).available.each do |c| %>
-            <option value="<%= c.id %>"><%= c.name %> — <%= c.court_type.name %></option>
-          <% end %>
-        </select>
-      </div>
-    <% end %>
 
-    <%# Fecha %>
-    <div>
-      <label class="block text-white/60 text-sm mb-2">Fecha</label>
-      <input type="date"
-             name="reservation[date]"
-             value="<%= params.dig(:reservation, :date) || Date.tomorrow.strftime('%Y-%m-%d') %>"
-             min="<%= Date.today.strftime('%Y-%m-%d') %>"
-             max="<%= 30.days.from_now.strftime('%Y-%m-%d') %>"
-             class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light">
-    </div>
-
-    <%# Hora inicio / fin %>
-    <div class="grid grid-cols-2 gap-4">
+      <%# Notas %>
       <div>
-        <label class="block text-white/60 text-sm mb-2">Hora de inicio</label>
-        <select name="reservation[start_time]" id="start-time-select" class="ts-dark">
-          <% (8..22).each do |h| %>
-            <% ["00", "30"].each do |m| %>
-              <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
-              <option value="<%= val %>" <%= "selected" if params.dig(:reservation, :start_time) == val %>>
-                <%= val %>
-              </option>
-            <% end %>
-          <% end %>
-        </select>
-      </div>
-      <div>
-        <label class="block text-white/60 text-sm mb-2">Hora de fin</label>
-        <select name="reservation[end_time]" id="end-time-select" class="ts-dark">
-          <% (8..23).each do |h| %>
-            <% ["00", "30"].each do |m| %>
-              <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
-              <option value="<%= val %>" <%= "selected" if params.dig(:reservation, :end_time) == val %>>
-                <%= val %>
-              </option>
-            <% end %>
-          <% end %>
-        </select>
+        <label class="block text-white/60 text-sm mb-2">Notas (opcional)</label>
+        <textarea name="reservation[notes]" rows="2"
+                  placeholder="Indicaciones especiales, cantidad de jugadores, etc."
+                  class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light resize-none"><%= params.dig(:reservation, :notes) %></textarea>
       </div>
     </div>
 
-    <%# Resumen de costos en tiempo real %>
-    <div id="price-summary" class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3 hidden">
+    <%# ── Resumen de costos en tiempo real ───────────────── %>
+    <div id="price-summary" class="border border-field/40 bg-field/5 rounded-2xl p-5 space-y-3 hidden">
       <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase">Resumen</h3>
       <div class="flex justify-between text-sm">
         <span class="text-white/60">Duración</span>
@@ -117,15 +127,65 @@
       </div>
     </div>
 
-    <div id="price-hint" class="bg-white/5 border border-white/10 rounded-xl p-4 text-sm text-white/50 space-y-1">
-      <p>• El monto se calcula según el horario seleccionado.</p>
-      <p>• Se requiere el pago de una <strong class="text-white/70">seña del 30%</strong> para confirmar la reserva.</p>
-      <p>• Podés reservar con hasta <strong class="text-white/70">30 días de anticipación</strong>.</p>
+    <%# ── Sección 2: Pago de la seña ─────────────────────── %>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-5">
+      <h2 class="text-white/50 text-xs font-semibold tracking-widest uppercase">2 · Pagá la seña (30%)</h2>
+
+      <%# Preview de tarjeta %>
+      <div class="relative h-40 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 border border-white/10 p-5 flex flex-col justify-between select-none">
+        <div class="flex justify-between items-start">
+          <div class="w-9 h-6 bg-yellow-400/80 rounded"></div>
+          <span class="text-white/60 text-sm font-semibold tracking-widest">VISA</span>
+        </div>
+        <div>
+          <p class="text-white font-mono tracking-widest" id="card-number-display">•••• •••• •••• ••••</p>
+          <div class="flex justify-between mt-1">
+            <p class="text-white/50 text-xs uppercase tracking-widest" id="card-name-display">Nombre titular</p>
+            <p class="text-white/50 text-xs font-mono" id="card-expiry-display">MM/AA</p>
+          </div>
+        </div>
+      </div>
+
+      <%# Número de tarjeta %>
+      <div>
+        <label class="block text-white/60 text-sm mb-2">Número de tarjeta</label>
+        <input type="text" id="card-number-input"
+               placeholder="1234 5678 9012 3456" maxlength="19"
+               class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white font-mono tracking-widest placeholder-white/30 focus:outline-none focus:border-field-light">
+        <input type="hidden" name="payment[last_four_digits]" id="last-four-hidden">
+      </div>
+
+      <%# Nombre %>
+      <div>
+        <label class="block text-white/60 text-sm mb-2">Nombre del titular</label>
+        <input type="text" name="payment[cardholder_name]"
+               placeholder="Como figura en la tarjeta" id="cardholder-input"
+               value="<%= params.dig(:payment, :cardholder_name) %>"
+               class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white uppercase placeholder-white/30 focus:outline-none focus:border-field-light">
+      </div>
+
+      <%# Vencimiento + CVV %>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-white/60 text-sm mb-2">Vencimiento</label>
+          <input type="text" name="payment[expiry_date]"
+                 placeholder="MM/AA" maxlength="5" id="expiry-input"
+                 value="<%= params.dig(:payment, :expiry_date) %>"
+                 class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white font-mono placeholder-white/30 focus:outline-none focus:border-field-light">
+        </div>
+        <div>
+          <label class="block text-white/60 text-sm mb-2">CVV</label>
+          <input type="password" placeholder="•••" maxlength="4"
+                 class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white font-mono placeholder-white/30 focus:outline-none focus:border-field-light">
+        </div>
+      </div>
+
+      <p class="text-white/30 text-xs text-center">Pago simulado — no se procesa ninguna transacción real</p>
     </div>
 
-    <button type="submit" id="submit-btn" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
-      Continuar al pago
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+    <button type="submit" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <span id="submit-label">Confirmar reserva y pagar seña</span>
     </button>
   <% end %>
 
@@ -133,72 +193,68 @@
 
 <script>
   (() => {
-    const form      = document.getElementById('reservation-form');
-    const prices    = JSON.parse(form.dataset.prices || '{}');
+    const form       = document.getElementById('reservation-form');
+    const prices     = JSON.parse(form.dataset.prices || '{}');
     const fixedCourt = form.dataset.fixedCourt;
-
-    const startSel  = document.getElementById('start-time-select');
-    const endSel    = document.getElementById('end-time-select');
-    const courtSel  = document.getElementById('court-select');
-    const summary   = document.getElementById('price-summary');
-    const hint      = document.getElementById('price-hint');
+    const startSel   = document.getElementById('start-time-select');
+    const endSel     = document.getElementById('end-time-select');
+    const courtSel   = document.getElementById('court-select');
+    const summary    = document.getElementById('price-summary');
+    const submitLabel = document.getElementById('submit-label');
 
     const fmtARS = n => '$' + Math.round(n).toLocaleString('es-AR');
 
-    function getCourtId() {
-      if (fixedCourt) return fixedCourt;
-      return courtSel ? courtSel.value : null;
-    }
-
-    function timeToMinutes(t) {
-      const [h, m] = t.split(':').map(Number);
-      return h * 60 + m;
-    }
+    function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
 
     function recalculate() {
-      const courtId   = getCourtId();
-      const priceHour = courtId ? prices[courtId] : null;
-      const startVal  = startSel ? startSel.value : null;
-      const endVal    = endSel   ? endSel.value   : null;
+      const courtId    = fixedCourt || (courtSel ? courtSel.value : null);
+      const priceHour  = courtId ? prices[courtId] : null;
+      const startVal   = startSel ? startSel.value : null;
+      const endVal     = endSel   ? endSel.value   : null;
 
-      if (!priceHour || !startVal || !endVal) {
-        summary.classList.add('hidden');
-        hint.classList.remove('hidden');
-        return;
-      }
+      if (!priceHour || !startVal || !endVal) { summary.classList.add('hidden'); return; }
 
-      const startMin = timeToMinutes(startVal);
-      const endMin   = timeToMinutes(endVal);
-      const diffMin  = endMin - startMin;
+      const diff = timeToMin(endVal) - timeToMin(startVal);
+      if (diff <= 0) { summary.classList.add('hidden'); return; }
 
-      if (diffMin <= 0) {
-        summary.classList.add('hidden');
-        hint.classList.remove('hidden');
-        return;
-      }
-
-      const hours   = diffMin / 60;
-      const total   = priceHour * hours;
+      const total   = priceHour * (diff / 60);
       const deposit = total * 0.30;
+      const durLabel = diff % 60 === 0 ? `${diff/60}h` : `${Math.floor(diff/60)}h ${diff%60}min`;
 
-      const durationLabel = diffMin % 60 === 0
-        ? `${diffMin / 60}h`
-        : `${Math.floor(diffMin / 60)}h ${diffMin % 60}min`;
-
-      document.getElementById('summary-duration').textContent = durationLabel;
+      document.getElementById('summary-duration').textContent = durLabel;
       document.getElementById('summary-rate').textContent     = fmtARS(priceHour) + '/hora';
       document.getElementById('summary-total').textContent    = fmtARS(total);
       document.getElementById('summary-deposit').textContent  = fmtARS(deposit);
-
+      submitLabel.textContent = `Confirmar y pagar seña ${fmtARS(deposit)}`;
       summary.classList.remove('hidden');
-      hint.classList.add('hidden');
     }
 
-    // Escucha cambios en los selects nativos (Tom Select emite 'change' en el <select> original)
-    [startSel, endSel, courtSel].forEach(el => {
-      if (el) el.addEventListener('change', recalculate);
-    });
-
+    [startSel, endSel, courtSel].forEach(el => el && el.addEventListener('change', recalculate));
     recalculate();
+
+    // Preview de tarjeta
+    const numInput  = document.getElementById('card-number-input');
+    const lastFour  = document.getElementById('last-four-hidden');
+    const numDisp   = document.getElementById('card-number-display');
+    const nameInput = document.getElementById('cardholder-input');
+    const nameDisp  = document.getElementById('card-name-display');
+    const expInput  = document.getElementById('expiry-input');
+    const expDisp   = document.getElementById('card-expiry-display');
+
+    numInput.addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,16);
+      this.value = v.replace(/(.{4})/g,'$1 ').trim();
+      numDisp.textContent = v.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim();
+      lastFour.value = v.slice(-4);
+    });
+    nameInput.addEventListener('input', function() {
+      nameDisp.textContent = this.value.toUpperCase() || 'Nombre titular';
+    });
+    expInput.addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,4);
+      if (v.length >= 3) v = v.slice(0,2)+'/'+v.slice(2);
+      this.value = v;
+      expDisp.textContent = v || 'MM/AA';
+    });
   })();
 </script>

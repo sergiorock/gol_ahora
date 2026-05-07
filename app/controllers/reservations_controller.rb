@@ -1,5 +1,5 @@
 class ReservationsController < ApplicationController
-  before_action :set_reservation, only: %i[show pay confirm_payment cancel]
+  before_action :set_reservation, only: %i[show cancel]
 
   def index
     @reservations = policy_scope(Reservation).includes(:court).order(starts_at: :desc)
@@ -13,6 +13,7 @@ class ReservationsController < ApplicationController
   def new
     @court = Court.find(params[:court_id]) if params[:court_id]
     @reservation = Reservation.new(court: @court)
+    @payment = Payment.new
     authorize @reservation
   end
 
@@ -30,35 +31,22 @@ class ReservationsController < ApplicationController
     @reservation.deposit_amount = (@reservation.total_amount * Reservation::DEPOSIT_RATIO).ceil(2)
     authorize @reservation
 
-    if @reservation.save
-      redirect_to pay_reservation_path(@reservation), notice: "Reserva creada. Completá el pago de la seña para confirmarla."
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
-  def pay
-    authorize @reservation, :show?
-    @payment = Payment.new(payment_type: :deposit, amount: @reservation.deposit_amount)
-  end
-
-  def confirm_payment
-    authorize @reservation, :show?
-
     @payment = @reservation.payments.new(
       payment_type: :deposit,
       amount: @reservation.deposit_amount,
+      status: :approved,
       **payment_params.to_h.symbolize_keys
     )
 
-    # Procesamiento simulado: siempre aprueba
-    @payment.status = :approved
-
-    if @payment.save
-      @reservation.confirm!
-      redirect_to @reservation, notice: "¡Pago aprobado! Tu reserva está confirmada."
+    if @reservation.valid? && @payment.valid?
+      ActiveRecord::Base.transaction do
+        @reservation.save!
+        @payment.save!
+        @reservation.confirm!
+      end
+      redirect_to @reservation, notice: "¡Reserva confirmada! Tu seña fue procesada exitosamente."
     else
-      render :pay, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity
     end
   end
 

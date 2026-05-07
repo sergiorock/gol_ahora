@@ -71,21 +71,15 @@
     </div>
 
     <%# Acciones %>
-    <div class="flex gap-3">
-      <% if @reservation.pending? %>
-        <%= link_to pay_reservation_path(@reservation), class: "flex-1 bg-field hover:bg-field-dark text-white font-semibold py-3 rounded-xl transition-all text-center" do %>
-          Pagar seña
-        <% end %>
-      <% end %>
-
-      <% if @reservation.pending? || @reservation.confirmed? %>
+    <% if @reservation.pending? || @reservation.confirmed? %>
+      <div class="flex gap-3">
         <%= button_to cancel_reservation_path(@reservation), method: :delete,
               class: "px-6 py-3 border border-red-500/40 hover:border-red-500 text-red-400 hover:text-red-300 rounded-xl transition-all text-sm",
               data: { confirm: "¿Cancelar esta reserva?" } do %>
           Cancelar reserva
         <% end %>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
 
 </div>
