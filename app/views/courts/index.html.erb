@@ -23,16 +23,13 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <% @courts.each do |court| %>
         <div class="group bg-white/5 border border-white/10 hover:border-field/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 duration-300">
-          <%# Header de la card con color según tipo %>
-          <div class="h-32 relative flex items-center justify-center" style="background: linear-gradient(135deg, #052e16 0%, #0f3d1f 100%);">
-            <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-              <rect x="40" y="20" width="320" height="160" fill="none" stroke="#16a34a" stroke-width="1.5"/>
-              <line x1="200" y1="20" x2="200" y2="180" stroke="#16a34a" stroke-width="1.5"/>
-              <circle cx="200" cy="100" r="35" fill="none" stroke="#16a34a" stroke-width="1.5"/>
-            </svg>
-            <span class="relative font-display text-6xl text-field-light">
-              <%= court.court_type.name[/\d+/] || "⚽" %>
-            </span>
+          <div class="h-32 relative overflow-hidden">
+            <%= court_surface_svg(court.court_type, css_class: "absolute inset-0 w-full h-full") %>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="font-display text-6xl text-white drop-shadow-lg">
+                <%= court.court_type.name[/\d+/] || "⚽" %>
+              </span>
+            </div>
           </div>
 
           <div class="p-6">
