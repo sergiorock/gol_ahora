@@ -16,6 +16,8 @@ Rails.application.routes.draw do
 
   resource :profile, only: [:show, :edit, :update]
 
+  resources :courts, only: [:index, :show]
+
   root to: "home#index"
 
   get "up" => "rails/health#show", as: :rails_health_check

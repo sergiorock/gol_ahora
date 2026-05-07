@@ -1,0 +1,79 @@
+<% content_for :title, "Canchas — Gol Ahora" %>
+
+<div class="max-w-7xl mx-auto pt-24 pb-16 px-4">
+
+  <div class="mb-10">
+    <p class="text-field-light text-sm font-medium tracking-widest uppercase mb-2">El Buen Deporte</p>
+    <h1 class="font-display text-5xl sm:text-6xl text-white">NUESTRAS CANCHAS</h1>
+  </div>
+
+  <%# Filtro por tipo %>
+  <div class="flex flex-wrap gap-3 mb-8">
+    <%= link_to courts_path, class: "px-4 py-2 rounded-full text-sm font-medium transition-all #{params[:type].blank? ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white hover:border-white/40'}" do %>
+      Todos
+    <% end %>
+    <% @court_types.each do |ct| %>
+      <%= link_to courts_path(type: ct.id), class: "px-4 py-2 rounded-full text-sm font-medium transition-all #{params[:type].to_s == ct.id.to_s ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white hover:border-white/40'}" do %>
+        <%= ct.name %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @courts.any? %>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @courts.each do |court| %>
+        <div class="group bg-white/5 border border-white/10 hover:border-field/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 duration-300">
+          <%# Header de la card con color según tipo %>
+          <div class="h-32 relative flex items-center justify-center" style="background: linear-gradient(135deg, #052e16 0%, #0f3d1f 100%);">
+            <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+              <rect x="40" y="20" width="320" height="160" fill="none" stroke="#16a34a" stroke-width="1.5"/>
+              <line x1="200" y1="20" x2="200" y2="180" stroke="#16a34a" stroke-width="1.5"/>
+              <circle cx="200" cy="100" r="35" fill="none" stroke="#16a34a" stroke-width="1.5"/>
+            </svg>
+            <span class="relative font-display text-6xl text-field-light">
+              <%= court.court_type.name[/\d+/] || "⚽" %>
+            </span>
+          </div>
+
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <h3 class="font-semibold text-white text-lg"><%= court.name %></h3>
+                <p class="text-white/50 text-sm"><%= court.court_type.name %></p>
+              </div>
+              <span class="text-field-light font-display text-2xl">$<%= number_with_delimiter(court.court_type.price_per_hour) %><span class="text-white/40 text-sm font-body">/h</span></span>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">
+                <i class="ti ti-users"></i> <%= court.court_type.capacity %> jugadores
+              </span>
+              <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">
+                <i class="ti ti-clock"></i> Máx. <%= court.court_type.duration_label %>
+              </span>
+              <% if court.court_type.surface.present? %>
+                <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">
+                  <%= court.court_type.surface %>
+                </span>
+              <% end %>
+            </div>
+
+            <% if user_signed_in? %>
+              <%= link_to court_path(court), class: "block w-full text-center bg-field hover:bg-field-dark text-white font-semibold py-2.5 rounded-xl transition-colors text-sm" do %>
+                Ver disponibilidad
+              <% end %>
+            <% else %>
+              <%= link_to new_user_session_path, class: "block w-full text-center border border-field/40 hover:bg-field/10 text-field-light font-medium py-2.5 rounded-xl transition-colors text-sm" do %>
+                Iniciá sesión para reservar
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-16 text-white/40">
+      <p class="text-lg">No hay canchas disponibles en este momento.</p>
+    </div>
+  <% end %>
+</div>

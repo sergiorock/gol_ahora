@@ -1,0 +1,80 @@
+<% content_for :title, "#{@court.name} — Gol Ahora" %>
+
+<div class="max-w-4xl mx-auto pt-24 pb-16 px-4">
+
+  <div class="flex items-center gap-4 mb-8">
+    <%= link_to courts_path, class: "text-white/40 hover:text-white transition-colors" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    <% end %>
+    <div>
+      <p class="text-white/40 text-sm"><%= @court.court_type.name %></p>
+      <h1 class="font-display text-4xl text-white"><%= @court.name.upcase %></h1>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <%# Info de la cancha %>
+    <div class="md:col-span-1 space-y-4">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+        <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Características</h3>
+        <dl class="space-y-3">
+          <div class="flex justify-between">
+            <dt class="text-white/50 text-sm">Tipo</dt>
+            <dd class="text-white text-sm font-medium"><%= @court.court_type.name %></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-white/50 text-sm">Capacidad</dt>
+            <dd class="text-white text-sm font-medium"><%= @court.court_type.capacity %> jugadores</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-white/50 text-sm">Superficie</dt>
+            <dd class="text-white text-sm font-medium"><%= @court.court_type.surface.presence || "—" %></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-white/50 text-sm">Duración máx.</dt>
+            <dd class="text-white text-sm font-medium"><%= @court.court_type.duration_label %></dd>
+          </div>
+          <div class="flex justify-between border-t border-white/10 pt-3">
+            <dt class="text-white/50 text-sm">Precio</dt>
+            <dd class="text-field-light font-display text-xl">$<%= number_with_delimiter(@court.court_type.price_per_hour) %><span class="text-white/40 text-xs">/hora</span></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-white/50 text-sm">Seña (30%)</dt>
+            <dd class="text-white text-sm font-medium">$<%= number_with_delimiter((@court.court_type.price_per_hour * 0.3).round) %></dd>
+          </div>
+        </dl>
+      </div>
+
+      <% if @court.description.present? %>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+          <p class="text-white/60 text-sm leading-relaxed"><%= @court.description %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Acción de reserva %>
+    <div class="md:col-span-2">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+        <div class="w-16 h-16 bg-field/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-field-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h3 class="font-display text-3xl text-white mb-2">RESERVAR CANCHA</h3>
+        <p class="text-white/50 text-sm mb-6">Seleccioná fecha y horario para hacer tu reserva.<br>Se requiere el pago de una seña del 30%.</p>
+
+        <% if user_signed_in? %>
+          <%= link_to new_reservation_path(court_id: @court.id), class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-3 rounded-xl transition-all" do %>
+            Reservar ahora
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          <% end %>
+        <% else %>
+          <p class="text-white/40 text-sm mb-4">Necesitás iniciar sesión para reservar.</p>
+          <%= link_to new_user_session_path, class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-3 rounded-xl transition-all" do %>
+            Iniciar sesión
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
