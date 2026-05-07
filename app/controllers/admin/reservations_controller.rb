@@ -2,7 +2,7 @@ class Admin::ReservationsController < Admin::BaseController
   before_action :set_reservation, only: %i[show edit update]
 
   def index
-    @reservations = policy_scope(Reservation).includes(:user, :court)
+    @reservations = policy_scope(Reservation).includes(:user, court: :court_type, balance_charge: {})
     @reservations = @reservations.where(status: params[:status])     if params[:status].present?
     @reservations = @reservations.where(court_id: params[:court_id]) if params[:court_id].present?
     @reservations = @reservations.where("starts_at >= ?", params[:from].to_date) if params[:from].present?

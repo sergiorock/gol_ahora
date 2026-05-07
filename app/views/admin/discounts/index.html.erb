@@ -1,0 +1,45 @@
+<% content_for :page_title, "Descuentos" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_discount_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Nuevo descuento
+  <% end %>
+<% end %>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr><th>Nombre</th><th>Tipo</th><th>Valor</th><th>Condición</th><th>Estado</th><th class="w-1">Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% @discounts.each do |d| %>
+          <tr>
+            <td class="fw-semibold"><%= d.name %></td>
+            <td><%= d.percentage? ? "Porcentaje" : "Fijo" %></td>
+            <td><%= d.label %></td>
+            <td class="text-muted"><%= d.condition.presence || "—" %></td>
+            <td>
+              <% if d.active? %>
+                <span class="badge bg-success-lt">Activo</span>
+              <% else %>
+                <span class="badge bg-secondary-lt">Inactivo</span>
+              <% end %>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <%= link_to edit_admin_discount_path(d), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
+                <%= button_to toggle_admin_discount_path(d), method: :patch, class: "btn btn-sm #{d.active? ? 'btn-ghost-secondary' : 'btn-ghost-success'}" do %>
+                  <i class="ti ti-power"></i>
+                <% end %>
+                <%= button_to admin_discount_path(d), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar descuento?" } do %><i class="ti ti-trash"></i><% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @discounts.empty? %>
+          <tr><td colspan="6" class="text-center text-muted py-4">No hay descuentos configurados.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

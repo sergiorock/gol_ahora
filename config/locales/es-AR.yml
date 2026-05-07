@@ -90,6 +90,7 @@ es-AR:
             total_amount:   Monto total
             deposit_amount: Monto de seña
             court:          Cancha
+            court_id:       Cancha
             notes:          Notas
         payment:
           attributes:
@@ -136,6 +137,17 @@ es-AR:
     format:
       separator: ","
       delimiter: "."
+
+  charge:
+    types:
+      rental:     Alquiler
+      enrollment: Inscripción
+      class_fee:  Clase
+      other:      Otro
+    payment_methods:
+      cash:     Efectivo
+      transfer: Transferencia
+      card:     Tarjeta
 
   reservation:
     statuses:

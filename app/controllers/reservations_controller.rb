@@ -31,7 +31,8 @@ class ReservationsController < ApplicationController
     @reservation.deposit_amount = (@reservation.total_amount * Reservation::DEPOSIT_RATIO).ceil(2)
     authorize @reservation
 
-    @payment = @reservation.payments.new(
+    @payment = Payment.new(
+      reservation: @reservation,
       payment_type: :deposit,
       amount: @reservation.deposit_amount,
       status: :approved,
@@ -41,6 +42,7 @@ class ReservationsController < ApplicationController
     if @reservation.valid? && @payment.valid?
       ActiveRecord::Base.transaction do
         @reservation.save!
+        @payment.reservation = @reservation
         @payment.save!
         @reservation.confirm!
       end

@@ -93,19 +93,19 @@
                 <span class="nav-link text-muted small text-uppercase fw-bold">Finanzas</span>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to new_admin_walkin_path, class: "nav-link #{controller_name == 'walkins' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-run"></i></span>
+                  <span class="nav-link-title">Registro presencial</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_charges_path, class: "nav-link #{controller_name == 'charges' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-cash"></i></span>
                   <span class="nav-link-title">Cobros</span>
                 <% end %>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
-                  <span class="nav-link-icon"><i class="ti ti-receipt"></i></span>
-                  <span class="nav-link-title">Recibos</span>
-                <% end %>
-              </li>
-              <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_discounts_path, class: "nav-link #{controller_name == 'discounts' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-discount"></i></span>
                   <span class="nav-link-title">Descuentos</span>
                 <% end %>

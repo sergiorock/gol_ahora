@@ -76,14 +76,8 @@
               <% end %>
             </div>
 
-            <% if user_signed_in? %>
-              <%= link_to court_path(court), class: "block w-full text-center bg-field hover:bg-field-dark text-white font-semibold py-2.5 rounded-xl transition-colors text-sm" do %>
-                Ver disponibilidad
-              <% end %>
-            <% else %>
-              <%= link_to new_user_session_path, class: "block w-full text-center border border-field/40 hover:bg-field/10 text-field-light font-medium py-2.5 rounded-xl transition-colors text-sm" do %>
-                Iniciá sesión para reservar
-              <% end %>
+            <%= link_to new_reservation_path(court_id: court.id), class: "block w-full text-center #{user_signed_in? ? 'bg-field hover:bg-field-dark text-white font-semibold' : 'border border-field/40 hover:bg-field/10 text-field-light font-medium'} py-2.5 rounded-xl transition-colors text-sm" do %>
+              <%= user_signed_in? ? "Reservar ahora" : "Iniciá sesión para reservar" %>
             <% end %>
           </div>
         </div>

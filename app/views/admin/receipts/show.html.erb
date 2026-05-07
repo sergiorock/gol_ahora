@@ -1,0 +1,70 @@
+<% content_for :page_title, @receipt.receipt_number %>
+<% content_for :header_actions do %>
+  <%= link_to admin_receipts_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %>
+  <%= link_to edit_admin_receipt_path(@receipt), class: "btn btn-warning" do %><i class="ti ti-pencil"></i> Editar<% end %>
+  <button onclick="window.print()" class="btn btn-primary"><i class="ti ti-printer me-1"></i> Imprimir</button>
+<% end %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card" id="receipt-print">
+      <div class="card-body p-5">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div>
+            <h2 class="fw-bold mb-1">El Buen Deporte</h2>
+            <div class="text-muted small">Complejo Deportivo</div>
+          </div>
+          <div class="text-end">
+            <div class="h3 fw-bold text-primary"><%= @receipt.receipt_number %></div>
+            <div class="text-muted small"><%= l @receipt.issued_at, format: :long %></div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <div class="text-muted small">Cliente</div>
+            <div class="fw-semibold"><%= @receipt.charge.user.full_name %></div>
+            <div class="text-muted small"><%= @receipt.charge.user.email %></div>
+          </div>
+          <div class="col-6 text-end">
+            <div class="text-muted small">Método de pago</div>
+            <div><%= t("charge.payment_methods.#{@receipt.charge.payment_method}") %></div>
+          </div>
+        </div>
+
+        <table class="table table-borderless">
+          <thead class="table-light">
+            <tr><th>Concepto</th><th class="text-end">Monto</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= @receipt.concept %></td>
+              <td class="text-end">$<%= number_with_delimiter(@receipt.charge.amount.to_i) %></td>
+            </tr>
+            <% if @receipt.charge.discount %>
+              <tr>
+                <td class="text-muted small">Descuento: <%= @receipt.charge.discount.name %></td>
+                <td class="text-end text-success small">— <%= @receipt.charge.discount.label %></td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <tr class="fw-bold fs-4">
+              <td>Total</td>
+              <td class="text-end">$<%= number_with_delimiter(@receipt.charge.amount.to_i) %></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @media print {
+    .navbar, .sidebar, .page-header, .btn { display: none !important; }
+    #receipt-print { box-shadow: none; border: 1px solid #dee2e6; }
+  }
+</style>

@@ -1,0 +1,84 @@
+<% discount_data = @discounts.each_with_object({}) { |d, h| h[d.id.to_s] = { type: d.discount_type, value: d.value.to_f } } %>
+
+<%= simple_form_for [:admin, charge], html: { data: { discounts: discount_data.to_json }, id: "charge-form" } do |f| %>
+  <% if charge.errors.any? %>
+    <div class="alert alert-danger">
+      <ul class="mb-0"><% charge.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+    </div>
+  <% end %>
+
+  <% if charge.reservation_id %>
+    <%= f.hidden_field :reservation_id %>
+  <% end %>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <%= f.input :user_id, label: "Cliente",
+            collection: @users, value_method: :id, label_method: :full_name,
+            include_blank: "Seleccioná un cliente" %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :concept, label: "Concepto", placeholder: "Ej: Alquiler cancha 1 - 10/05" %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :charge_type, label: "Tipo",
+            collection: Charge.charge_types.keys.map { |k| [t("charge.types.#{k}"), k] },
+            include_blank: false %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :payment_method, label: "Método de pago",
+            collection: Charge.payment_methods.keys.map { |k| [t("charge.payment_methods.#{k}"), k] },
+            include_blank: false %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :amount, label: "Monto ($)", placeholder: "0",
+            input_html: { id: "charge-amount" } %>
+      <div id="discount-preview" class="small text-success mt-1 d-none"></div>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :date, label: "Fecha", as: :string, input_html: { type: "date", value: charge.date&.strftime("%Y-%m-%d") || Date.today.strftime("%Y-%m-%d") } %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :discount_id, label: "Descuento (opcional)",
+            collection: @discounts, value_method: :id,
+            label_method: ->(d) { "#{d.name} (#{d.label})" },
+            include_blank: "Sin descuento",
+            input_html: { id: "charge-discount" } %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :notes, label: "Notas", as: :text, input_html: { rows: 2 } %>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const form     = document.getElementById('charge-form');
+      const discounts = JSON.parse(form.dataset.discounts || '{}');
+      const amountInput  = document.getElementById('charge-amount');
+      const discountSel  = document.getElementById('charge-discount');
+      const preview      = document.getElementById('discount-preview');
+
+      function fmtARS(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
+
+      function updatePreview() {
+        const amount = parseFloat(amountInput.value.replace(/\./g,'').replace(',','.')) || 0;
+        const d = discounts[discountSel.value];
+        if (!d || !amount) { preview.classList.add('d-none'); return; }
+        const final = d.type === 'percentage'
+          ? amount * (1 - d.value / 100)
+          : Math.max(amount - d.value, 0);
+        preview.textContent = `Con descuento: ${fmtARS(final)}`;
+        preview.classList.remove('d-none');
+      }
+
+      amountInput?.addEventListener('input', updatePreview);
+      discountSel?.addEventListener('change', updatePreview);
+      updatePreview();
+    })();
+  </script>
+
+  <div class="d-flex gap-2 mt-3">
+    <%= f.button :submit, charge.persisted? ? "Guardar cambios" : "Registrar cobro", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", charge.persisted? ? admin_charge_path(charge) : admin_charges_path, class: "btn btn-ghost-secondary" %>
+  </div>
+<% end %>

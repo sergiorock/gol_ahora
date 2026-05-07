@@ -1,0 +1,149 @@
+<% content_for :page_title, "Registro presencial" %>
+<% content_for :header_actions do %>
+  <%= link_to admin_charges_path, class: "btn btn-secondary" do %>
+    <i class="ti ti-arrow-left"></i> Volver
+  <% end %>
+<% end %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+
+    <% if flash[:alert] %>
+      <div class="alert alert-danger mb-3"><%= flash[:alert] %></div>
+    <% end %>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-run me-2"></i>Cliente presente — pago en el momento</h3>
+      </div>
+      <div class="card-body">
+        <%= form_with url: admin_walkin_path, method: :post,
+              data: { prices: @court_prices.to_json },
+              id: "walkin-form" do |f| %>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Cliente</label>
+              <select name="walkin[user_id]" class="form-select">
+                <option value="">Seleccioná un cliente</option>
+                <% @users.each do |u| %>
+                  <option value="<%= u.id %>"><%= u.full_name %> — <%= u.email %></option>
+                <% end %>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Cancha</label>
+              <select name="walkin[court_id]" id="walkin-court" class="form-select">
+                <option value="">Seleccioná una cancha</option>
+                <% @courts.each do |c| %>
+                  <option value="<%= c.id %>">
+                    <%= c.name %> — <%= c.court_type.name %> · <%= CourtType::SURFACE_LABELS[c.court_type.surface] %> ($<%= number_with_delimiter(c.court_type.price_per_hour.to_i) %>/h)
+                  </option>
+                <% end %>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Fecha</label>
+              <input type="date" name="walkin[date]"
+                     value="<%= Date.today.strftime('%Y-%m-%d') %>"
+                     class="form-control">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Hora inicio</label>
+              <select name="walkin[start_time]" id="walkin-start" class="form-select">
+                <% (8..22).each do |h| %>
+                  <% ["00","30"].each do |m| %>
+                    <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+                    <option value="<%= val %>"><%= val %></option>
+                  <% end %>
+                <% end %>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Hora fin</label>
+              <select name="walkin[end_time]" id="walkin-end" class="form-select">
+                <% (8..23).each do |h| %>
+                  <% ["00","30"].each do |m| %>
+                    <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+                    <option value="<%= val %>" <%= "selected" if val == "09:00" %>><%= val %></option>
+                  <% end %>
+                <% end %>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Método de pago</label>
+              <select name="walkin[payment_method]" class="form-select">
+                <option value="cash">Efectivo</option>
+                <option value="transfer">Transferencia</option>
+                <option value="card">Tarjeta</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Monto a cobrar</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="text" id="walkin-amount" class="form-control fw-bold" readonly placeholder="—">
+              </div>
+            </div>
+          </div>
+
+          <%# Resumen %>
+          <div id="walkin-summary" class="alert alert-success mt-3 d-none">
+            <div class="d-flex justify-content-between">
+              <span id="summary-text">—</span>
+              <strong id="summary-amount">—</strong>
+            </div>
+            <small class="text-muted">Se creará la reserva, el cobro y el recibo automáticamente.</small>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit" class="btn btn-success btn-lg w-100">
+              <i class="ti ti-check me-2"></i> Registrar y generar recibo
+            </button>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form    = document.getElementById('walkin-form');
+  const prices  = JSON.parse(form.dataset.prices || '{}');
+  const courtSel = document.getElementById('walkin-court');
+  const startSel = document.getElementById('walkin-start');
+  const endSel   = document.getElementById('walkin-end');
+  const amountInput = document.getElementById('walkin-amount');
+  const summary  = document.getElementById('walkin-summary');
+  const summaryText   = document.getElementById('summary-text');
+  const summaryAmount = document.getElementById('summary-amount');
+
+  function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+  const fmtARS = n => '$' + Math.round(n).toLocaleString('es-AR');
+
+  function recalculate() {
+    const price = prices[courtSel.value];
+    const diff  = timeToMin(endSel.value) - timeToMin(startSel.value);
+    if (!price || diff <= 0) {
+      amountInput.value = '';
+      summary.classList.add('d-none');
+      return;
+    }
+    const total = price * (diff / 60);
+    const dur   = diff % 60 === 0 ? `${diff/60}h` : `${Math.floor(diff/60)}h ${diff%60}min`;
+    amountInput.value = Math.round(total).toLocaleString('es-AR');
+    summaryText.textContent   = `${courtSel.options[courtSel.selectedIndex]?.text?.split(' —')[0]} · ${startSel.value}–${endSel.value} (${dur})`;
+    summaryAmount.textContent = fmtARS(total);
+    summary.classList.remove('d-none');
+  }
+
+  [courtSel, startSel, endSel].forEach(el => el.addEventListener('change', recalculate));
+  recalculate();
+</script>

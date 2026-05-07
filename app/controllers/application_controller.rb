@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   private
 
   def after_sign_in_path_for(resource)
-    resource.admin? ? admin_root_path : root_path
+    resource.admin? ? admin_root_path : (stored_location_for(resource) || root_path)
   end
 
   def after_sign_out_path_for(_resource)

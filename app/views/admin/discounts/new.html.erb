@@ -1,0 +1,3 @@
+<% content_for :page_title, "Nuevo descuento" %>
+<% content_for :header_actions do %><%= link_to admin_discounts_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %><% end %>
+<div class="row justify-content-center"><div class="col-lg-6"><div class="card"><div class="card-body"><%= render "form", discount: @discount %></div></div></div></div>

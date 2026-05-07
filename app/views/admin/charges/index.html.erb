@@ -1,0 +1,70 @@
+<% content_for :page_title, "Cobros" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_charge_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Registrar cobro
+  <% end %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <%= form_with url: admin_charges_path, method: :get, class: "row g-2 align-items-end" do |f| %>
+      <div class="col-auto">
+        <%= f.select :charge_type,
+              [["Todos los tipos", ""]] + Charge.charge_types.keys.map { |k| [t("charge.types.#{k}"), k] },
+              { selected: params[:charge_type] }, class: "form-select form-select-sm" %>
+      </div>
+      <div class="col-auto">
+        <%= f.text_field :from, value: params[:from], placeholder: "Desde (YYYY-MM-DD)", class: "form-control form-control-sm" %>
+      </div>
+      <div class="col-auto">
+        <%= f.submit "Filtrar", class: "btn btn-sm btn-secondary" %>
+        <%= link_to "Limpiar", admin_charges_path, class: "btn btn-sm btn-ghost-secondary" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Concepto</th>
+          <th>Tipo</th>
+          <th>Método</th>
+          <th>Monto</th>
+          <th class="w-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @charges.each do |c| %>
+          <tr>
+            <td class="text-muted text-nowrap">
+              <div><%= l c.created_at, format: "%-d %b %Y" %></div>
+              <div class="small text-muted"><%= l c.created_at, format: "%H:%M" %></div>
+            </td>
+            <td><%= c.user.full_name %></td>
+            <td><%= c.concept %></td>
+            <td><span class="badge bg-blue-lt"><%= t("charge.types.#{c.charge_type}") %></span></td>
+            <td class="text-muted"><%= t("charge.payment_methods.#{c.payment_method}") %></td>
+            <td class="fw-semibold">$<%= number_with_delimiter(c.amount.to_i) %></td>
+            <td>
+              <div class="d-flex gap-1">
+                <%= link_to admin_charge_path(c), class: "btn btn-sm btn-ghost-secondary" do %><i class="ti ti-eye"></i><% end %>
+                <%= link_to edit_admin_charge_path(c), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
+                <% if c.receipt %>
+                  <%= link_to admin_receipt_path(c.receipt), class: "btn btn-sm btn-ghost-primary", title: "Ver recibo" do %><i class="ti ti-receipt"></i><% end %>
+                <% else %>
+                  <%= link_to new_admin_receipt_path(charge_id: c.id), class: "btn btn-sm btn-ghost-success", title: "Generar recibo" do %><i class="ti ti-file-plus"></i><% end %>
+                <% end %>
+                <%= button_to admin_charge_path(c), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar cobro?" } do %><i class="ti ti-trash"></i><% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @charges.empty? %>
+          <tr><td colspan="8" class="text-center text-muted py-4">No hay cobros registrados.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

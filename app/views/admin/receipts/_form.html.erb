@@ -1,0 +1,24 @@
+<%= simple_form_for [:admin, receipt] do |f| %>
+  <% if receipt.errors.any? %>
+    <div class="alert alert-danger"><ul class="mb-0"><% receipt.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul></div>
+  <% end %>
+  <div class="row g-3">
+    <div class="col-12">
+      <%= f.input :charge_id, label: "Cobro",
+            collection: @charges,
+            value_method: :id,
+            label_method: ->(c) { "##{c.id} — #{c.user.full_name} — #{c.concept} ($#{c.amount.to_i})" },
+            include_blank: "Seleccioná un cobro",
+            input_html: { disabled: receipt.persisted? } %>
+    </div>
+    <div class="col-md-8"><%= f.input :concept, label: "Concepto" %></div>
+    <div class="col-md-4">
+      <%= f.input :issued_at, label: "Fecha de emisión", as: :string,
+            input_html: { type: "datetime-local", value: receipt.issued_at&.strftime("%Y-%m-%dT%H:%M") || Time.current.strftime("%Y-%m-%dT%H:%M") } %>
+    </div>
+  </div>
+  <div class="d-flex gap-2 mt-3">
+    <%= f.button :submit, receipt.persisted? ? "Guardar cambios" : "Generar recibo", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", receipt.persisted? ? admin_receipt_path(receipt) : admin_receipts_path, class: "btn btn-ghost-secondary" %>
+  </div>
+<% end %>

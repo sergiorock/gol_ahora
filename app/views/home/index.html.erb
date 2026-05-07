@@ -21,7 +21,7 @@
         Radio medialuna:     r=9.15m                    →  55px
         Arcos de esquina:    r=1m                        →  6px
     %>
-    <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
       <%# Borde del campo %>
       <rect x="100" y="80" width="600" height="440" fill="none" stroke="#16a34a" stroke-width="2"/>
       <%# Línea del medio %>
@@ -91,7 +91,7 @@
       </p>
 
       <div id="hero-cta" class="flex flex-col sm:flex-row gap-4">
-        <%= link_to new_user_registration_path, class: "inline-flex items-center justify-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:shadow-lg hover:shadow-field/30 hover:-translate-y-0.5" do %>
+        <%= link_to courts_path, class: "inline-flex items-center justify-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:shadow-lg hover:shadow-field/30 hover:-translate-y-0.5" do %>
           Reservar cancha
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         <% end %>
@@ -118,11 +118,6 @@
     </div>
   </div>
 
-  <%# Scroll indicator %>
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30">
-    <span class="text-xs tracking-widest uppercase">Scroll</span>
-    <div class="w-px h-8 bg-gradient-to-b from-white/30 to-transparent"></div>
-  </div>
 </section>
 
 <%# ── SERVICIOS ───────────────────────────────────────────────────── %>

@@ -4,6 +4,8 @@ class Reservation < ApplicationRecord
   belongs_to :user
   belongs_to :court
   has_many :payments, dependent: :destroy
+  has_one :deposit_charge, -> { where(is_deposit: true) },  class_name: "Charge", dependent: :nullify
+  has_one :balance_charge, -> { where(is_deposit: false) }, class_name: "Charge", dependent: :nullify
 
   DEPOSIT_RATIO = 0.30
 
@@ -32,7 +34,8 @@ class Reservation < ApplicationRecord
   end
 
   validates :starts_at, :ends_at, presence: true
-  validates :total_amount, :deposit_amount, presence: true, numericality: { greater_than: 0 }
+  validates :total_amount, presence: true, numericality: { greater_than: 0 }
+  validates :deposit_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validate :ends_after_starts
   validate :within_max_duration
   validate :not_too_far_in_advance

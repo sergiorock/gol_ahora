@@ -1,0 +1,73 @@
+<% content_for :page_title, "Cobro ##{@charge.id}" %>
+<% content_for :header_actions do %>
+  <%= link_to admin_charges_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %>
+  <%= link_to edit_admin_charge_path(@charge), class: "btn btn-warning" do %><i class="ti ti-pencil"></i> Editar<% end %>
+  <% unless @charge.receipt %>
+    <%= link_to new_admin_receipt_path(charge_id: @charge.id), class: "btn btn-success" do %>
+      <i class="ti ti-file-plus"></i> Generar recibo
+    <% end %>
+  <% end %>
+<% end %>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Detalle del cobro</h3></div>
+      <div class="card-body">
+        <dl class="row g-2">
+          <dt class="col-5 text-muted">Cliente</dt>
+          <dd class="col-7"><%= @charge.user.full_name %></dd>
+          <dt class="col-5 text-muted">Concepto</dt>
+          <dd class="col-7"><%= @charge.concept %></dd>
+          <dt class="col-5 text-muted">Tipo</dt>
+          <dd class="col-7"><span class="badge bg-blue-lt"><%= t("charge.types.#{@charge.charge_type}") %></span></dd>
+          <dt class="col-5 text-muted">Método de pago</dt>
+          <dd class="col-7"><%= t("charge.payment_methods.#{@charge.payment_method}") %></dd>
+          <dt class="col-5 text-muted">Fecha</dt>
+          <dd class="col-7"><%= l @charge.date, format: :long %></dd>
+          <dt class="col-5 text-muted">Monto</dt>
+          <dd class="col-7 fw-bold fs-4">$<%= number_with_delimiter(@charge.amount.to_i) %></dd>
+          <% if @charge.discount %>
+            <dt class="col-5 text-muted">Descuento</dt>
+            <dd class="col-7"><%= @charge.discount.name %> (<%= @charge.discount.label %>)</dd>
+          <% end %>
+          <% if @charge.notes.present? %>
+            <dt class="col-5 text-muted">Notas</dt>
+            <dd class="col-7"><%= @charge.notes %></dd>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Recibo</h3></div>
+      <div class="card-body">
+        <% if @charge.receipt %>
+          <dl class="row g-2">
+            <dt class="col-5 text-muted">Número</dt>
+            <dd class="col-7 fw-bold"><%= @charge.receipt.receipt_number %></dd>
+            <dt class="col-5 text-muted">Emitido</dt>
+            <dd class="col-7"><%= l @charge.receipt.issued_at, format: :long %></dd>
+            <dt class="col-5 text-muted">Concepto</dt>
+            <dd class="col-7"><%= @charge.receipt.concept %></dd>
+          </dl>
+          <div class="d-flex gap-2 mt-3">
+            <%= link_to admin_receipt_path(@charge.receipt), class: "btn btn-primary" do %>
+              <i class="ti ti-eye me-1"></i> Ver recibo
+            <% end %>
+            <button onclick="window.open('<%= admin_receipt_path(@charge.receipt) %>', '_blank').print()" class="btn btn-ghost-secondary">
+              <i class="ti ti-printer me-1"></i> Imprimir
+            </button>
+          </div>
+        <% else %>
+          <p class="text-muted">No se generó recibo para este cobro.</p>
+          <%= link_to new_admin_receipt_path(charge_id: @charge.id), class: "btn btn-success" do %>
+            <i class="ti ti-file-plus me-1"></i> Generar recibo
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

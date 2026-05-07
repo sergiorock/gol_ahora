@@ -66,16 +66,12 @@
         <h3 class="font-display text-3xl text-white mb-2">RESERVAR CANCHA</h3>
         <p class="text-white/50 text-sm mb-6">Seleccioná fecha y horario para hacer tu reserva.<br>Se requiere el pago de una seña del 30%.</p>
 
-        <% if user_signed_in? %>
-          <%= link_to new_reservation_path(court_id: @court.id), class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-3 rounded-xl transition-all" do %>
-            Reservar ahora
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-          <% end %>
-        <% else %>
-          <p class="text-white/40 text-sm mb-4">Necesitás iniciar sesión para reservar.</p>
-          <%= link_to new_user_session_path, class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-3 rounded-xl transition-all" do %>
-            Iniciar sesión
-          <% end %>
+        <%= link_to new_reservation_path(court_id: @court.id), class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-3 rounded-xl transition-all" do %>
+          Reservar ahora
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        <% end %>
+        <% unless user_signed_in? %>
+          <p class="text-white/40 text-xs mt-3">Necesitás iniciar sesión para continuar.</p>
         <% end %>
       </div>
     </div>

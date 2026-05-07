@@ -1,0 +1,32 @@
+<% content_for :page_title, "Recibos de pago" %>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr><th>Número</th><th>Cliente</th><th>Concepto</th><th>Monto</th><th>Fecha emisión</th><th class="w-1">Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% @receipts.each do |r| %>
+          <tr>
+            <td class="fw-semibold"><%= r.receipt_number %></td>
+            <td><%= r.charge.user.full_name %></td>
+            <td><%= r.concept %></td>
+            <td>$<%= number_with_delimiter(r.charge.amount.to_i) %></td>
+            <td class="text-muted"><%= l r.issued_at, format: :short %></td>
+            <td>
+              <div class="d-flex gap-1">
+                <%= link_to admin_receipt_path(r), class: "btn btn-sm btn-ghost-secondary" do %><i class="ti ti-eye"></i><% end %>
+                <%= link_to edit_admin_receipt_path(r), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
+                <%= button_to admin_receipt_path(r), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar recibo?" } do %><i class="ti ti-trash"></i><% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @receipts.empty? %>
+          <tr><td colspan="6" class="text-center text-muted py-4">No hay recibos generados.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

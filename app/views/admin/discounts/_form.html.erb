@@ -1,0 +1,20 @@
+<%= simple_form_for [:admin, discount] do |f| %>
+  <% if discount.errors.any? %>
+    <div class="alert alert-danger"><ul class="mb-0"><% discount.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul></div>
+  <% end %>
+  <div class="row g-3">
+    <div class="col-md-6"><%= f.input :name, label: "Nombre", placeholder: "Ej: Descuento liga regular" %></div>
+    <div class="col-md-3">
+      <%= f.input :discount_type, label: "Tipo",
+            collection: [["Porcentaje (%)", "percentage"], ["Fijo ($)", "fixed"]],
+            include_blank: false %>
+    </div>
+    <div class="col-md-3"><%= f.input :value, label: "Valor", placeholder: "Ej: 10" %></div>
+    <div class="col-12"><%= f.input :condition, label: "Condición (opcional)", placeholder: "Ej: Equipos de liga regular" %></div>
+    <div class="col-12"><%= f.input :active, label: "Activo", as: :boolean %></div>
+  </div>
+  <div class="d-flex gap-2 mt-3">
+    <%= f.button :submit, discount.persisted? ? "Guardar cambios" : "Crear descuento", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_discounts_path, class: "btn btn-ghost-secondary" %>
+  </div>
+<% end %>

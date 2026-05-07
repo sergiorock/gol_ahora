@@ -8,6 +8,22 @@
       <i class="ti ti-pencil"></i> Editar
     <% end %>
   <% end %>
+  <% balance = @reservation.total_amount.to_i - @reservation.deposit_amount.to_i %>
+  <% if @reservation.balance_charge %>
+    <span class="btn btn-ghost-success disabled">
+      <i class="ti ti-check me-1"></i> Saldo cobrado
+    </span>
+  <% else %>
+    <%= link_to new_admin_charge_path(
+          prefill_user:        @reservation.user_id,
+          prefill_amount:      balance,
+          prefill_concept:     "Saldo reserva #{@reservation.court.name} #{l @reservation.starts_at, format: '%-d/%m/%Y %H:%M'}",
+          prefill_type:        "rental",
+          prefill_reservation: @reservation.id
+        ), class: "btn btn-success" do %>
+      <i class="ti ti-cash me-1"></i> Registrar saldo ($<%= number_with_delimiter(balance) %>)
+    <% end %>
+  <% end %>
 <% end %>
 
 <div class="row g-4">
@@ -40,7 +56,13 @@
           <div class="col-6">
             <label class="form-label text-muted small">Montos</label>
             <p class="fw-semibold mb-0">Total: $<%= number_with_delimiter(@reservation.total_amount.to_i) %></p>
-            <p class="text-muted small">Seña: $<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></p>
+            <p class="text-muted small mb-1">Seña pagada: $<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></p>
+            <% balance = @reservation.total_amount.to_i - @reservation.deposit_amount.to_i %>
+            <% if @reservation.balance_charge %>
+              <span class="badge bg-success-lt">Saldo cobrado: $<%= number_with_delimiter(balance) %></span>
+            <% else %>
+              <span class="badge bg-warning-lt">Saldo pendiente: $<%= number_with_delimiter(balance) %></span>
+            <% end %>
           </div>
           <% if @reservation.notes.present? %>
             <div class="col-12">
@@ -104,10 +126,9 @@
       </div>
       <div class="card-body">
         <% transitions = {
-             "confirmed"   => { label: "Confirmar",          icon: "check",         css: "btn-success" },
-             "in_progress" => { label: "Marcar en curso",    icon: "player-play",   css: "btn-info" },
-             "finished"    => { label: "Marcar finalizada",  icon: "flag",          css: "btn-secondary" },
-             "cancelled"   => { label: "Cancelar reserva",   icon: "x",             css: "btn-danger" }
+             "confirmed" => { label: "Confirmar",         icon: "check", css: "btn-success" },
+             "finished"  => { label: "Marcar finalizada", icon: "flag",  css: "btn-secondary" },
+             "cancelled" => { label: "Cancelar reserva",  icon: "x",     css: "btn-danger" }
            } %>
 
         <div class="d-grid gap-2">
