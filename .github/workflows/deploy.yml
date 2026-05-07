@@ -51,6 +51,7 @@ jobs:
             git checkout -b main origin/main
           fi
           git merge --ff-only origin/main
+          TARGET_SHA="$(git rev-parse HEAD)"
 
           docker compose --env-file .env.production -f docker-compose.prod.yml build web
           docker compose --env-file .env.production -f docker-compose.prod.yml up -d db
@@ -58,4 +59,13 @@ jobs:
           docker compose --env-file .env.production -f docker-compose.prod.yml run -T --rm --no-deps web bin/rails db:seed
           docker compose --env-file .env.production -f docker-compose.prod.yml up -d --force-recreate web caddy --remove-orphans
           docker compose --env-file .env.production -f docker-compose.prod.yml exec -T web bin/rails assets:precompile
+
+          RUNNING_SHA="$(docker compose --env-file .env.production -f docker-compose.prod.yml exec -T web git rev-parse HEAD)"
+          if [ "$RUNNING_SHA" != "$TARGET_SHA" ]; then
+            docker compose --env-file .env.production -f docker-compose.prod.yml rm -sf web caddy
+            docker compose --env-file .env.production -f docker-compose.prod.yml up -d web caddy --remove-orphans
+            RUNNING_SHA="$(docker compose --env-file .env.production -f docker-compose.prod.yml exec -T web git rev-parse HEAD)"
+          fi
+
+          test "$RUNNING_SHA" = "$TARGET_SHA"
           EOF
