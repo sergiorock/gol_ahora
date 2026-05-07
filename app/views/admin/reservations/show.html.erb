@@ -34,8 +34,8 @@
           </div>
           <div class="col-6">
             <label class="form-label text-muted small">Montos</label>
-            <p class="fw-semibold mb-0">Total: $<%= number_with_delimiter(@reservation.total_amount) %></p>
-            <p class="text-muted small">Seña: $<%= number_with_delimiter(@reservation.deposit_amount) %></p>
+            <p class="fw-semibold mb-0">Total: $<%= number_with_delimiter(@reservation.total_amount.to_i) %></p>
+            <p class="text-muted small">Seña: $<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></p>
           </div>
           <% if @reservation.notes.present? %>
             <div class="col-12">
@@ -69,7 +69,7 @@
                 <td><%= p.payment_type == "deposit" ? "Seña" : "Total" %></td>
                 <td><%= p.cardholder_name %></td>
                 <td class="text-muted">•••• <%= p.last_four_digits %> · <%= p.expiry_date %></td>
-                <td>$<%= number_with_delimiter(p.amount) %></td>
+                <td>$<%= number_with_delimiter(p.amount.to_i) %></td>
                 <td>
                   <% case p.status
                      when "approved" %>

@@ -43,7 +43,7 @@
             </div>
             <div class="text-right flex-shrink-0">
               <%= reservation_status_badge(r.status) %>
-              <p class="text-white/50 text-xs mt-1">$<%= number_with_delimiter(r.total_amount) %></p>
+              <p class="text-white/50 text-xs mt-1">$<%= number_with_delimiter(r.total_amount.to_i) %></p>
             </div>
           </div>
         <% end %>

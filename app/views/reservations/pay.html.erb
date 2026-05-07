@@ -27,11 +27,11 @@
     </div>
     <div class="flex justify-between text-sm">
       <span class="text-white/50">Total</span>
-      <span class="text-white">$<%= number_with_delimiter(@reservation.total_amount) %></span>
+      <span class="text-white">$<%= number_with_delimiter(@reservation.total_amount.to_i) %></span>
     </div>
     <div class="flex justify-between border-t border-white/10 pt-3">
       <span class="text-white/70 font-semibold">Seña a pagar (30%)</span>
-      <span class="text-field-light font-display text-2xl">$<%= number_with_delimiter(@reservation.deposit_amount) %></span>
+      <span class="text-field-light font-display text-2xl">$<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></span>
     </div>
   </div>
 
@@ -103,7 +103,7 @@
 
     <button type="submit" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-      Pagar $<%= number_with_delimiter(@reservation.deposit_amount) %>
+      Pagar $<%= number_with_delimiter(@reservation.deposit_amount.to_i) %>
     </button>
 
     <p class="text-center text-white/30 text-xs">Pago simulado — no se procesa ninguna transacción real</p>

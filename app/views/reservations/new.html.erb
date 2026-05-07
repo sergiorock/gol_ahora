@@ -40,7 +40,7 @@
         <div>
           <p class="text-white font-semibold"><%= @court.name %></p>
           <p class="text-white/50 text-sm"><%= @court.court_type.name %> · <%= CourtType::SURFACE_LABELS[@court.court_type.surface] %></p>
-          <p class="text-field-light text-sm">$<%= number_with_delimiter(@court.court_type.price_per_hour) %>/hora · máx. <%= @court.court_type.duration_label %></p>
+          <p class="text-field-light text-sm">$<%= number_with_delimiter(@court.court_type.price_per_hour.to_i) %>/hora · máx. <%= @court.court_type.duration_label %></p>
         </div>
       </div>
     <% else %>

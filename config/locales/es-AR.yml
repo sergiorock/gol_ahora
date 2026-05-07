@@ -107,6 +107,36 @@ es-AR:
             reason:
               blank: no puede estar en blanco
 
+  date:
+    abbr_month_names: [~, ene, feb, mar, abr, may, jun, jul, ago, sep, oct, nov, dic]
+    month_names:      [~, enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre]
+    abbr_day_names:   [dom, lun, mar, mié, jue, vie, sáb]
+    day_names:        [domingo, lunes, martes, miércoles, jueves, viernes, sábado]
+    formats:
+      default: "%d/%m/%Y"
+      short:   "%-d %b"
+      long:    "%-d de %B de %Y"
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short:   "%-d %b, %H:%M"
+      long:    "%-d de %B de %Y, %H:%M"
+    am: "am"
+    pm: "pm"
+
+  number:
+    currency:
+      format:
+        unit:      "$"
+        precision: 0
+        separator: ","
+        delimiter: "."
+        format:    "%u%n"
+    format:
+      separator: ","
+      delimiter: "."
+
   reservation:
     statuses:
       pending:     Pendiente

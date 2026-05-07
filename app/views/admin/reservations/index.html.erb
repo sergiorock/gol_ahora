@@ -53,7 +53,7 @@
               <div><%= l r.starts_at, format: "%-d %b %Y" %></div>
               <div class="text-muted small"><%= l r.starts_at, format: "%H:%M" %> – <%= l r.ends_at, format: "%H:%M" %></div>
             </td>
-            <td>$<%= number_with_delimiter(r.total_amount) %></td>
+            <td>$<%= number_with_delimiter(r.total_amount.to_i) %></td>
             <td><%= reservation_status_badge(r.status) %></td>
             <td>
               <%= link_to admin_reservation_path(r), class: "btn btn-sm btn-ghost-secondary" do %>
