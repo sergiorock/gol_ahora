@@ -1,0 +1,105 @@
+es-AR:
+  activerecord:
+    models:
+      user:        Usuario
+      court_type:  Tipo de cancha
+      court:       Cancha
+      court_block: Bloqueo de cancha
+
+    attributes:
+      user:
+        email:                Email
+        password:             Contraseña
+        password_confirmation: Confirmar contraseña
+        current_password:     Contraseña actual
+        first_name:           Nombres
+        last_name:            Apellido
+        dni:                  DNI
+        age:                  Edad
+        phone:                Teléfono
+        address:              Domicilio
+        postal_code:          Código postal
+        city:                 Ciudad
+        country:              País
+        role:                 Rol
+        joined_at:            Fecha de ingreso
+
+      court_type:
+        name:                 Nombre
+        surface:              Superficie
+        capacity:             Capacidad
+        max_duration_minutes: Duración máxima (minutos)
+        price_per_hour:       Precio por hora
+
+      court:
+        name:         Nombre
+        description:  Descripción
+        status:       Estado
+        court_type:   Tipo de cancha
+        court_type_id: Tipo de cancha
+
+      court_block:
+        starts_at: Fecha de inicio
+        ends_at:   Fecha de fin
+        reason:    Motivo
+
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              taken: ya está registrado
+              blank: no puede estar en blanco
+              invalid: no es válido
+            first_name:
+              blank: no puede estar en blanco
+            last_name:
+              blank: no puede estar en blanco
+            dni:
+              taken: ya está registrado
+            password:
+              too_short: es demasiado corta (mínimo %{count} caracteres)
+        court_type:
+          attributes:
+            name:
+              blank: no puede estar en blanco
+              taken: ya existe un tipo con ese nombre
+            surface:
+              blank: no puede estar en blanco
+            capacity:
+              blank: no puede estar en blanco
+              greater_than: debe ser mayor a 0
+            max_duration_minutes:
+              blank: no puede estar en blanco
+              greater_than: debe ser mayor a 0
+            price_per_hour:
+              blank: no puede estar en blanco
+              greater_than: debe ser mayor a 0
+        court:
+          attributes:
+            name:
+              blank: no puede estar en blanco
+            court_type:
+              blank: no puede estar en blanco
+        court_block:
+          attributes:
+            starts_at:
+              blank: no puede estar en blanco
+            ends_at:
+              blank: no puede estar en blanco
+              greater_than: debe ser posterior a la fecha de inicio
+            reason:
+              blank: no puede estar en blanco
+
+  errors:
+    messages:
+      blank:          no puede estar en blanco
+      taken:          ya está en uso
+      invalid:        no es válido
+      too_short:      es demasiado corto (mínimo %{count} caracteres)
+      too_long:       es demasiado largo (máximo %{count} caracteres)
+      not_a_number:   no es un número
+      greater_than:   debe ser mayor a %{count}
+      less_than:      debe ser menor a %{count}
+      inclusion:      no está incluido en la lista
+      confirmation:   no coincide con %{attribute}
