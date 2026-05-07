@@ -229,6 +229,40 @@
       summary.classList.remove('hidden');
     }
 
+    // Disponibilidad
+    const dateInput = form.querySelector('input[name="reservation[date]"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    function markOccupied(sel, occupied) {
+      if (!sel) return;
+      Array.from(sel.options).forEach(opt => {
+        const min     = timeToMin(opt.value);
+        const blocked = occupied.some(({ from, to }) => min >= timeToMin(from) && min < timeToMin(to));
+        opt.disabled    = blocked;
+        opt.textContent = blocked ? `${opt.value} — ocupado` : opt.value;
+      });
+      if (sel.options[sel.selectedIndex]?.disabled) {
+        const free = Array.from(sel.options).find(o => !o.disabled && o.value);
+        if (free) { sel.value = free.value; sel.tomselect?.setValue(free.value); }
+      }
+    }
+
+    async function fetchAvailability() {
+      const courtId = fixedCourt || courtSel?.value;
+      if (!courtId || !dateInput?.value) return;
+      try {
+        const res  = await fetch(`/courts/${courtId}/availability?date=${dateInput.value}`);
+        const data = await res.json();
+        markOccupied(startSel, data);
+        markOccupied(endSel,   data);
+        [startSel, endSel].forEach(s => s?.tomselect?.sync());
+      } catch(e) {}
+      recalculate();
+    }
+
+    dateInput?.addEventListener('change', fetchAvailability);
+    if (courtSel) courtSel.addEventListener('change', fetchAvailability);
+
     [startSel, endSel, courtSel].forEach(el => el && el.addEventListener('change', recalculate));
     recalculate();
 

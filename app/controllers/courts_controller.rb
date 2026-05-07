@@ -16,4 +16,18 @@ class CourtsController < ApplicationController
     @court = Court.includes(:court_type).find(params[:id])
     authorize @court
   end
+
+  def availability
+    @court = Court.find(params[:id])
+    authorize @court, :show?
+
+    date = Date.parse(params[:date]) rescue Date.today
+    occupied = Reservation.where(court_id: @court.id)
+                           .where.not(status: %w[cancelled])
+                           .where("DATE(starts_at AT TIME ZONE 'America/Argentina/Buenos_Aires') = ?", date)
+                           .pluck(:starts_at, :ends_at)
+                           .map { |s, e| { from: s.strftime("%H:%M"), to: e.strftime("%H:%M") } }
+
+    render json: occupied
+  end
 end

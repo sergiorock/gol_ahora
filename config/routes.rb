@@ -23,7 +23,9 @@ Rails.application.routes.draw do
 
   resource :profile, only: [:show, :edit, :update]
 
-  resources :courts, only: [:index, :show]
+  resources :courts, only: [:index, :show] do
+    member { get :availability }
+  end
 
   resources :reservations, only: %i[index new create show] do
     member { delete :cancel }

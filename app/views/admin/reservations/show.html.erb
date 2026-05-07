@@ -54,15 +54,8 @@
             <p class="text-muted small"><%= l @reservation.starts_at, format: "%H:%M" %> – <%= l @reservation.ends_at, format: "%H:%M" %> (<%= @reservation.duration_minutes %> min)</p>
           </div>
           <div class="col-6">
-            <label class="form-label text-muted small">Montos</label>
-            <p class="fw-semibold mb-0">Total: $<%= number_with_delimiter(@reservation.total_amount.to_i) %></p>
-            <p class="text-muted small mb-1">Seña pagada: $<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></p>
-            <% balance = @reservation.total_amount.to_i - @reservation.deposit_amount.to_i %>
-            <% if @reservation.balance_charge %>
-              <span class="badge bg-success-lt">Saldo cobrado: $<%= number_with_delimiter(balance) %></span>
-            <% else %>
-              <span class="badge bg-warning-lt">Saldo pendiente: $<%= number_with_delimiter(balance) %></span>
-            <% end %>
+            <label class="form-label text-muted small">Total del turno</label>
+            <p class="fw-bold fs-3 mb-0">$<%= number_with_delimiter(@reservation.total_amount.to_i) %></p>
           </div>
           <% if @reservation.notes.present? %>
             <div class="col-12">
@@ -74,44 +67,86 @@
       </div>
     </div>
 
-    <%# Pagos %>
+    <%# Resumen financiero %>
+    <% deposit    = @reservation.deposit_charge %>
+    <% balance_c  = @reservation.balance_charge %>
+    <% total      = @reservation.total_amount.to_i %>
+    <% paid_total = (deposit&.amount.to_i + balance_c&.amount.to_i) %>
+    <% pending    = total - paid_total %>
+
     <div class="card mt-3">
-      <div class="card-header">
-        <h3 class="card-title">Pagos</h3>
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h3 class="card-title mb-0">Resumen financiero</h3>
+        <% if pending <= 0 %>
+          <span class="badge bg-success"><i class="ti ti-check me-1"></i>Pago completo</span>
+        <% else %>
+          <span class="badge bg-warning text-dark"><i class="ti ti-clock me-1"></i>Pendiente $<%= number_with_delimiter(pending) %></span>
+        <% end %>
       </div>
       <div class="table-responsive">
         <table class="table table-vcenter card-table">
           <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Titular</th>
-              <th>Tarjeta</th>
-              <th>Monto</th>
-              <th>Estado</th>
-            </tr>
+            <tr><th>Concepto</th><th>Método</th><th>Detalle</th><th class="text-end">Monto</th><th>Estado</th></tr>
           </thead>
           <tbody>
-            <% @payments.each do |p| %>
-              <tr>
-                <td><%= p.payment_type == "deposit" ? "Seña" : "Total" %></td>
-                <td><%= p.cardholder_name %></td>
-                <td class="text-muted">•••• <%= p.last_four_digits %> · <%= p.expiry_date %></td>
-                <td>$<%= number_with_delimiter(p.amount.to_i) %></td>
-                <td>
-                  <% case p.status
-                     when "approved" %>
-                    <span class="badge bg-success-lt">Aprobado</span>
-                  <% when "rejected" %>
-                    <span class="badge bg-danger-lt">Rechazado</span>
-                  <% else %>
-                    <span class="badge bg-warning-lt">Pendiente</span>
+            <% is_walkin = @reservation.deposit_amount.to_i == 0 %>
+
+            <%# Seña online — solo si no es walk-in %>
+            <% unless is_walkin %>
+              <% if @payments.any? %>
+                <% @payments.each do |p| %>
+                  <tr>
+                    <td><strong>Seña (30%)</strong><div class="text-muted small">Pago online</div></td>
+                    <td><span class="badge bg-blue-lt">Tarjeta</span></td>
+                    <td class="text-muted small">•••• <%= p.last_four_digits %> · <%= p.cardholder_name %></td>
+                    <td class="text-end fw-semibold">$<%= number_with_delimiter(p.amount.to_i) %></td>
+                    <td><span class="badge bg-success-lt">Aprobado</span></td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr>
+                  <td><strong>Seña (30%)</strong></td>
+                  <td>—</td><td>—</td>
+                  <td class="text-end">$<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></td>
+                  <td><span class="badge bg-warning-lt">Pendiente</span></td>
+                </tr>
+              <% end %>
+            <% end %>
+
+            <%# Saldo / Pago total %>
+            <tr class="<%= balance_c ? '' : 'table-warning' %>">
+              <td>
+                <strong><%= is_walkin ? "Pago total" : "Saldo (70%)" %></strong>
+                <div class="text-muted small"><%= is_walkin ? "Cobro presencial" : "Cobro presencial" %></div>
+              </td>
+              <td>
+                <% if balance_c %>
+                  <span class="badge bg-blue-lt"><%= t("charge.payment_methods.#{balance_c.payment_method}") %></span>
+                <% else %>—<% end %>
+              </td>
+              <td class="text-muted small">
+                <% if balance_c %>
+                  <%= link_to admin_charge_path(balance_c), class: "text-muted" do %>
+                    Cobro #<%= balance_c.id %>
                   <% end %>
-                </td>
-              </tr>
-            <% end %>
-            <% if @payments.empty? %>
-              <tr><td colspan="5" class="text-muted text-center py-3">Sin pagos registrados.</td></tr>
-            <% end %>
+                <% else %>Sin registrar<% end %>
+              </td>
+              <td class="text-end fw-semibold">$<%= number_with_delimiter(total - @reservation.deposit_amount.to_i) %></td>
+              <td>
+                <% if balance_c %>
+                  <span class="badge bg-success-lt">Cobrado</span>
+                <% else %>
+                  <span class="badge bg-warning-lt">Pendiente</span>
+                <% end %>
+              </td>
+            </tr>
+
+            <%# Total %>
+            <tr class="fw-bold">
+              <td colspan="3" class="text-end text-muted">Total cobrado</td>
+              <td class="text-end fs-5">$<%= number_with_delimiter(paid_total) %></td>
+              <td></td>
+            </tr>
           </tbody>
         </table>
       </div>

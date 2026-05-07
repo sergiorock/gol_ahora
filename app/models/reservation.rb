@@ -25,7 +25,7 @@ class Reservation < ApplicationRecord
     end
 
     event :finish do
-      transitions from: :in_progress, to: :finished
+      transitions from: %i[in_progress confirmed], to: :finished
     end
 
     event :cancel do

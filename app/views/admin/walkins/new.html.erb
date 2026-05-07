@@ -115,35 +115,82 @@
 </div>
 
 <script>
-  const form    = document.getElementById('walkin-form');
-  const prices  = JSON.parse(form.dataset.prices || '{}');
-  const courtSel = document.getElementById('walkin-court');
-  const startSel = document.getElementById('walkin-start');
-  const endSel   = document.getElementById('walkin-end');
+  const form        = document.getElementById('walkin-form');
+  const prices      = JSON.parse(form.dataset.prices || '{}');
+  const courtSel    = document.getElementById('walkin-court');
+  const startSel    = document.getElementById('walkin-start');
+  const endSel      = document.getElementById('walkin-end');
+  const dateInput   = form.querySelector('input[name="walkin[date]"]');
   const amountInput = document.getElementById('walkin-amount');
-  const summary  = document.getElementById('walkin-summary');
-  const summaryText   = document.getElementById('summary-text');
-  const summaryAmount = document.getElementById('summary-amount');
+  const summary     = document.getElementById('walkin-summary');
+  const summaryText    = document.getElementById('summary-text');
+  const summaryAmount  = document.getElementById('summary-amount');
+  const submitBtn   = form.querySelector('button[type="submit"]');
 
   function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
   const fmtARS = n => '$' + Math.round(n).toLocaleString('es-AR');
 
+  // Marca opciones ocupadas en un select de tiempo
+  function markOccupied(sel, occupied) {
+    Array.from(sel.options).forEach(opt => {
+      if (!opt.value) return;
+      const min = timeToMin(opt.value);
+      const blocked = occupied.some(({ from, to }) => min >= timeToMin(from) && min < timeToMin(to));
+      opt.disabled = blocked;
+      opt.textContent = blocked ? `${opt.value} — ocupado` : opt.value;
+    });
+    // Si el valor seleccionado quedó bloqueado, elegir el primero libre
+    if (sel.options[sel.selectedIndex]?.disabled) {
+      const free = Array.from(sel.options).find(o => !o.disabled && o.value);
+      if (free) sel.value = free.value;
+    }
+  }
+
+  async function fetchAvailability() {
+    if (!courtSel.value || !dateInput.value) return;
+    try {
+      const res  = await fetch(`/courts/${courtSel.value}/availability?date=${dateInput.value}`);
+      const data = await res.json();
+      markOccupied(startSel, data);
+      markOccupied(endSel,   data);
+    } catch (e) {}
+    recalculate();
+  }
+
   function recalculate() {
     const price = prices[courtSel.value];
     const diff  = timeToMin(endSel.value) - timeToMin(startSel.value);
-    if (!price || diff <= 0) {
+
+    // Validación hora fin <= inicio
+    if (diff <= 0 && endSel.value) {
+      endSel.classList.add('is-invalid');
+      submitBtn.disabled = true;
       amountInput.value = '';
       summary.classList.add('d-none');
       return;
     }
+    endSel.classList.remove('is-invalid');
+
+    if (!price || diff <= 0) {
+      submitBtn.disabled = false;
+      amountInput.value = '';
+      summary.classList.add('d-none');
+      return;
+    }
+
     const total = price * (diff / 60);
     const dur   = diff % 60 === 0 ? `${diff/60}h` : `${Math.floor(diff/60)}h ${diff%60}min`;
-    amountInput.value = Math.round(total).toLocaleString('es-AR');
-    summaryText.textContent   = `${courtSel.options[courtSel.selectedIndex]?.text?.split(' —')[0]} · ${startSel.value}–${endSel.value} (${dur})`;
+    amountInput.value        = Math.round(total).toLocaleString('es-AR');
+    summaryText.textContent  = `${courtSel.options[courtSel.selectedIndex]?.text?.split(' —')[0]} · ${startSel.value}–${endSel.value} (${dur})`;
     summaryAmount.textContent = fmtARS(total);
     summary.classList.remove('d-none');
+    submitBtn.disabled = false;
   }
 
-  [courtSel, startSel, endSel].forEach(el => el.addEventListener('change', recalculate));
+  courtSel.addEventListener('change', fetchAvailability);
+  dateInput.addEventListener('change', fetchAvailability);
+  startSel.addEventListener('change', recalculate);
+  endSel.addEventListener('change',   recalculate);
+
   recalculate();
 </script>

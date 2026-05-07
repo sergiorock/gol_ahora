@@ -13,6 +13,7 @@ class Admin::ReservationsController < Admin::BaseController
   def show
     authorize @reservation
     @payments = @reservation.payments
+    @reservation = Reservation.includes(:deposit_charge, :balance_charge, payments: {}).find(params[:id])
   end
 
   def edit
