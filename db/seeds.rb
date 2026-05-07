@@ -1,47 +1,56 @@
-# Usuarios
+# ── Usuarios ────────────────────────────────────────────────────────────────
 User.find_or_create_by!(email: "admin@mail.com") do |u|
-  u.password = "admin123"
+  u.password              = "admin123"
   u.password_confirmation = "admin123"
-  u.role = :admin
-  u.first_name = "Admin"
-  u.last_name = "Sistema"
-  u.joined_at = Time.current
+  u.role                  = :admin
+  u.first_name            = "Admin"
+  u.last_name             = "Sistema"
+  u.joined_at             = Time.current
 end
 
 User.find_or_create_by!(email: "cliente@mail.com") do |u|
-  u.password = "cliente123"
+  u.password              = "cliente123"
   u.password_confirmation = "cliente123"
-  u.role = :client
-  u.first_name = "Cliente"
-  u.last_name = "Prueba"
+  u.role                  = :client
+  u.first_name            = "Cliente"
+  u.last_name             = "Prueba"
 end
 
-# Tipos de cancha (según el TP: Fútbol 5, 7, 11)
-futbol5 = CourtType.find_or_create_by!(name: "Fútbol 5") do |ct|
-  ct.surface              = :synthetic
-  ct.capacity             = 10
-  ct.max_duration_minutes = 60
-  ct.price_per_hour       = 8000
+# ── Tipos de cancha ──────────────────────────────────────────────────────────
+# Una combinación por tamaño (5/7/11) × superficie (synthetic/natural/parquet/cement)
+
+COURT_TYPES = [
+  { name: "Fútbol 5",  surface: :synthetic, capacity: 10, max_duration_minutes: 60,  price_per_hour: 8_000  },
+  { name: "Fútbol 5",  surface: :natural,   capacity: 10, max_duration_minutes: 60,  price_per_hour: 10_000 },
+  { name: "Fútbol 5",  surface: :parquet,   capacity: 10, max_duration_minutes: 60,  price_per_hour: 9_000  },
+  { name: "Fútbol 5",  surface: :cement,    capacity: 10, max_duration_minutes: 60,  price_per_hour: 7_000  },
+  { name: "Fútbol 7",  surface: :synthetic, capacity: 14, max_duration_minutes: 90,  price_per_hour: 11_000 },
+  { name: "Fútbol 7",  surface: :natural,   capacity: 14, max_duration_minutes: 90,  price_per_hour: 12_000 },
+  { name: "Fútbol 7",  surface: :parquet,   capacity: 14, max_duration_minutes: 90,  price_per_hour: 11_500 },
+  { name: "Fútbol 7",  surface: :cement,    capacity: 14, max_duration_minutes: 90,  price_per_hour: 9_000  },
+  { name: "Fútbol 11", surface: :synthetic, capacity: 22, max_duration_minutes: 120, price_per_hour: 16_000 },
+  { name: "Fútbol 11", surface: :natural,   capacity: 22, max_duration_minutes: 120, price_per_hour: 18_000 },
+  { name: "Fútbol 11", surface: :parquet,   capacity: 22, max_duration_minutes: 120, price_per_hour: 17_000 },
+  { name: "Fútbol 11", surface: :cement,    capacity: 22, max_duration_minutes: 120, price_per_hour: 14_000 },
+].freeze
+
+COURT_TYPES.each do |attrs|
+  CourtType.find_or_create_by!(name: attrs[:name], surface: attrs[:surface]) do |ct|
+    ct.capacity             = attrs[:capacity]
+    ct.max_duration_minutes = attrs[:max_duration_minutes]
+    ct.price_per_hour       = attrs[:price_per_hour]
+  end
 end
 
-futbol7 = CourtType.find_or_create_by!(name: "Fútbol 7") do |ct|
-  ct.surface              = :natural
-  ct.capacity             = 14
-  ct.max_duration_minutes = 90
-  ct.price_per_hour       = 12000
+# ── Canchas ──────────────────────────────────────────────────────────────────
+# Una cancha por tipo de superficie para cada tamaño
+CourtType.all.each do |ct|
+  surface_label = CourtType::SURFACE_LABELS[ct.surface.to_s]
+  court_name    = "#{ct.name} (#{surface_label})"
+  Court.find_or_create_by!(name: court_name) do |c|
+    c.court_type = ct
+    c.status     = :active
+  end
 end
 
-futbol11 = CourtType.find_or_create_by!(name: "Fútbol 11") do |ct|
-  ct.surface              = :natural
-  ct.capacity             = 22
-  ct.max_duration_minutes = 120
-  ct.price_per_hour       = 18000
-end
-
-# Canchas de ejemplo
-Court.find_or_create_by!(name: "Cancha 1") { |c| c.court_type = futbol5;  c.status = :active }
-Court.find_or_create_by!(name: "Cancha 2") { |c| c.court_type = futbol5;  c.status = :active }
-Court.find_or_create_by!(name: "Cancha 3") { |c| c.court_type = futbol7;  c.status = :active }
-Court.find_or_create_by!(name: "Cancha 4") { |c| c.court_type = futbol11; c.status = :active }
-
-puts "Seeds: #{User.count} usuarios, #{CourtType.count} tipos, #{Court.count} canchas"
+puts "Seeds: #{User.count} usuarios, #{CourtType.count} tipos de cancha, #{Court.count} canchas"
