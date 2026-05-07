@@ -2,13 +2,14 @@ module CourtsHelper
   def court_surface_svg(court_type, css_class: "w-full h-full")
     surface = court_type&.surface
     config  = surface_config(surface)
+    uid     = "ct#{court_type&.id || SecureRandom.hex(4)}"
 
     content_tag(:svg, xmlns: "http://www.w3.org/2000/svg",
                 viewBox: "0 0 400 200",
                 preserveAspectRatio: "xMidYMid slice",
                 class: css_class) do
-      concat surface_defs(surface, config)
-      concat surface_background(surface, config)
+      concat surface_defs(surface, config, uid)
+      concat surface_background(surface, config, uid)
       concat court_lines(config[:line_color])
     end
   end
@@ -30,30 +31,30 @@ module CourtsHelper
     end
   end
 
-  def surface_defs(surface, config)
+  def surface_defs(surface, config, uid)
     content_tag(:defs) do
-      grad = content_tag(:linearGradient, id: "surfaceGrad", x1: "0%", y1: "0%", x2: "100%", y2: "100%") do
+      grad = content_tag(:linearGradient, id: "grad-#{uid}", x1: "0%", y1: "0%", x2: "100%", y2: "100%") do
         concat tag(:stop, offset: "0%",   style: "stop-color:#{config[:bg_from]};stop-opacity:1")
         concat tag(:stop, offset: "100%", style: "stop-color:#{config[:bg_to]};stop-opacity:1")
       end
 
       pattern = case config[:pattern]
       when :crosshatch
-        content_tag(:pattern, id: "pattern", width: "12", height: "12",
+        content_tag(:pattern, id: "pat-#{uid}", width: "12", height: "12",
                     patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)") do
           concat tag(:line, x1: "0", y1: "0", x2: "0", y2: "12",
-                     stroke: "rgba(0,0,0,0.12)", "stroke-width": "4")
+                     stroke: "rgba(0,0,0,0.15)", "stroke-width": "4")
           concat tag(:line, x1: "0", y1: "0", x2: "12", y2: "0",
-                     stroke: "rgba(0,0,0,0.12)", "stroke-width": "4")
+                     stroke: "rgba(0,0,0,0.15)", "stroke-width": "4")
         end
       when :stripes
-        content_tag(:pattern, id: "pattern", width: "30", height: "30",
+        content_tag(:pattern, id: "pat-#{uid}", width: "30", height: "30",
                     patternUnits: "userSpaceOnUse") do
           tag(:rect, x: "0", y: "0", width: "30", height: "15",
-              fill: "rgba(0,0,0,0.08)")
+              fill: "rgba(0,0,0,0.12)")
         end
       when :planks
-        content_tag(:pattern, id: "pattern", width: "400", height: "16",
+        content_tag(:pattern, id: "pat-#{uid}", width: "400", height: "16",
                     patternUnits: "userSpaceOnUse") do
           concat tag(:rect, x: "0", y: "0", width: "400", height: "16", fill: "rgba(0,0,0,0)")
           concat tag(:line, x1: "0", y1: "15.5", x2: "400", y2: "15.5",
@@ -67,10 +68,10 @@ module CourtsHelper
     end
   end
 
-  def surface_background(surface, config)
+  def surface_background(surface, config, uid)
     rects = []
-    rects << tag(:rect, x: "0", y: "0", width: "400", height: "200", fill: "url(#surfaceGrad)")
-    rects << tag(:rect, x: "0", y: "0", width: "400", height: "200", fill: "url(#pattern)") if config[:pattern] != :none
+    rects << tag(:rect, x: "0", y: "0", width: "400", height: "200", fill: "url(#grad-#{uid})")
+    rects << tag(:rect, x: "0", y: "0", width: "400", height: "200", fill: "url(#pat-#{uid})") if config[:pattern] != :none
     safe_join(rects)
   end
 
