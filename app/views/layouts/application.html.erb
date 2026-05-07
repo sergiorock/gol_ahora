@@ -34,6 +34,49 @@
     <style>
       body { font-family: 'Outfit', sans-serif; }
       .font-display { font-family: 'Bebas Neue', sans-serif; }
+
+      /* Tom Select — dark theme (ts-dark) */
+      .ts-dark + .ts-wrapper,
+      .ts-wrapper.ts-dark {
+        --ts-pr-caret: 2rem;
+      }
+      select.ts-dark { display: none; }
+      .ts-dark.ts-wrapper .ts-control {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #fff;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem;
+        min-height: unset;
+        box-shadow: none;
+      }
+      .ts-dark.ts-wrapper.focus .ts-control {
+        border-color: #22c55e;
+        box-shadow: none;
+        outline: none;
+      }
+      .ts-dark.ts-wrapper .ts-control input {
+        color: #fff;
+      }
+      .ts-dark.ts-wrapper .ts-control input::placeholder { color: rgba(255,255,255,0.3); }
+      .ts-dark.ts-wrapper .ts-dropdown {
+        background: #111827;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 0.75rem;
+        margin-top: 4px;
+        color: #fff;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.9rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      }
+      .ts-dark.ts-wrapper .ts-dropdown .ts-dropdown-content { padding: 0.25rem 0; }
+      .ts-dark.ts-wrapper .ts-dropdown .option { padding: 0.5rem 1rem; color: rgba(255,255,255,0.8); }
+      .ts-dark.ts-wrapper .ts-dropdown .option:hover,
+      .ts-dark.ts-wrapper .ts-dropdown .option.active { background: rgba(255,255,255,0.07); color: #fff; }
+      .ts-dark.ts-wrapper .ts-dropdown .option.selected { color: #22c55e; }
+      .ts-dark.ts-wrapper .ts-dropdown .no-results { padding: 0.6rem 1rem; color: rgba(255,255,255,0.4); font-size: 0.875rem; }
     </style>
     <%= yield :head %>
   </head>
@@ -96,25 +139,37 @@
 
     <script>
       (() => {
-        const initCountryTomSelect = () => {
+        const initDarkSelects = () => {
           if (typeof TomSelect === 'undefined') return;
 
-          document.querySelectorAll('select.country-tomselect').forEach((element) => {
-            if (element.tomselect) return;
-
-            new TomSelect(element, {
+          document.querySelectorAll('select.country-tomselect').forEach((el) => {
+            if (el.tomselect) return;
+            new TomSelect(el, {
               allowEmptyOption: true,
               searchField: ['text'],
-              placeholder: element.dataset.placeholder || '',
+              placeholder: el.dataset.placeholder || '',
               render: {
                 no_results: () => '<div class="no-results" style="padding:0.6rem 1rem;color:rgba(255,255,255,0.4);font-size:0.875rem;">Sin resultados</div>'
               }
             });
           });
+
+          document.querySelectorAll('select.ts-dark').forEach((el) => {
+            if (el.tomselect) return;
+            new TomSelect(el, {
+              allowEmptyOption: false,
+              create: false,
+              sortField: false,
+              placeholder: el.dataset.placeholder || '',
+              render: {
+                no_results: () => '<div class="no-results">Sin resultados</div>'
+              }
+            });
+          });
         };
 
-        document.addEventListener('DOMContentLoaded', initCountryTomSelect);
-        document.addEventListener('turbo:load', initCountryTomSelect);
+        document.addEventListener('DOMContentLoaded', initDarkSelects);
+        document.addEventListener('turbo:load', initDarkSelects);
       })();
     </script>
   </body>
