@@ -63,7 +63,7 @@ es-AR:
           attributes:
             name:
               blank: no puede estar en blanco
-              taken: ya existe un tipo con ese nombre
+              taken: ya existe un tipo con ese nombre y superficie
             surface:
               blank: no puede estar en blanco
             capacity:

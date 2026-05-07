@@ -15,7 +15,7 @@ class CourtType < ApplicationRecord
     "cement"    => "Cemento"
   }.freeze
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: { scope: :surface, message: "ya existe un tipo con ese nombre y superficie" }
   validates :surface, presence: true
   validates :capacity, presence: true, numericality: { greater_than: 0 }
   validates :max_duration_minutes, presence: true, numericality: { greater_than: 0 }
