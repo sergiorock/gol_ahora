@@ -22,12 +22,23 @@ class CourtsController < ApplicationController
     authorize @court, :show?
 
     date = Date.parse(params[:date]) rescue Date.today
-    occupied = Reservation.where(court_id: @court.id)
-                           .where.not(status: %w[cancelled])
-                           .where("DATE(starts_at AT TIME ZONE 'America/Argentina/Buenos_Aires') = ?", date)
-                           .pluck(:starts_at, :ends_at)
-                           .map { |s, e| { from: s.strftime("%H:%M"), to: e.strftime("%H:%M") } }
 
-    render json: occupied
+    reservations = Reservation.where(court_id: @court.id)
+                               .where.not(status: %w[cancelled])
+                               .where("DATE(starts_at AT TIME ZONE 'America/Argentina/Buenos_Aires') = ?", date)
+                               .pluck(:starts_at, :ends_at)
+                               .map { |s, e| { from: s.strftime("%H:%M"), to: e.strftime("%H:%M") } }
+
+    blocks = CourtBlock.where(court_id: @court.id)
+                       .where("starts_at < ? AND ends_at > ?",
+                              date.end_of_day, date.beginning_of_day)
+                       .pluck(:starts_at, :ends_at)
+                       .map { |s, e| { from: [s, date.beginning_of_day].max.strftime("%H:%M"),
+                                       to:   [e, date.end_of_day].min.strftime("%H:%M") } }
+
+    render json: {
+      unavailable:          reservations + blocks,
+      max_duration_minutes: @court.court_type.max_duration_minutes
+    }
   end
 end

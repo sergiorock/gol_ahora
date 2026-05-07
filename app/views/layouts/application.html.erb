@@ -77,6 +77,13 @@
       .ts-dark.ts-wrapper .ts-dropdown .option.active { background: rgba(255,255,255,0.07); color: #fff; }
       .ts-dark.ts-wrapper .ts-dropdown .option.selected { color: #22c55e; }
       .ts-dark.ts-wrapper .ts-dropdown .no-results { padding: 0.6rem 1rem; color: rgba(255,255,255,0.4); font-size: 0.875rem; }
+      .ts-dark.ts-wrapper .ts-dropdown .option[aria-disabled="true"],
+      .ts-dark.ts-wrapper .ts-dropdown .option.disabled {
+        color: rgba(255,255,255,0.2);
+        text-decoration: line-through;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
     </style>
     <%= yield :head %>
   </head>

@@ -130,19 +130,42 @@
   function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
   const fmtARS = n => '$' + Math.round(n).toLocaleString('es-AR');
 
-  // Marca opciones ocupadas en un select de tiempo
-  function markOccupied(sel, occupied) {
-    Array.from(sel.options).forEach(opt => {
+  let unavailable = [], maxDuration = 9999;
+
+  function isOccupied(min) {
+    return unavailable.some(({ from, to }) => min >= timeToMin(from) && min < timeToMin(to));
+  }
+
+  function updateStartOptions() {
+    Array.from(startSel.options).forEach(opt => {
       if (!opt.value) return;
-      const min = timeToMin(opt.value);
-      const blocked = occupied.some(({ from, to }) => min >= timeToMin(from) && min < timeToMin(to));
-      opt.disabled = blocked;
+      const blocked = isOccupied(timeToMin(opt.value));
+      opt.disabled    = blocked;
       opt.textContent = blocked ? `${opt.value} — ocupado` : opt.value;
     });
-    // Si el valor seleccionado quedó bloqueado, elegir el primero libre
-    if (sel.options[sel.selectedIndex]?.disabled) {
-      const free = Array.from(sel.options).find(o => !o.disabled && o.value);
-      if (free) sel.value = free.value;
+    if (startSel.options[startSel.selectedIndex]?.disabled) {
+      const free = Array.from(startSel.options).find(o => !o.disabled && o.value);
+      if (free) startSel.value = free.value;
+    }
+  }
+
+  function updateEndOptions() {
+    if (!startSel.value) return;
+    const startMin  = timeToMin(startSel.value);
+    const nextBlock = unavailable.map(b => timeToMin(b.from)).filter(m => m > startMin).sort((a,b)=>a-b)[0] ?? 9999;
+
+    Array.from(endSel.options).forEach(opt => {
+      if (!opt.value) return;
+      const min      = timeToMin(opt.value);
+      const tooEarly = min <= startMin;
+      const tooLate  = (min - startMin) > maxDuration;
+      const overlaps = min > nextBlock;
+      opt.disabled    = tooEarly || tooLate || overlaps;
+      opt.textContent = overlaps ? `${opt.value} — ocupado` : opt.value;
+    });
+    if (endSel.options[endSel.selectedIndex]?.disabled) {
+      const free = Array.from(endSel.options).find(o => !o.disabled && o.value);
+      if (free) endSel.value = free.value;
     }
   }
 
@@ -151,9 +174,11 @@
     try {
       const res  = await fetch(`/courts/${courtSel.value}/availability?date=${dateInput.value}`);
       const data = await res.json();
-      markOccupied(startSel, data);
-      markOccupied(endSel,   data);
+      unavailable = data.unavailable || [];
+      maxDuration = data.max_duration_minutes || 9999;
     } catch (e) {}
+    updateStartOptions();
+    updateEndOptions();
     recalculate();
   }
 
@@ -189,8 +214,13 @@
 
   courtSel.addEventListener('change', fetchAvailability);
   dateInput.addEventListener('change', fetchAvailability);
-  startSel.addEventListener('change', recalculate);
-  endSel.addEventListener('change',   recalculate);
+  startSel.addEventListener('change', () => { updateEndOptions(); recalculate(); });
+  endSel.addEventListener('change', recalculate);
 
-  recalculate();
+  // Carga disponibilidad si ya hay cancha y fecha
+  if (courtSel.value && dateInput.value) {
+    fetchAvailability();
+  } else {
+    recalculate();
+  }
 </script>
