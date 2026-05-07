@@ -1,0 +1,111 @@
+<% content_for :title, "Nueva reserva — Gol Ahora" %>
+
+<div class="max-w-2xl mx-auto pt-24 pb-16 px-4">
+
+  <div class="flex items-center gap-4 mb-8">
+    <%= link_to (@court ? court_path(@court) : courts_path), class: "text-white/40 hover:text-white transition-colors" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    <% end %>
+    <div>
+      <p class="text-white/40 text-sm">Nueva reserva</p>
+      <h1 class="font-display text-4xl text-white">ELEGÍ HORARIO</h1>
+    </div>
+  </div>
+
+  <% if @reservation.errors.any? %>
+    <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6">
+      <ul class="text-red-400 text-sm space-y-1">
+        <% @reservation.errors.full_messages.each do |msg| %>
+          <li>• <%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with url: reservations_path, method: :post, class: "space-y-6" do |f| %>
+    <%# Cancha %>
+    <% if @court %>
+      <input type="hidden" name="reservation[court_id]" value="<%= @court.id %>">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center gap-4">
+        <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+          <%= court_surface_svg(@court.court_type, css_class: "w-full h-full") %>
+        </div>
+        <div>
+          <p class="text-white font-semibold"><%= @court.name %></p>
+          <p class="text-white/50 text-sm"><%= @court.court_type.name %> · <%= CourtType::SURFACE_LABELS[@court.court_type.surface] %></p>
+          <p class="text-field-light text-sm">$<%= number_with_delimiter(@court.court_type.price_per_hour) %>/hora · máx. <%= @court.court_type.duration_label %></p>
+        </div>
+      </div>
+    <% else %>
+      <div>
+        <label class="block text-white/60 text-sm mb-2">Cancha</label>
+        <select name="reservation[court_id]" class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light">
+          <% Court.includes(:court_type).available.each do |c| %>
+            <option value="<%= c.id %>"><%= c.name %> — <%= c.court_type.name %></option>
+          <% end %>
+        </select>
+      </div>
+    <% end %>
+
+    <%# Fecha %>
+    <div>
+      <label class="block text-white/60 text-sm mb-2">Fecha</label>
+      <input type="date"
+             name="reservation[date]"
+             value="<%= params.dig(:reservation, :date) || Date.tomorrow.strftime('%Y-%m-%d') %>"
+             min="<%= Date.today.strftime('%Y-%m-%d') %>"
+             max="<%= 30.days.from_now.strftime('%Y-%m-%d') %>"
+             class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light">
+    </div>
+
+    <%# Hora inicio / fin %>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-white/60 text-sm mb-2">Hora de inicio</label>
+        <select name="reservation[start_time]" class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light">
+          <% (8..22).each do |h| %>
+            <% ["00", "30"].each do |m| %>
+              <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+              <option value="<%= val %>" <%= "selected" if params.dig(:reservation, :start_time) == val %>>
+                <%= val %>
+              </option>
+            <% end %>
+          <% end %>
+        </select>
+      </div>
+      <div>
+        <label class="block text-white/60 text-sm mb-2">Hora de fin</label>
+        <select name="reservation[end_time]" class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light">
+          <% (8..23).each do |h| %>
+            <% ["00", "30"].each do |m| %>
+              <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+              <option value="<%= val %>" <%= "selected" if params.dig(:reservation, :end_time) == val %>>
+                <%= val %>
+              </option>
+            <% end %>
+          <% end %>
+        </select>
+      </div>
+    </div>
+
+    <%# Notas opcionales %>
+    <div>
+      <label class="block text-white/60 text-sm mb-2">Notas (opcional)</label>
+      <textarea name="reservation[notes]" rows="2"
+                placeholder="Indicaciones especiales, cantidad de jugadores, etc."
+                class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light resize-none"><%= params.dig(:reservation, :notes) %></textarea>
+    </div>
+
+    <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-sm text-white/50 space-y-1">
+      <p>• El monto total se calculará según el horario seleccionado.</p>
+      <p>• Se requiere el pago de una <strong class="text-white/70">seña del 30%</strong> para confirmar la reserva.</p>
+      <p>• Podés reservar con hasta <strong class="text-white/70">30 días de anticipación</strong>.</p>
+    </div>
+
+    <button type="submit" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+      Continuar al pago
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+    </button>
+  <% end %>
+
+</div>

@@ -1,0 +1,128 @@
+<% content_for :page_title, "Reserva ##{@reservation.id}" %>
+<% content_for :header_actions do %>
+  <%= link_to admin_reservations_path, class: "btn btn-secondary" do %>
+    <i class="ti ti-arrow-left"></i> Volver
+  <% end %>
+<% end %>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <%# Datos de la reserva %>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Detalle de la reserva</h3>
+        <div class="card-options">
+          <%= reservation_status_badge(@reservation.status) %>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-6">
+            <label class="form-label text-muted small">Cliente</label>
+            <p class="fw-semibold mb-0"><%= @reservation.user.full_name %></p>
+            <p class="text-muted small"><%= @reservation.user.email %></p>
+          </div>
+          <div class="col-6">
+            <label class="form-label text-muted small">Cancha</label>
+            <p class="fw-semibold mb-0"><%= @reservation.court.name %></p>
+            <p class="text-muted small"><%= @reservation.court.court_type.name %> · <%= CourtType::SURFACE_LABELS[@reservation.court.court_type.surface] %></p>
+          </div>
+          <div class="col-6">
+            <label class="form-label text-muted small">Fecha y horario</label>
+            <p class="fw-semibold mb-0"><%= l @reservation.starts_at, format: "%-d de %B %Y" %></p>
+            <p class="text-muted small"><%= l @reservation.starts_at, format: "%H:%M" %> – <%= l @reservation.ends_at, format: "%H:%M" %> (<%= @reservation.duration_minutes %> min)</p>
+          </div>
+          <div class="col-6">
+            <label class="form-label text-muted small">Montos</label>
+            <p class="fw-semibold mb-0">Total: $<%= number_with_delimiter(@reservation.total_amount) %></p>
+            <p class="text-muted small">Seña: $<%= number_with_delimiter(@reservation.deposit_amount) %></p>
+          </div>
+          <% if @reservation.notes.present? %>
+            <div class="col-12">
+              <label class="form-label text-muted small">Notas</label>
+              <p class="mb-0"><%= @reservation.notes %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# Pagos %>
+    <div class="card mt-3">
+      <div class="card-header">
+        <h3 class="card-title">Pagos</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Titular</th>
+              <th>Tarjeta</th>
+              <th>Monto</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @payments.each do |p| %>
+              <tr>
+                <td><%= p.payment_type == "deposit" ? "Seña" : "Total" %></td>
+                <td><%= p.cardholder_name %></td>
+                <td class="text-muted">•••• <%= p.last_four_digits %> · <%= p.expiry_date %></td>
+                <td>$<%= number_with_delimiter(p.amount) %></td>
+                <td>
+                  <% case p.status
+                     when "approved" %>
+                    <span class="badge bg-success-lt">Aprobado</span>
+                  <% when "rejected" %>
+                    <span class="badge bg-danger-lt">Rechazado</span>
+                  <% else %>
+                    <span class="badge bg-warning-lt">Pendiente</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+            <% if @payments.empty? %>
+              <tr><td colspan="5" class="text-muted text-center py-3">Sin pagos registrados.</td></tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <%# Panel de acciones %>
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Cambiar estado</h3>
+      </div>
+      <div class="card-body">
+        <% transitions = {
+             "confirmed"   => { label: "Confirmar",          icon: "check",         css: "btn-success" },
+             "in_progress" => { label: "Marcar en curso",    icon: "player-play",   css: "btn-info" },
+             "finished"    => { label: "Marcar finalizada",  icon: "flag",          css: "btn-secondary" },
+             "cancelled"   => { label: "Cancelar reserva",   icon: "x",             css: "btn-danger" }
+           } %>
+
+        <div class="d-grid gap-2">
+          <% transitions.each do |status, opts| %>
+            <% event = { "confirmed" => :confirm, "in_progress" => :start, "finished" => :finish, "cancelled" => :cancel }[status] %>
+            <% if @reservation.send(:"may_#{event}?") %>
+              <%= button_to admin_reservation_path(@reservation),
+                    method: :patch,
+                    params: { reservation: { status: status } },
+                    class: "btn #{opts[:css]}" do %>
+                <i class="ti ti-<%= opts[:icon] %> me-1"></i> <%= opts[:label] %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+
+        <% if [:finished, :cancelled].include?(@reservation.aasm.current_state) %>
+          <p class="text-muted small mt-3 mb-0 text-center">No hay transiciones disponibles para este estado.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

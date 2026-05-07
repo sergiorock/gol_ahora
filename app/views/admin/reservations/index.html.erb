@@ -1,0 +1,71 @@
+<% content_for :page_title, "Reservas" %>
+
+<div class="card">
+  <%# Filtros %>
+  <div class="card-header">
+    <%= form_with url: admin_reservations_path, method: :get, class: "row g-2 align-items-end" do |f| %>
+      <div class="col-auto">
+        <%= f.select :status,
+              [["Todos los estados", ""]] + Reservation.aasm.states.map { |s| [t("reservation.statuses.#{s.name}", default: s.name.to_s.humanize), s.name] },
+              { selected: params[:status] },
+              class: "form-select form-select-sm" %>
+      </div>
+      <div class="col-auto">
+        <%= f.select :court_id,
+              [["Todas las canchas", ""]] + Court.order(:name).pluck(:name, :id),
+              { selected: params[:court_id] },
+              class: "form-select form-select-sm" %>
+      </div>
+      <div class="col-auto">
+        <%= f.text_field :from, value: params[:from], placeholder: "Desde (YYYY-MM-DD)",
+              class: "form-control form-control-sm" %>
+      </div>
+      <div class="col-auto">
+        <%= f.submit "Filtrar", class: "btn btn-sm btn-secondary" %>
+        <%= link_to "Limpiar", admin_reservations_path, class: "btn btn-sm btn-ghost-secondary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Cancha</th>
+          <th>Horario</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th class="w-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reservations.each do |r| %>
+          <tr>
+            <td class="text-muted">#<%= r.id %></td>
+            <td>
+              <div class="fw-semibold"><%= r.user.full_name %></div>
+              <div class="text-muted small"><%= r.user.email %></div>
+            </td>
+            <td><%= r.court.name %></td>
+            <td>
+              <div><%= l r.starts_at, format: "%-d %b %Y" %></div>
+              <div class="text-muted small"><%= l r.starts_at, format: "%H:%M" %> – <%= l r.ends_at, format: "%H:%M" %></div>
+            </td>
+            <td>$<%= number_with_delimiter(r.total_amount) %></td>
+            <td><%= reservation_status_badge(r.status) %></td>
+            <td>
+              <%= link_to admin_reservation_path(r), class: "btn btn-sm btn-ghost-secondary" do %>
+                <i class="ti ti-eye"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @reservations.empty? %>
+          <tr><td colspan="7" class="text-center text-muted py-4">No hay reservas.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -5,6 +5,8 @@ es-AR:
       court_type:  Tipo de cancha
       court:       Cancha
       court_block: Bloqueo de cancha
+      reservation: Reserva
+      payment:     Pago
 
     attributes:
       user:
@@ -81,6 +83,20 @@ es-AR:
               blank: no puede estar en blanco
             court_type:
               blank: no puede estar en blanco
+        reservation:
+          attributes:
+            starts_at:      Hora de inicio
+            ends_at:        Hora de fin
+            total_amount:   Monto total
+            deposit_amount: Monto de seña
+            court:          Cancha
+            notes:          Notas
+        payment:
+          attributes:
+            amount:           Monto
+            last_four_digits: Últimos 4 dígitos
+            cardholder_name:  Nombre del titular
+            expiry_date:      Vencimiento
         court_block:
           attributes:
             starts_at:
@@ -90,6 +106,14 @@ es-AR:
               greater_than: debe ser posterior a la fecha de inicio
             reason:
               blank: no puede estar en blanco
+
+  reservation:
+    statuses:
+      pending:     Pendiente
+      confirmed:   Confirmada
+      in_progress: En curso
+      finished:    Finalizada
+      cancelled:   Cancelada
 
   errors:
     messages:

@@ -83,7 +83,7 @@
                 <span class="nav-link text-muted small text-uppercase fw-bold">Reservas</span>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_reservations_path, class: "nav-link #{controller_name == 'reservations' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
                   <span class="nav-link-title">Reservas</span>
                 <% end %>

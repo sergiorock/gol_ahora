@@ -1,6 +1,7 @@
 class Court < ApplicationRecord
   belongs_to :court_type
   has_many :court_blocks, dependent: :destroy
+  has_many :reservations, dependent: :destroy
 
   enum :status, { active: 0, inactive: 1, maintenance: 2 }, default: :active
 
