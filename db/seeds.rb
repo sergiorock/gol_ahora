@@ -19,6 +19,7 @@ end
 # ── Tipos de cancha ──────────────────────────────────────────────────────────
 # Una combinación por tamaño (5/7/11) × superficie (synthetic/natural/parquet/cement)
 
+# Parquet y cemento solo para Fútbol 5 (superficies de piso interior/futsal)
 COURT_TYPES = [
   { name: "Fútbol 5",  surface: :synthetic, capacity: 10, max_duration_minutes: 60,  price_per_hour: 8_000  },
   { name: "Fútbol 5",  surface: :natural,   capacity: 10, max_duration_minutes: 60,  price_per_hour: 10_000 },
@@ -26,12 +27,8 @@ COURT_TYPES = [
   { name: "Fútbol 5",  surface: :cement,    capacity: 10, max_duration_minutes: 60,  price_per_hour: 7_000  },
   { name: "Fútbol 7",  surface: :synthetic, capacity: 14, max_duration_minutes: 90,  price_per_hour: 11_000 },
   { name: "Fútbol 7",  surface: :natural,   capacity: 14, max_duration_minutes: 90,  price_per_hour: 12_000 },
-  { name: "Fútbol 7",  surface: :parquet,   capacity: 14, max_duration_minutes: 90,  price_per_hour: 11_500 },
-  { name: "Fútbol 7",  surface: :cement,    capacity: 14, max_duration_minutes: 90,  price_per_hour: 9_000  },
   { name: "Fútbol 11", surface: :synthetic, capacity: 22, max_duration_minutes: 120, price_per_hour: 16_000 },
   { name: "Fútbol 11", surface: :natural,   capacity: 22, max_duration_minutes: 120, price_per_hour: 18_000 },
-  { name: "Fútbol 11", surface: :parquet,   capacity: 22, max_duration_minutes: 120, price_per_hour: 17_000 },
-  { name: "Fútbol 11", surface: :cement,    capacity: 22, max_duration_minutes: 120, price_per_hour: 14_000 },
 ].freeze
 
 COURT_TYPES.each do |attrs|
@@ -45,18 +42,14 @@ end
 # ── Canchas ──────────────────────────────────────────────────────────────────
 # Nombres cortos estilo complejo real. El tipo y superficie se ven en la card.
 courts_data = [
-  { name: "Cancha 1",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "synthetic") },
-  { name: "Cancha 2",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "natural")   },
-  { name: "Cancha 3",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "parquet")   },
-  { name: "Cancha 4",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "cement")    },
-  { name: "Cancha 5",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "synthetic") },
-  { name: "Cancha 6",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "natural")   },
-  { name: "Cancha 7",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "parquet")   },
-  { name: "Cancha 8",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "cement")    },
-  { name: "Cancha 9",  court_type: CourtType.find_by(name: "Fútbol 11", surface: "synthetic") },
-  { name: "Cancha 10", court_type: CourtType.find_by(name: "Fútbol 11", surface: "natural")   },
-  { name: "Cancha 11", court_type: CourtType.find_by(name: "Fútbol 11", surface: "parquet")   },
-  { name: "Cancha 12", court_type: CourtType.find_by(name: "Fútbol 11", surface: "cement")    },
+  { name: "Cancha 1", court_type: CourtType.find_by(name: "Fútbol 5",  surface: "synthetic") },
+  { name: "Cancha 2", court_type: CourtType.find_by(name: "Fútbol 5",  surface: "natural")   },
+  { name: "Cancha 3", court_type: CourtType.find_by(name: "Fútbol 5",  surface: "parquet")   },
+  { name: "Cancha 4", court_type: CourtType.find_by(name: "Fútbol 5",  surface: "cement")    },
+  { name: "Cancha 5", court_type: CourtType.find_by(name: "Fútbol 7",  surface: "synthetic") },
+  { name: "Cancha 6", court_type: CourtType.find_by(name: "Fútbol 7",  surface: "natural")   },
+  { name: "Cancha 7", court_type: CourtType.find_by(name: "Fútbol 11", surface: "synthetic") },
+  { name: "Cancha 8", court_type: CourtType.find_by(name: "Fútbol 11", surface: "natural")   },
 ]
 
 courts_data.each do |data|
