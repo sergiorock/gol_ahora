@@ -7,16 +7,37 @@
     <h1 class="font-display text-5xl sm:text-6xl text-white">NUESTRAS CANCHAS</h1>
   </div>
 
-  <%# Filtro por tipo %>
-  <div class="flex flex-wrap gap-3 mb-8">
-    <%= link_to courts_path, class: "px-4 py-2 rounded-full text-sm font-medium transition-all #{params[:type].blank? ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white hover:border-white/40'}" do %>
-      Todos
-    <% end %>
-    <% @court_types.each do |ct| %>
-      <%= link_to courts_path(type: ct.id), class: "px-4 py-2 rounded-full text-sm font-medium transition-all #{params[:type].to_s == ct.id.to_s ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white hover:border-white/40'}" do %>
-        <%= ct.name %>
+  <%# Filtros combinables: tamaño + superficie %>
+  <div class="space-y-3 mb-8">
+    <%# Fila 1: tamaño %>
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-white/30 text-xs uppercase tracking-widest w-20">Tamaño</span>
+      <%= link_to courts_path(surface: params[:surface]),
+            class: "px-4 py-1.5 rounded-full text-sm font-medium transition-all #{params[:size].blank? ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white'}" do %>
+        Todos
       <% end %>
-    <% end %>
+      <% @sizes.each do |size| %>
+        <%= link_to courts_path(size: size, surface: params[:surface]),
+              class: "px-4 py-1.5 rounded-full text-sm font-medium transition-all #{params[:size] == size ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white'}" do %>
+          <%= size %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%# Fila 2: superficie %>
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-white/30 text-xs uppercase tracking-widest w-20">Superficie</span>
+      <%= link_to courts_path(size: params[:size]),
+            class: "px-4 py-1.5 rounded-full text-sm font-medium transition-all #{params[:surface].blank? ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white'}" do %>
+        Todas
+      <% end %>
+      <% @surfaces.each do |surface| %>
+        <%= link_to courts_path(size: params[:size], surface: surface),
+              class: "px-4 py-1.5 rounded-full text-sm font-medium transition-all #{params[:surface] == surface ? 'bg-field text-white' : 'border border-white/20 text-white/60 hover:text-white'}" do %>
+          <%= CourtType::SURFACE_LABELS[surface] %>
+        <% end %>
+      <% end %>
+    </div>
   </div>
 
   <% if @courts.any? %>
