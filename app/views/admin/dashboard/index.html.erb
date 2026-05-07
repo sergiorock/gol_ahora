@@ -1,67 +1,82 @@
 <% content_for :page_title, "Dashboard" %>
 
-<%# Métricas %>
+<%# Header con fecha %>
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="mb-1">Buen día 👋</h2>
+    <div class="text-muted"><%= l Time.zone.today, format: :long %></div>
+  </div>
+  <%= link_to new_admin_court_path, class: "btn btn-primary d-none d-sm-inline-flex" do %>
+    <i class="ti ti-plus me-1"></i> Nueva cancha
+  <% end %>
+</div>
+
+<%# Stat cards %>
 <div class="row g-3 mb-4">
-  <div class="col-sm-6 col-lg-3">
-    <div class="card card-sm">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card">
       <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col-auto">
-            <span class="bg-blue text-white avatar"><i class="ti ti-users"></i></span>
+        <div class="d-flex align-items-center mb-3">
+          <div class="me-3">
+            <span class="avatar avatar-md bg-blue-lt text-blue rounded-3">
+              <i class="ti ti-users fs-3"></i>
+            </span>
           </div>
-          <div class="col">
-            <div class="font-weight-medium"><%= @stats[:users] %></div>
-            <div class="text-muted small">Clientes registrados</div>
-          </div>
+          <div class="text-muted">Clientes</div>
         </div>
+        <div class="h1 mb-0"><%= @stats[:users] %></div>
+        <div class="text-muted mt-1" style="font-size:0.8rem">registrados en el sistema</div>
       </div>
     </div>
   </div>
 
-  <div class="col-sm-6 col-lg-3">
-    <div class="card card-sm">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card">
       <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col-auto">
-            <span class="bg-green text-white avatar"><i class="ti ti-ball-football"></i></span>
+        <div class="d-flex align-items-center mb-3">
+          <div class="me-3">
+            <span class="avatar avatar-md bg-green-lt text-green rounded-3">
+              <i class="ti ti-ball-football fs-3"></i>
+            </span>
           </div>
-          <div class="col">
-            <div class="font-weight-medium"><%= @stats[:courts] %></div>
-            <div class="text-muted small">Canchas activas</div>
-          </div>
+          <div class="text-muted">Canchas</div>
         </div>
+        <div class="h1 mb-0"><%= @stats[:courts] %></div>
+        <div class="text-muted mt-1" style="font-size:0.8rem">activas disponibles</div>
       </div>
     </div>
   </div>
 
-  <div class="col-sm-6 col-lg-3">
-    <div class="card card-sm">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card">
       <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col-auto">
-            <span class="bg-orange text-white avatar"><i class="ti ti-calendar-event"></i></span>
+        <div class="d-flex align-items-center mb-3">
+          <div class="me-3">
+            <span class="avatar avatar-md bg-orange-lt text-orange rounded-3">
+              <i class="ti ti-calendar-event fs-3"></i>
+            </span>
           </div>
-          <div class="col">
-            <div class="font-weight-medium"><%= @stats[:reservations_today] %></div>
-            <div class="text-muted small">Reservas hoy</div>
-          </div>
+          <div class="text-muted">Hoy</div>
         </div>
+        <div class="h1 mb-0"><%= @stats[:reservations_today] %></div>
+        <div class="text-muted mt-1" style="font-size:0.8rem">reservas programadas</div>
       </div>
     </div>
   </div>
 
-  <div class="col-sm-6 col-lg-3">
-    <div class="card card-sm">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card">
       <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col-auto">
-            <span class="bg-purple text-white avatar"><i class="ti ti-calendar-check"></i></span>
+        <div class="d-flex align-items-center mb-3">
+          <div class="me-3">
+            <span class="avatar avatar-md bg-purple-lt text-purple rounded-3">
+              <i class="ti ti-calendar-check fs-3"></i>
+            </span>
           </div>
-          <div class="col">
-            <div class="font-weight-medium"><%= @stats[:confirmed_this_month] %></div>
-            <div class="text-muted small">Confirmadas este mes</div>
-          </div>
+          <div class="text-muted">Este mes</div>
         </div>
+        <div class="h1 mb-0"><%= @stats[:confirmed_this_month] %></div>
+        <div class="text-muted mt-1" style="font-size:0.8rem">reservas confirmadas</div>
       </div>
     </div>
   </div>
@@ -69,75 +84,98 @@
 
 <div class="row g-3">
   <%# Reservas de hoy %>
-  <div class="col-lg-5">
+  <div class="col-lg-4">
     <div class="card h-100">
       <div class="card-header">
         <h3 class="card-title">
-          <i class="ti ti-clock me-1 text-orange"></i>
-          Hoy — <%= l Date.today, format: "%-d de %B" %>
+          <span class="badge bg-orange me-2" style="width:8px;height:8px;border-radius:50%;padding:0;display:inline-block;vertical-align:middle"></span>
+          Agenda de hoy
         </h3>
       </div>
       <% if @upcoming_today.any? %>
-        <div class="table-responsive">
-          <table class="table table-vcenter card-table table-sm">
-            <tbody>
-              <% @upcoming_today.each do |r| %>
-                <tr>
-                  <td class="text-muted small w-1 text-nowrap">
-                    <%= l r.starts_at, format: "%H:%M" %> – <%= l r.ends_at, format: "%H:%M" %>
-                  </td>
-                  <td>
-                    <div class="fw-medium small"><%= r.court.name %></div>
-                    <div class="text-muted" style="font-size:0.75rem"><%= r.user.full_name %></div>
-                  </td>
-                  <td class="w-1"><%= reservation_status_badge(r.status) %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+        <div class="list-group list-group-flush overflow-auto" style="max-height:320px">
+          <% @upcoming_today.each do |r| %>
+            <%= link_to admin_reservation_path(r), class: "list-group-item list-group-item-action px-3 py-2" do %>
+              <div class="d-flex align-items-center gap-3">
+                <div class="text-center" style="min-width:48px">
+                  <div class="fw-bold text-body" style="font-size:1rem;line-height:1"><%= l r.starts_at, format: "%H:%M" %></div>
+                  <div class="text-muted" style="font-size:0.7rem"><%= l r.ends_at, format: "%H:%M" %></div>
+                </div>
+                <div class="vr"></div>
+                <div class="flex-fill overflow-hidden">
+                  <div class="fw-medium text-truncate"><%= r.court.name %></div>
+                  <div class="text-muted text-truncate" style="font-size:0.78rem"><%= r.user.full_name %></div>
+                </div>
+                <%= reservation_status_badge(r.status) %>
+              </div>
+            <% end %>
+          <% end %>
         </div>
       <% else %>
-        <div class="card-body text-muted small">No hay reservas confirmadas para hoy.</div>
+        <div class="card-body">
+          <div class="empty py-3">
+            <div class="empty-icon"><i class="ti ti-calendar-off text-muted" style="font-size:2rem"></i></div>
+            <p class="empty-title text-muted mt-2 mb-0" style="font-size:0.875rem">Sin reservas para hoy</p>
+          </div>
+        </div>
       <% end %>
     </div>
   </div>
 
   <%# Últimas reservas %>
-  <div class="col-lg-7">
+  <div class="col-lg-8">
     <div class="card h-100">
       <div class="card-header">
-        <h3 class="card-title"><i class="ti ti-history me-1"></i> Últimas reservas</h3>
+        <h3 class="card-title"><i class="ti ti-history me-1"></i>Últimas reservas</h3>
         <div class="card-options">
           <%= link_to admin_reservations_path, class: "btn btn-sm btn-ghost-secondary" do %>
-            Ver todas <i class="ti ti-arrow-right"></i>
+            Ver todas <i class="ti ti-chevron-right"></i>
           <% end %>
         </div>
       </div>
       <% if @recent_reservations.any? %>
         <div class="table-responsive">
-          <table class="table table-vcenter card-table table-sm">
+          <table class="table table-vcenter card-table">
             <thead>
               <tr>
                 <th>Cliente</th>
                 <th>Cancha</th>
-                <th>Fecha</th>
+                <th>Fecha y hora</th>
                 <th>Estado</th>
+                <th class="w-1"></th>
               </tr>
             </thead>
             <tbody>
               <% @recent_reservations.each do |r| %>
                 <tr>
-                  <td class="small"><%= r.user.full_name %></td>
-                  <td class="small text-muted"><%= r.court.name %></td>
-                  <td class="small text-muted text-nowrap"><%= l r.starts_at, format: "%-d %b, %H:%M" %></td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="avatar avatar-xs rounded-circle bg-blue-lt text-blue">
+                        <%= r.user.first_name[0].upcase %>
+                      </span>
+                      <span class="text-truncate" style="max-width:120px"><%= r.user.full_name %></span>
+                    </div>
+                  </td>
+                  <td class="text-muted"><%= r.court.name %></td>
+                  <td class="text-muted text-nowrap"><%= l r.starts_at, format: "%-d %b, %H:%M" %></td>
                   <td><%= reservation_status_badge(r.status) %></td>
+                  <td>
+                    <%= link_to admin_reservation_path(r), class: "btn btn-sm btn-ghost-secondary" do %>
+                      <i class="ti ti-eye"></i>
+                    <% end %>
+                  </td>
                 </tr>
               <% end %>
             </tbody>
           </table>
         </div>
       <% else %>
-        <div class="card-body text-muted small">Aún no hay reservas registradas.</div>
+        <div class="card-body">
+          <div class="empty py-4">
+            <div class="empty-icon"><i class="ti ti-calendar text-muted" style="font-size:2rem"></i></div>
+            <p class="empty-title text-muted mt-2 mb-0">Aún no hay reservas registradas</p>
+          </div>
+        </div>
       <% end %>
     </div>
   </div>
