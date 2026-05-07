@@ -1,17 +1,65 @@
-<% content_for :title, "Dashboard — Admin" %>
 <% content_for :page_title, "Dashboard" %>
 
-<div class="row g-4">
+<%# Métricas %>
+<div class="row g-3 mb-4">
   <div class="col-sm-6 col-lg-3">
     <div class="card card-sm">
       <div class="card-body">
         <div class="row align-items-center">
           <div class="col-auto">
-            <span class="bg-success text-white avatar"><i class="ti ti-users"></i></span>
+            <span class="bg-blue text-white avatar"><i class="ti ti-users"></i></span>
           </div>
           <div class="col">
-            <div class="font-weight-medium">Usuarios</div>
-            <div class="text-muted"><%= User.count %> registrados</div>
+            <div class="font-weight-medium"><%= @stats[:users] %></div>
+            <div class="text-muted small">Clientes registrados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card card-sm">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <span class="bg-green text-white avatar"><i class="ti ti-ball-football"></i></span>
+          </div>
+          <div class="col">
+            <div class="font-weight-medium"><%= @stats[:courts] %></div>
+            <div class="text-muted small">Canchas activas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card card-sm">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <span class="bg-orange text-white avatar"><i class="ti ti-calendar-event"></i></span>
+          </div>
+          <div class="col">
+            <div class="font-weight-medium"><%= @stats[:reservations_today] %></div>
+            <div class="text-muted small">Reservas hoy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-lg-3">
+    <div class="card card-sm">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <span class="bg-purple text-white avatar"><i class="ti ti-calendar-check"></i></span>
+          </div>
+          <div class="col">
+            <div class="font-weight-medium"><%= @stats[:confirmed_this_month] %></div>
+            <div class="text-muted small">Confirmadas este mes</div>
           </div>
         </div>
       </div>
@@ -19,15 +67,78 @@
   </div>
 </div>
 
-<div class="row mt-4">
-  <div class="col-12">
-    <div class="card">
+<div class="row g-3">
+  <%# Reservas de hoy %>
+  <div class="col-lg-5">
+    <div class="card h-100">
       <div class="card-header">
-        <h3 class="card-title">Bienvenido al panel de administración</h3>
+        <h3 class="card-title">
+          <i class="ti ti-clock me-1 text-orange"></i>
+          Hoy — <%= l Date.today, format: "%-d de %B" %>
+        </h3>
       </div>
-      <div class="card-body">
-        <p class="text-muted">Usá el menú de la izquierda para gestionar el complejo deportivo.</p>
+      <% if @upcoming_today.any? %>
+        <div class="table-responsive">
+          <table class="table table-vcenter card-table table-sm">
+            <tbody>
+              <% @upcoming_today.each do |r| %>
+                <tr>
+                  <td class="text-muted small w-1 text-nowrap">
+                    <%= l r.starts_at, format: "%H:%M" %> – <%= l r.ends_at, format: "%H:%M" %>
+                  </td>
+                  <td>
+                    <div class="fw-medium small"><%= r.court.name %></div>
+                    <div class="text-muted" style="font-size:0.75rem"><%= r.user.full_name %></div>
+                  </td>
+                  <td class="w-1"><%= reservation_status_badge(r.status) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="card-body text-muted small">No hay reservas confirmadas para hoy.</div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Últimas reservas %>
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-history me-1"></i> Últimas reservas</h3>
+        <div class="card-options">
+          <%= link_to admin_reservations_path, class: "btn btn-sm btn-ghost-secondary" do %>
+            Ver todas <i class="ti ti-arrow-right"></i>
+          <% end %>
+        </div>
       </div>
+      <% if @recent_reservations.any? %>
+        <div class="table-responsive">
+          <table class="table table-vcenter card-table table-sm">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Cancha</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @recent_reservations.each do |r| %>
+                <tr>
+                  <td class="small"><%= r.user.full_name %></td>
+                  <td class="small text-muted"><%= r.court.name %></td>
+                  <td class="small text-muted text-nowrap"><%= l r.starts_at, format: "%-d %b, %H:%M" %></td>
+                  <td><%= reservation_status_badge(r.status) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="card-body text-muted small">Aún no hay reservas registradas.</div>
+      <% end %>
     </div>
   </div>
 </div>
