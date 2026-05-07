@@ -2,8 +2,8 @@ class CourtsController < ApplicationController
   skip_before_action :authenticate_user!
 
   def index
-    @sizes    = CourtType.distinct.order(:name).pluck(:name)
-    @surfaces = CourtType.distinct.order(:surface).pluck(:surface).compact
+    @sizes    = CourtType.distinct.pluck(:name).uniq.sort_by { |n| n[/\d+/].to_i }
+    @surfaces = CourtType.distinct.pluck(:surface).uniq.compact.sort
 
     @courts = Court.includes(:court_type).available.order(:name)
     @courts = @courts.joins(:court_type).where(court_types: { name: params[:size] })       if params[:size].present?

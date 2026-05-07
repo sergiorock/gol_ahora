@@ -43,12 +43,26 @@ COURT_TYPES.each do |attrs|
 end
 
 # ── Canchas ──────────────────────────────────────────────────────────────────
-# Una cancha por tipo de superficie para cada tamaño
-CourtType.all.each do |ct|
-  surface_label = CourtType::SURFACE_LABELS[ct.surface.to_s]
-  court_name    = "#{ct.name} (#{surface_label})"
-  Court.find_or_create_by!(name: court_name) do |c|
-    c.court_type = ct
+# Nombres cortos estilo complejo real. El tipo y superficie se ven en la card.
+courts_data = [
+  { name: "Cancha 1",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "synthetic") },
+  { name: "Cancha 2",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "natural")   },
+  { name: "Cancha 3",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "parquet")   },
+  { name: "Cancha 4",  court_type: CourtType.find_by(name: "Fútbol 5",  surface: "cement")    },
+  { name: "Cancha 5",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "synthetic") },
+  { name: "Cancha 6",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "natural")   },
+  { name: "Cancha 7",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "parquet")   },
+  { name: "Cancha 8",  court_type: CourtType.find_by(name: "Fútbol 7",  surface: "cement")    },
+  { name: "Cancha 9",  court_type: CourtType.find_by(name: "Fútbol 11", surface: "synthetic") },
+  { name: "Cancha 10", court_type: CourtType.find_by(name: "Fútbol 11", surface: "natural")   },
+  { name: "Cancha 11", court_type: CourtType.find_by(name: "Fútbol 11", surface: "parquet")   },
+  { name: "Cancha 12", court_type: CourtType.find_by(name: "Fútbol 11", surface: "cement")    },
+]
+
+courts_data.each do |data|
+  next unless data[:court_type]
+  Court.find_or_create_by!(name: data[:name]) do |c|
+    c.court_type = data[:court_type]
     c.status     = :active
   end
 end
