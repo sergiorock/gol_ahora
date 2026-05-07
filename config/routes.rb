@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     resources :courts do
       resources :court_blocks, shallow: true
     end
-    resources :reservations, only: %i[index show update]
+    resources :reservations, only: %i[index show edit update]
   end
 
   resource :profile, only: [:show, :edit, :update]

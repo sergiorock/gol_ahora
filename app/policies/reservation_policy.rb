@@ -4,6 +4,7 @@ class ReservationPolicy < ApplicationPolicy
   def new?     = user.present?
   def create?  = user.present?
   def update?  = admin?
+  def edit?    = admin?
   def cancel?  = admin? || owner?
 
   class Scope < ApplicationPolicy::Scope

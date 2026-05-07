@@ -59,6 +59,11 @@
               <%= link_to admin_reservation_path(r), class: "btn btn-sm btn-ghost-secondary" do %>
                 <i class="ti ti-eye"></i>
               <% end %>
+              <% if r.may_cancel? %>
+                <%= link_to edit_admin_reservation_path(r), class: "btn btn-sm btn-ghost-warning" do %>
+                  <i class="ti ti-pencil"></i>
+                <% end %>
+              <% end %>
             </td>
           </tr>
         <% end %>

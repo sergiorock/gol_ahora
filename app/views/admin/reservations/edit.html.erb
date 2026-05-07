@@ -1,0 +1,89 @@
+<% content_for :page_title, "Editar reserva ##{@reservation.id}" %>
+<% content_for :header_actions do %>
+  <%= link_to admin_reservation_path(@reservation), class: "btn btn-secondary" do %>
+    <i class="ti ti-arrow-left"></i> Volver
+  <% end %>
+<% end %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Modificar reserva</h3>
+        <div class="card-options"><%= reservation_status_badge(@reservation.status) %></div>
+      </div>
+      <div class="card-body">
+
+        <% if @reservation.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% @reservation.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%= form_with url: admin_reservation_path(@reservation), method: :patch, class: "row g-3" do |f| %>
+
+          <div class="col-12">
+            <label class="form-label">Cancha</label>
+            <select name="reservation[court_id]" class="form-select">
+              <% @courts.each do |c| %>
+                <option value="<%= c.id %>" <%= "selected" if c.id == @reservation.court_id %>>
+                  <%= c.name %> — <%= c.court_type.name %> (<%= CourtType::SURFACE_LABELS[c.court_type.surface] %>)
+                </option>
+              <% end %>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Fecha</label>
+            <input type="date" name="reservation[date]"
+                   value="<%= @reservation.starts_at.strftime('%Y-%m-%d') %>"
+                   class="form-control">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Hora de inicio</label>
+            <select name="reservation[start_time]" class="form-select">
+              <% (8..22).each do |h| %>
+                <% ["00", "30"].each do |m| %>
+                  <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+                  <option value="<%= val %>" <%= "selected" if @reservation.starts_at.strftime("%H:%M") == val %>><%= val %></option>
+                <% end %>
+              <% end %>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Hora de fin</label>
+            <select name="reservation[end_time]" class="form-select">
+              <% (8..23).each do |h| %>
+                <% ["00", "30"].each do |m| %>
+                  <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
+                  <option value="<%= val %>" <%= "selected" if @reservation.ends_at.strftime("%H:%M") == val %>><%= val %></option>
+                <% end %>
+              <% end %>
+            </select>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Notas</label>
+            <textarea name="reservation[notes]" rows="2" class="form-control"><%= @reservation.notes %></textarea>
+          </div>
+
+          <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="ti ti-device-floppy me-1"></i> Guardar cambios
+            </button>
+            <%= link_to admin_reservation_path(@reservation), class: "btn btn-ghost-secondary" do %>
+              Cancelar
+            <% end %>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

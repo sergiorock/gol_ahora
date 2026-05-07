@@ -3,6 +3,11 @@
   <%= link_to admin_reservations_path, class: "btn btn-secondary" do %>
     <i class="ti ti-arrow-left"></i> Volver
   <% end %>
+  <% if @reservation.may_cancel? %>
+    <%= link_to edit_admin_reservation_path(@reservation), class: "btn btn-warning" do %>
+      <i class="ti ti-pencil"></i> Editar
+    <% end %>
+  <% end %>
 <% end %>
 
 <div class="row g-4">
