@@ -7,6 +7,7 @@ rm -f /rails/tmp/pids/server.pid
 # En producción el workflow de deploy corre db:prepare por separado.
 if [ "$RAILS_ENV" = "development" ]; then
   bundle exec rails db:prepare
+  bundle exec rails db:seed
 fi
 
 exec bundle exec "$@"
