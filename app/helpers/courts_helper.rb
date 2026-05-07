@@ -22,7 +22,7 @@ module CourtsHelper
       # Verde vibrante limpio — sin patrón, la textura del sintético es uniforme desde arriba
       { bg_from: "#15803d", bg_to: "#16a34a", line_color: "rgba(255,255,255,0.65)", pattern: :none }
     when "natural"
-      # Verde oscuro con franjas horizontales alternadas — efecto corte de pasto vista aérea
+      # Verde oscuro con franjas verticales alternadas — efecto corte de pasto vista aérea
       { bg_from: "#14532d", bg_to: "#15803d", line_color: "rgba(255,255,255,0.55)", pattern: :mow_stripes }
     when "parquet"
       # Ámbar con tablones horizontales bien definidos
@@ -44,10 +44,10 @@ module CourtsHelper
 
       pattern = case config[:pattern]
       when :mow_stripes
-        # Franjas horizontales alternadas — banda clara cada 20px (vista aérea de pasto cortado)
-        content_tag(:pattern, id: "pat-#{uid}", width: "400", height: "20",
+        # Franjas verticales alternadas — banda clara cada 20px (vista aérea de pasto cortado)
+        content_tag(:pattern, id: "pat-#{uid}", width: "20", height: "400",
                     patternUnits: "userSpaceOnUse") do
-          tag(:rect, x: "0", y: "0", width: "400", height: "10",
+          tag(:rect, x: "0", y: "0", width: "10", height: "400",
               fill: "rgba(255,255,255,0.07)")
         end
       when :planks
