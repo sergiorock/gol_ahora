@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 concurrency:
@@ -26,36 +26,35 @@ jobs:
         env:
           APP_ENV_FILE: ${{ secrets.APP_ENV_FILE }}
         run: |
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps root@187.77.46.31 "mkdir -p /root/apps/gol_ahora"
-          printf '%s' "$APP_ENV_FILE" | ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps root@187.77.46.31 "cat > /root/apps/gol_ahora/.env.production"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps deploy@187.77.46.31 "mkdir -p /home/deploy/apps/gol_ahora"
+          printf '%s' "$APP_ENV_FILE" | ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps deploy@187.77.46.31 "cat > /home/deploy/apps/gol_ahora/.env.production"
 
       - name: Deploy on VPS
         run: |
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps root@187.77.46.31 <<'EOF'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_vps deploy@187.77.46.31 <<'EOF'
           set -eu
 
-          APP_DIR=/root/apps/gol_ahora
+          APP_DIR=/home/deploy/apps/gol_ahora
 
           mkdir -p "$APP_DIR"
 
           if [ ! -d "$APP_DIR/.git" ]; then
-            git -C /root/apps init gol_ahora 2>/dev/null || true
-            git -C "$APP_DIR" remote add origin https://github.com/sergiorock/gol_ahora.git 2>/dev/null || true
+            git -C "$APP_DIR" init
+            git -C "$APP_DIR" remote add origin https://github.com/sergiorock/gol_ahora.git
           fi
 
           cd "$APP_DIR"
-          git fetch origin master
-          if git show-ref --verify --quiet refs/heads/master; then
-            git checkout master
+          git fetch origin main
+          if git show-ref --verify --quiet refs/heads/main; then
+            git checkout main
           else
-            git checkout -b master origin/master
+            git checkout -b main origin/main
           fi
-          git merge --ff-only origin/master
+          git merge --ff-only origin/main
 
           docker compose --env-file .env.production -f docker-compose.prod.yml build web
           docker compose --env-file .env.production -f docker-compose.prod.yml up -d db
-          sleep 5
           docker compose --env-file .env.production -f docker-compose.prod.yml run -T --rm --no-deps web bin/rails db:prepare
-          docker compose --env-file .env.production -f docker-compose.prod.yml run -T --rm --no-deps web bin/rails db:seed
           docker compose --env-file .env.production -f docker-compose.prod.yml up -d --force-recreate web caddy --remove-orphans
+          docker compose --env-file .env.production -f docker-compose.prod.yml exec -T web bin/rails assets:precompile
           EOF
