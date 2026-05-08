@@ -31,6 +31,7 @@ class Admin::ChargesController < Admin::BaseController
     authorize @charge
 
     if @charge.save
+      @charge.create_receipt!(concept: @charge.concept) unless @charge.receipt
       redirect_to admin_charge_path(@charge), notice: "Cobro registrado."
     else
       @users     = User.where(role: :client).order(:last_name, :first_name)

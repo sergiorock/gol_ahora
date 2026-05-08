@@ -20,7 +20,7 @@ class Payment < ApplicationRecord
 
   def create_charge_for_deposit
     r = reservation
-    Charge.create!(
+    charge = Charge.create!(
       user:           r.user,
       reservation:    r,
       amount:         amount,
@@ -30,5 +30,6 @@ class Payment < ApplicationRecord
       date:           Date.today,
       is_deposit:     true
     )
+    charge.create_receipt!(concept: charge.concept)
   end
 end

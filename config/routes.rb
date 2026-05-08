@@ -12,13 +12,17 @@ Rails.application.routes.draw do
     resources :courts do
       resources :court_blocks, shallow: true
     end
-    resources :reservations, only: %i[index show edit update]
+    resources :reservations, only: %i[index show edit update] do
+      member { get :pdf }
+    end
     resources :charges
     resource :walkin, only: %i[new create], controller: "walkins"
     resources :discounts do
       member { patch :toggle }
     end
-    resources :receipts
+    resources :receipts do
+      member { get :pdf }
+    end
   end
 
   resource :profile, only: [:show, :edit, :update]

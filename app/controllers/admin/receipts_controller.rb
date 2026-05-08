@@ -1,5 +1,5 @@
 class Admin::ReceiptsController < Admin::BaseController
-  before_action :set_receipt, only: %i[show edit update destroy]
+  before_action :set_receipt, only: %i[show edit update destroy pdf]
 
   def index
     authorize Receipt
@@ -8,6 +8,15 @@ class Admin::ReceiptsController < Admin::BaseController
 
   def show
     authorize @receipt
+  end
+
+  def pdf
+    authorize @receipt, :show?
+    data = ReceiptPdf.new(@receipt).render
+    send_data data,
+      filename: "recibo-#{@receipt.receipt_number}.pdf",
+      type: "application/pdf",
+      disposition: "inline"
   end
 
   def new

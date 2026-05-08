@@ -3,17 +3,16 @@
   <%= link_to admin_reservations_path, class: "btn btn-secondary" do %>
     <i class="ti ti-arrow-left"></i> Volver
   <% end %>
+  <%= link_to pdf_admin_reservation_path(@reservation), target: "_blank", class: "btn btn-ghost-secondary" do %>
+    <i class="ti ti-file-type-pdf me-1"></i> Generar PDF
+  <% end %>
   <% if @reservation.may_cancel? %>
     <%= link_to edit_admin_reservation_path(@reservation), class: "btn btn-warning" do %>
       <i class="ti ti-pencil"></i> Editar
     <% end %>
   <% end %>
-  <% balance = @reservation.total_amount.to_i - @reservation.deposit_amount.to_i %>
-  <% if @reservation.balance_charge %>
-    <span class="btn btn-ghost-success disabled">
-      <i class="ti ti-check me-1"></i> Saldo cobrado
-    </span>
-  <% else %>
+  <% if !@reservation.balance_charge && @reservation.confirmed? %>
+    <% balance = @reservation.total_amount.to_i - @reservation.deposit_amount.to_i %>
     <%= link_to new_admin_charge_path(
           prefill_user:        @reservation.user_id,
           prefill_amount:      balance,
@@ -26,8 +25,16 @@
   <% end %>
 <% end %>
 
+<% balance_paid = @reservation.balance_charge.present? || @reservation.deposit_amount.to_i == 0 %>
+<% _transitions = {
+     "confirmed" => { label: "Confirmar",         icon: "check", css: "btn-success",   event: :confirm },
+     "finished"  => { label: "Marcar finalizada", icon: "flag",  css: "btn-secondary", event: :finish,  only_if: balance_paid },
+     "cancelled" => { label: "Cancelar reserva",  icon: "x",     css: "btn-danger",    event: :cancel }
+   } %>
+<% available = _transitions.select { |_, o| o.fetch(:only_if, true) && @reservation.send(:"may_#{o[:event]}?") } %>
+
 <div class="row g-4">
-  <div class="col-lg-7">
+  <div class="<%= available.any? ? 'col-lg-7' : 'col-12' %>">
     <%# Datos de la reserva %>
     <div class="card">
       <div class="card-header">
@@ -74,116 +81,119 @@
     <% paid_total = (deposit&.amount.to_i + balance_c&.amount.to_i) %>
     <% pending    = total - paid_total %>
 
+    <% is_walkin = @reservation.deposit_amount.to_i == 0 %>
     <div class="card mt-3">
-      <div class="card-header d-flex align-items-center justify-content-between">
+      <div class="card-header d-flex align-items-center justify-content-between border-bottom-0 pb-0">
         <h3 class="card-title mb-0">Resumen financiero</h3>
         <% if pending <= 0 %>
-          <span class="badge bg-success"><i class="ti ti-check me-1"></i>Pago completo</span>
+          <span class="badge bg-success text-white px-3 py-2"><i class="ti ti-circle-check me-1"></i>Pago completo</span>
         <% else %>
-          <span class="badge bg-warning text-dark"><i class="ti ti-clock me-1"></i>Pendiente $<%= number_with_delimiter(pending) %></span>
+          <span class="badge bg-warning text-dark px-3 py-2"><i class="ti ti-clock me-1"></i>Pendiente $<%= number_with_delimiter(pending) %></span>
         <% end %>
       </div>
-      <div class="table-responsive">
-        <table class="table table-vcenter card-table">
-          <thead>
-            <tr><th>Concepto</th><th>Método</th><th>Detalle</th><th class="text-end">Monto</th><th>Estado</th></tr>
-          </thead>
-          <tbody>
-            <% is_walkin = @reservation.deposit_amount.to_i == 0 %>
+      <div class="card-body pt-2">
 
-            <%# Seña online — solo si no es walk-in %>
-            <% unless is_walkin %>
-              <% if @payments.any? %>
-                <% @payments.each do |p| %>
-                  <tr>
-                    <td><strong>Seña (30%)</strong><div class="text-muted small">Pago online</div></td>
-                    <td><span class="badge bg-blue-lt">Tarjeta</span></td>
-                    <td class="text-muted small">•••• <%= p.last_four_digits %> · <%= p.cardholder_name %></td>
-                    <td class="text-end fw-semibold">$<%= number_with_delimiter(p.amount.to_i) %></td>
-                    <td><span class="badge bg-success-lt">Aprobado</span></td>
-                  </tr>
-                <% end %>
-              <% else %>
-                <tr>
-                  <td><strong>Seña (30%)</strong></td>
-                  <td>—</td><td>—</td>
-                  <td class="text-end">$<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></td>
-                  <td><span class="badge bg-warning-lt">Pendiente</span></td>
-                </tr>
-              <% end %>
+        <% def fin_row(icon_class, label, detail, amount, badge_html, pdf_link: nil, warning: false); end %>
+
+        <% unless is_walkin %>
+          <% if @payments.any? %>
+            <% @payments.each do |p| %>
+              <div class="row align-items-center py-3 border-bottom g-0">
+                <div class="col-auto me-3">
+                  <span class="avatar avatar-sm bg-blue-lt text-blue rounded"><i class="ti ti-credit-card"></i></span>
+                </div>
+                <div class="col">
+                  <div class="fw-semibold">Seña <span class="text-muted fw-normal small">(30%)</span></div>
+                  <div class="text-muted small">
+                    Tarjeta •••• <%= p.last_four_digits %> · <%= p.cardholder_name %>
+                    <% if deposit&.receipt %>
+                      · <%= link_to "Ver recibo", pdf_admin_receipt_path(deposit.receipt), target: "_blank", class: "text-primary" %>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="col-auto text-end">
+                  <div class="fw-bold">$<%= number_with_delimiter(p.amount.to_i) %></div>
+                  <span class="badge bg-success-lt text-success">Aprobado</span>
+                </div>
+              </div>
             <% end %>
+          <% else %>
+            <div class="row align-items-center py-3 border-bottom g-0 bg-warning-lt rounded px-2">
+              <div class="col-auto me-3"><span class="avatar avatar-sm bg-warning-lt text-warning rounded"><i class="ti ti-credit-card"></i></span></div>
+              <div class="col">
+                <div class="fw-semibold">Seña <span class="text-muted fw-normal small">(30%)</span></div>
+                <div class="text-muted small">Sin registrar</div>
+              </div>
+              <div class="col-auto text-end">
+                <div class="fw-bold">$<%= number_with_delimiter(@reservation.deposit_amount.to_i) %></div>
+                <span class="badge bg-warning-lt text-warning">Pendiente</span>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
 
-            <%# Saldo / Pago total %>
-            <tr class="<%= balance_c ? '' : 'table-warning' %>">
-              <td>
-                <strong><%= is_walkin ? "Pago total" : "Saldo (70%)" %></strong>
-                <div class="text-muted small"><%= is_walkin ? "Cobro presencial" : "Cobro presencial" %></div>
-              </td>
-              <td>
-                <% if balance_c %>
-                  <span class="badge bg-blue-lt"><%= t("charge.payment_methods.#{balance_c.payment_method}") %></span>
-                <% else %>—<% end %>
-              </td>
-              <td class="text-muted small">
-                <% if balance_c %>
-                  <%= link_to admin_charge_path(balance_c), class: "text-muted" do %>
-                    Cobro #<%= balance_c.id %>
-                  <% end %>
-                <% else %>Sin registrar<% end %>
-              </td>
-              <td class="text-end fw-semibold">$<%= number_with_delimiter(total - @reservation.deposit_amount.to_i) %></td>
-              <td>
-                <% if balance_c %>
-                  <span class="badge bg-success-lt">Cobrado</span>
-                <% else %>
-                  <span class="badge bg-warning-lt">Pendiente</span>
+        <div class="row align-items-center py-3 g-0 <%= !is_walkin ? 'border-bottom' : '' %> <%= !balance_c ? 'bg-warning-lt rounded px-2' : '' %>">
+          <div class="col-auto me-3">
+            <span class="avatar avatar-sm <%= balance_c ? 'bg-green-lt text-green' : 'bg-warning-lt text-warning' %> rounded">
+              <i class="ti ti-cash"></i>
+            </span>
+          </div>
+          <div class="col">
+            <div class="fw-semibold">
+              <%= is_walkin ? "Pago total" : raw("Saldo <span class='text-muted fw-normal small'>(70%)</span>") %>
+            </div>
+            <div class="text-muted small">
+              <% if balance_c %>
+                <%= t("charge.payment_methods.#{balance_c.payment_method}") %> ·
+                <%= link_to "Cobro ##{balance_c.id}", admin_charge_path(balance_c), class: "text-muted" %>
+                <% if balance_c.receipt %>
+                  · <%= link_to "Ver recibo", pdf_admin_receipt_path(balance_c.receipt), target: "_blank", class: "text-primary" %>
                 <% end %>
-              </td>
-            </tr>
+              <% else %>Sin registrar<% end %>
+            </div>
+          </div>
+          <div class="col-auto text-end">
+            <div class="fw-bold">$<%= number_with_delimiter(total - @reservation.deposit_amount.to_i) %></div>
+            <% if balance_c %>
+              <span class="badge bg-success-lt text-success">Cobrado</span>
+            <% else %>
+              <span class="badge bg-warning-lt text-warning">Pendiente</span>
+            <% end %>
+          </div>
+        </div>
 
-            <%# Total %>
-            <tr class="fw-bold">
-              <td colspan="3" class="text-end text-muted">Total cobrado</td>
-              <td class="text-end fs-5">$<%= number_with_delimiter(paid_total) %></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="row align-items-center pt-3 mt-1 g-0">
+          <div class="col"><span class="text-muted fw-semibold">Total cobrado</span></div>
+          <div class="col-auto">
+            <span class="fw-bold fs-4 <%= pending <= 0 ? 'text-success' : 'text-warning' %>">
+              $<%= number_with_delimiter(paid_total) %>
+            </span>
+            <span class="text-muted small"> / $<%= number_with_delimiter(total) %></span>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <%# Panel de acciones %>
+  <%# Panel de acciones — solo si hay botones disponibles %>
+  <% if available.any? %>
   <div class="col-lg-5">
     <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Cambiar estado</h3>
-      </div>
+      <div class="card-header"><h3 class="card-title">Cambiar estado</h3></div>
       <div class="card-body">
-        <% transitions = {
-             "confirmed" => { label: "Confirmar",         icon: "check", css: "btn-success" },
-             "finished"  => { label: "Marcar finalizada", icon: "flag",  css: "btn-secondary" },
-             "cancelled" => { label: "Cancelar reserva",  icon: "x",     css: "btn-danger" }
-           } %>
-
         <div class="d-grid gap-2">
-          <% transitions.each do |status, opts| %>
-            <% event = { "confirmed" => :confirm, "in_progress" => :start, "finished" => :finish, "cancelled" => :cancel }[status] %>
-            <% if @reservation.send(:"may_#{event}?") %>
-              <%= button_to admin_reservation_path(@reservation),
-                    method: :patch,
-                    params: { reservation: { status: status } },
-                    class: "btn #{opts[:css]}" do %>
-                <i class="ti ti-<%= opts[:icon] %> me-1"></i> <%= opts[:label] %>
-              <% end %>
+          <% available.each do |status, opts| %>
+            <%= button_to admin_reservation_path(@reservation),
+                  method: :patch,
+                  params: { reservation: { status: status } },
+                  class: "btn #{opts[:css]}" do %>
+              <i class="ti ti-<%= opts[:icon] %> me-1"></i> <%= opts[:label] %>
             <% end %>
           <% end %>
         </div>
-
-        <% if [:finished, :cancelled].include?(@reservation.aasm.current_state) %>
-          <p class="text-muted small mt-3 mb-0 text-center">No hay transiciones disponibles para este estado.</p>
-        <% end %>
       </div>
     </div>
   </div>
+  <% end %>
 </div>

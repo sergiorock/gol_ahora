@@ -1,5 +1,5 @@
 class Admin::ReservationsController < Admin::BaseController
-  before_action :set_reservation, only: %i[show edit update]
+  before_action :set_reservation, only: %i[show edit update pdf]
 
   def index
     @reservations = policy_scope(Reservation).includes(:user, court: :court_type, balance_charge: {})
@@ -14,6 +14,17 @@ class Admin::ReservationsController < Admin::BaseController
     authorize @reservation
     @payments = @reservation.payments
     @reservation = Reservation.includes(:deposit_charge, :balance_charge, payments: {}).find(params[:id])
+  end
+
+  def pdf
+    authorize @reservation, :show?
+    @reservation = Reservation.includes(:user, :deposit_charge, :balance_charge,
+                                        court: :court_type, payments: {}).find(params[:id])
+    pdf = ReservationPdf.new(@reservation).render
+    send_data pdf,
+      filename: "reserva-#{@reservation.id}.pdf",
+      type: "application/pdf",
+      disposition: "inline"
   end
 
   def edit

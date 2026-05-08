@@ -90,7 +90,7 @@
             <% (8..23).each do |h| %>
               <% ["00", "30"].each do |m| %>
                 <% val = "#{h.to_s.rjust(2,'0')}:#{m}" %>
-                <option value="<%= val %>" <%= "selected" if params.dig(:reservation, :end_time) == val %>><%= val %></option>
+                <option value="<%= val %>" <%= "selected" if (params.dig(:reservation, :end_time) || "09:00") == val %>><%= val %></option>
               <% end %>
             <% end %>
           </select>
@@ -207,6 +207,8 @@
     function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
 
     function recalculate() {
+      if (!userTouched) { summary.classList.add('hidden'); return; }
+
       const courtId    = fixedCourt || (courtSel ? courtSel.value : null);
       const priceHour  = courtId ? prices[courtId] : null;
       const startVal   = startSel ? startSel.value : null;
@@ -229,60 +231,60 @@
       summary.classList.remove('hidden');
     }
 
-    // Disponibilidad
+    // Disponibilidad — filtra opciones en Tom Select
     const dateInput = form.querySelector('input[name="reservation[date]"]');
     const submitBtn = form.querySelector('button[type="submit"]');
-    let unavailable = [], maxDuration = 9999;
+    let unavailable = [], maxDuration = 9999, userTouched = false;
 
-    function isOccupied(min) {
-      return unavailable.some(({ from, to }) => min >= timeToMin(from) && min < timeToMin(to));
-    }
+    // Opciones originales (todas las medias horas) — capturadas antes de que Tom Select las toque
+    const allStart = Array.from(startSel?.options || []).map(o => o.value).filter(Boolean);
+    const allEnd   = Array.from(endSel?.options   || []).map(o => o.value).filter(Boolean);
 
-    function refreshTomSelect(sel) {
-      if (!sel?.tomselect) return;
-      sel.tomselect.destroy();
-      new TomSelect(sel, { allowEmptyOption: false, create: false, sortField: false,
-        render: { no_results: () => '<div class="no-results">Sin resultados</div>' }
-      });
+    function setOptions(sel, opts) {
+      if (!sel) return;
+      const ts   = sel.tomselect;
+      const cur  = ts ? ts.getValue() : sel.value;
+      const next = opts.includes(cur) ? cur : (opts[0] || '');
+
+      if (ts) {
+        // Tom Select ya está listo — usar su API directamente
+        ts.clear(true);
+        ts.clearOptions();
+        opts.forEach(v => ts.addOption({ value: v, text: v }));
+        ts.setValue(next, true);
+        ts.refreshOptions(false);
+      } else {
+        // Tom Select aún no inicializó — modificar el native select (lo leerá al init)
+        sel.innerHTML = opts.map(v => `<option value="${v}"${v === next ? ' selected' : ''}>${v}</option>`).join('');
+      }
     }
 
     function updateStartOptions() {
-      if (!startSel) return;
-      Array.from(startSel.options).forEach(opt => {
-        const min     = timeToMin(opt.value);
-        const blocked = isOccupied(min);
-        opt.disabled    = blocked;
-        opt.textContent = blocked ? `${opt.value} — ocupado` : opt.value;
+      const valid = allStart.filter(v => {
+        const min = timeToMin(v);
+        return !unavailable.some(({ from, to }) => min >= timeToMin(from) && min < timeToMin(to));
       });
-      if (startSel.options[startSel.selectedIndex]?.disabled) {
-        const free = Array.from(startSel.options).find(o => !o.disabled);
-        if (free) startSel.value = free.value;
-      }
-      refreshTomSelect(startSel);
+      setOptions(startSel, valid);
     }
 
     function updateEndOptions() {
-      if (!endSel || !startSel?.value) return;
-      const startMin = timeToMin(startSel.value);
-      // Próximo bloqueo después del inicio
-      const nextBlock = unavailable
-        .map(b => timeToMin(b.from))
-        .filter(m => m > startMin)
-        .sort((a,b) => a-b)[0] ?? 9999;
-
-      Array.from(endSel.options).forEach(opt => {
-        const min      = timeToMin(opt.value);
-        const tooEarly = min <= startMin;
-        const tooLate  = (min - startMin) > maxDuration;
-        const overlaps = min > nextBlock;
-        opt.disabled    = tooEarly || tooLate || overlaps;
-        opt.textContent = (overlaps || (isOccupied(min) && min > startMin)) ? `${opt.value} — ocupado` : opt.value;
+      const startMin  = timeToMin(startSel?.value || '08:00');
+      const nextBlock = unavailable.map(b => timeToMin(b.from)).filter(m => m > startMin).sort((a,b)=>a-b)[0] ?? 9999;
+      const valid = allEnd.filter(v => {
+        const min = timeToMin(v), diff = min - startMin;
+        return diff > 0 && diff <= maxDuration && min <= nextBlock;
       });
-      if (endSel.options[endSel.selectedIndex]?.disabled) {
-        const free = Array.from(endSel.options).find(o => !o.disabled);
-        if (free) endSel.value = free.value;
+      setOptions(endSel, valid);
+    }
+
+    function autoCompleteEnd() {
+      const startMin  = timeToMin(startSel?.value || '08:00');
+      const targetEnd = String(Math.floor((startMin+60)/60)).padStart(2,'0') + ':' + String((startMin+60)%60).padStart(2,'0');
+      const endOpts   = Array.from(endSel?.options || []).map(o => o.value);
+      if (endOpts.includes(targetEnd)) {
+        endSel.value = targetEnd;
+        endSel.tomselect?.setValue(targetEnd, true);
       }
-      refreshTomSelect(endSel);
     }
 
     async function fetchAvailability() {
@@ -291,26 +293,36 @@
       try {
         const res  = await fetch(`/courts/${courtId}/availability?date=${dateInput.value}`);
         const data = await res.json();
-        unavailable  = data.unavailable || [];
-        maxDuration  = data.max_duration_minutes || 9999;
+        unavailable = data.unavailable || [];
+        maxDuration = data.max_duration_minutes || 9999;
       } catch(e) {}
       updateStartOptions();
       updateEndOptions();
-      recalculate();
+      autoCompleteEnd();
+      // Retorna Promise implícitamente por ser async
     }
 
     dateInput?.addEventListener('change', fetchAvailability);
     if (courtSel) courtSel.addEventListener('change', fetchAvailability);
-    startSel?.addEventListener('change', () => { updateEndOptions(); recalculate(); });
-    endSel?.addEventListener('change', recalculate);
-    if (courtSel) courtSel.addEventListener('change', recalculate);
 
-    // Llama al cargar si la cancha y fecha ya están pre-cargadas
-    if ((fixedCourt || courtSel?.value) && dateInput?.value) {
-      fetchAvailability();
-    } else {
+    startSel?.addEventListener('change', () => {
+      userTouched = true;
+      updateEndOptions();
+      autoCompleteEnd();
       recalculate();
-    }
+    });
+    endSel?.addEventListener('change', () => {
+      userTouched = true;
+      recalculate();
+    });
+    if (courtSel) courtSel.addEventListener('change', () => { userTouched = false; recalculate(); });
+
+    // Corre después del DOMContentLoaded del layout (donde se inicializa Tom Select)
+    document.addEventListener('DOMContentLoaded', () => {
+      if ((fixedCourt || courtSel?.value) && dateInput?.value) {
+        fetchAvailability().then(() => { userTouched = true; recalculate(); });
+      }
+    });
 
     // Preview de tarjeta
     const numInput  = document.getElementById('card-number-input');
