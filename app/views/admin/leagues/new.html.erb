@@ -1,0 +1,3 @@
+<% content_for :page_title, "Nueva liga" %>
+<% content_for :header_actions do %><%= link_to admin_leagues_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %><% end %>
+<div class="row justify-content-center"><div class="col-lg-8"><div class="card"><div class="card-body"><%= render "form", league: @league %></div></div></div></div>

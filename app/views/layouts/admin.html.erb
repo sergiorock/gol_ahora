@@ -115,13 +115,13 @@
                 <span class="nav-link text-muted small text-uppercase fw-bold">Competencias</span>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_leagues_path, class: "nav-link #{controller_name == 'leagues' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-trophy"></i></span>
                   <span class="nav-link-title">Ligas</span>
                 <% end %>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_tournaments_path, class: "nav-link #{controller_name == 'tournaments' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-tournament"></i></span>
                   <span class="nav-link-title">Torneos</span>
                 <% end %>

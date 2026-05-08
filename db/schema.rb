@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_07_222810) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_183209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -73,6 +73,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_222810) do
     t.decimal "value", null: false
   end
 
+  create_table "leagues", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.date "end_date"
+    t.string "name", null: false
+    t.text "rules"
+    t.date "start_date"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.integer "away_goals"
+    t.string "away_team"
+    t.bigint "competition_id"
+    t.string "competition_type"
+    t.bigint "court_id"
+    t.datetime "created_at", null: false
+    t.integer "home_goals"
+    t.string "home_team"
+    t.text "official_rules"
+    t.datetime "played_at"
+    t.datetime "updated_at", null: false
+    t.index ["competition_type", "competition_id"], name: "index_matches_on_competition_type_and_competition_id"
+    t.index ["court_id"], name: "index_matches_on_court_id"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.decimal "amount"
     t.string "cardholder_name"
@@ -112,6 +139,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_222810) do
     t.index ["user_id"], name: "index_reservations_on_user_id"
   end
 
+  create_table "tournaments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.date "end_date"
+    t.integer "format", default: 0, null: false
+    t.string "name", null: false
+    t.text "rules"
+    t.date "start_date"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "address"
     t.date "birth_date"
@@ -140,6 +179,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_222810) do
   add_foreign_key "charges", "users"
   add_foreign_key "court_blocks", "courts"
   add_foreign_key "courts", "court_types"
+  add_foreign_key "matches", "courts"
   add_foreign_key "payments", "reservations"
   add_foreign_key "receipts", "charges"
   add_foreign_key "reservations", "courts"

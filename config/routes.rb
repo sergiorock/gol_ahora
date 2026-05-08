@@ -15,6 +15,12 @@ Rails.application.routes.draw do
     resources :reservations, only: %i[index show edit update] do
       member { get :pdf }
     end
+    resources :leagues do
+      resources :matches, only: %i[new create edit update destroy]
+    end
+    resources :tournaments do
+      resources :matches, only: %i[new create edit update destroy]
+    end
     resources :charges
     resource :walkin, only: %i[new create], controller: "walkins"
     resources :discounts do
@@ -34,6 +40,9 @@ Rails.application.routes.draw do
   resources :reservations, only: %i[index new create show] do
     member { delete :cancel }
   end
+
+  resources :leagues,     only: %i[index show]
+  resources :tournaments, only: %i[index show]
 
   root to: "home#index"
 

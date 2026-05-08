@@ -1,0 +1,35 @@
+<div class="table-responsive">
+  <table class="table table-vcenter card-table">
+    <thead>
+      <tr><th>Local</th><th class="text-center">Resultado</th><th>Visitante</th><th>Cancha</th><th>Fecha</th><th class="w-1">Acciones</th></tr>
+    </thead>
+    <tbody>
+      <% matches.each do |m| %>
+        <tr>
+          <td class="fw-semibold"><%= m.home_team %></td>
+          <td class="text-center">
+            <% if m.played? %>
+              <span class="badge bg-dark text-white fs-6 px-3"><%= m.result %></span>
+            <% else %>
+              <span class="text-muted">vs</span>
+            <% end %>
+          </td>
+          <td class="fw-semibold"><%= m.away_team %></td>
+          <td class="text-muted small"><%= m.court&.name || "—" %></td>
+          <td class="text-muted small"><%= m.played_at ? l(m.played_at, format: "%-d %b %H:%M") : "—" %></td>
+          <td>
+            <div class="d-flex gap-1">
+              <% edit_path = competition_type == :league ? edit_admin_league_match_path(competition, m) : edit_admin_tournament_match_path(competition, m) %>
+              <% delete_path = competition_type == :league ? admin_league_match_path(competition, m) : admin_tournament_match_path(competition, m) %>
+              <%= link_to edit_path, class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
+              <%= button_to delete_path, method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar partido?" } do %><i class="ti ti-trash"></i><% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+      <% if matches.empty? %>
+        <tr><td colspan="6" class="text-center text-muted py-4">Sin partidos cargados.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,42 @@
+<% content_for :page_title, "Torneos" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_tournament_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Nuevo torneo
+  <% end %>
+<% end %>
+
+<% if @current.any? %>
+  <div class="card mb-4">
+    <div class="card-header"><h3 class="card-title">Torneos activos</h3></div>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead><tr><th>Nombre</th><th>Formato</th><th>Fechas</th><th>Estado</th><th>Partidos</th><th class="w-1">Acciones</th></tr></thead>
+        <tbody>
+          <% @current.each do |t| %>
+            <%= render "row", tournament: t %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<% if @historical.any? %>
+  <div class="card">
+    <div class="card-header"><h3 class="card-title text-muted">Historial</h3></div>
+    <div class="table-responsive">
+      <table class="table table-vcenter card-table">
+        <thead><tr><th>Nombre</th><th>Formato</th><th>Fechas</th><th>Estado</th><th>Partidos</th><th class="w-1">Acciones</th></tr></thead>
+        <tbody>
+          <% @historical.each do |t| %>
+            <%= render "row", tournament: t %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<% if @current.empty? && @historical.empty? %>
+  <div class="card"><div class="card-body text-center text-muted py-5">No hay torneos registrados.</div></div>
+<% end %>

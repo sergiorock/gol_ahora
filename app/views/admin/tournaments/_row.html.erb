@@ -1,0 +1,19 @@
+<tr>
+  <td class="fw-semibold"><%= tournament.name %></td>
+  <td><span class="badge bg-blue-lt"><%= Tournament::FORMAT_LABELS[tournament.format] %></span></td>
+  <td class="text-muted small">
+    <% if tournament.start_date %>
+      <%= tournament.start_date.strftime("%-d %b %Y") %>
+      <% if tournament.end_date %> → <%= tournament.end_date.strftime("%-d %b %Y") %><% end %>
+    <% else %>—<% end %>
+  </td>
+  <td><%= tournament_status_badge(tournament.status) %></td>
+  <td class="text-muted"><%= tournament.matches.count %></td>
+  <td>
+    <div class="d-flex gap-1">
+      <%= link_to admin_tournament_path(tournament), class: "btn btn-sm btn-ghost-secondary" do %><i class="ti ti-eye"></i><% end %>
+      <%= link_to edit_admin_tournament_path(tournament), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
+      <%= button_to admin_tournament_path(tournament), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar torneo?" } do %><i class="ti ti-trash"></i><% end %>
+    </div>
+  </td>
+</tr>

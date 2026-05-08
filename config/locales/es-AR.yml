@@ -138,6 +138,18 @@ es-AR:
       separator: ","
       delimiter: "."
 
+  league:
+    statuses:
+      open:        Abierta
+      in_progress: En curso
+      finished:    Finalizada
+
+  tournament:
+    statuses:
+      open:        Abierto
+      in_progress: En curso
+      finished:    Finalizado
+
   charge:
     types:
       rental:     Alquiler
