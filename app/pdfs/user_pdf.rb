@@ -75,7 +75,7 @@ class UserPdf
     fila "Nombres",       @user.first_name
     fila "Apellido",      @user.last_name
     fila "DNI",           @user.dni.presence || "—"
-    fila "Edad",          @user.age.present? ? "#{@user.age} años" : "—"
+    fila "Fecha nacimiento", @user.birth_date ? "#{I18n.l(@user.birth_date, format: :long)} (#{@user.age} años)" : "—"
     fila "Teléfono",      @user.phone.presence || "—"
     fila "Domicilio",     @user.address.presence || "—"
     fila "Código postal", @user.postal_code.presence || "—"

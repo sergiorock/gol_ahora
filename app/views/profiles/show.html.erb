@@ -31,8 +31,12 @@
           <dd class="text-white font-medium"><%= current_user.dni.presence || "—" %></dd>
         </div>
         <div>
-          <dt class="text-white/40 text-xs mb-1">Edad</dt>
-          <dd class="text-white font-medium"><%= current_user.age.presence || "—" %></dd>
+          <dt class="text-white/40 text-xs mb-1">Fecha de nacimiento</dt>
+          <dd class="text-white font-medium">
+            <% if current_user.birth_date %>
+              <%= l current_user.birth_date, format: :long %> (<%= current_user.age %> años)
+            <% else %>—<% end %>
+          </dd>
         </div>
         <div>
           <dt class="text-white/40 text-xs mb-1">Teléfono</dt>
