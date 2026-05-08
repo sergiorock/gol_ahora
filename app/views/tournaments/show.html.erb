@@ -38,6 +38,30 @@
           <div class="text-white/60 text-sm leading-relaxed"><%= simple_format @tournament.rules %></div>
         </div>
       <% end %>
+
+      <%# Inscripción %>
+      <% if (@tournament.open? || @tournament.in_progress?) %>
+        <% my_enrollment = user_signed_in? ? current_user.enrollments.find_by(enrollable: @tournament) : nil %>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+          <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-3">Inscripción</h3>
+          <% if my_enrollment&.active? %>
+            <p class="text-green-400 text-sm mb-2">✓ Inscripto como <strong><%= my_enrollment.team_name %></strong></p>
+            <%= button_to enrollment_path(my_enrollment), method: :delete,
+                  class: "text-red-400/60 hover:text-red-400 text-sm transition-colors",
+                  data: { confirm: "¿Cancelar inscripción?" } do %>Cancelar<% end %>
+          <% elsif user_signed_in? %>
+            <%= form_with url: tournament_enrollments_path(@tournament), method: :post do |f| %>
+              <input type="text" name="enrollment[team_name]" placeholder="Nombre de tu equipo"
+                     required class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:outline-none focus:border-field-light mb-3">
+              <button type="submit" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-2.5 rounded-xl transition-all text-sm">
+                Inscribir equipo
+              </button>
+            <% end %>
+          <% else %>
+            <%= link_to "Iniciá sesión para inscribirte", new_user_session_path, class: "text-field-light text-sm hover:underline" %>
+          <% end %>
+        </div>
+      <% end %>
     </div>
 
     <div class="md:col-span-2">

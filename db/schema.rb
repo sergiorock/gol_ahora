@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_08_183209) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_234916) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -71,6 +71,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_183209) do
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.decimal "value", null: false
+  end
+
+  create_table "enrollments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "enrollable_id", null: false
+    t.string "enrollable_type", null: false
+    t.datetime "enrolled_at", null: false
+    t.integer "status", default: 0, null: false
+    t.string "team_name", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["enrollable_type", "enrollable_id"], name: "index_enrollments_on_enrollable_type_and_enrollable_id"
+    t.index ["user_id", "enrollable_type", "enrollable_id"], name: "index_one_enrollment_per_user_per_competition", unique: true
+    t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
   create_table "leagues", force: :cascade do |t|
@@ -179,6 +193,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_183209) do
   add_foreign_key "charges", "users"
   add_foreign_key "court_blocks", "courts"
   add_foreign_key "courts", "court_types"
+  add_foreign_key "enrollments", "users"
   add_foreign_key "matches", "courts"
   add_foreign_key "payments", "reservations"
   add_foreign_key "receipts", "charges"

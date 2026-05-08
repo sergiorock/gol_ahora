@@ -4,8 +4,9 @@ class User < ApplicationRecord
 
   enum :role, { admin: 0, client: 1 }, default: :client
 
-  has_many :reservations, dependent: :destroy
-  has_many :charges, dependent: :destroy
+  has_many :reservations,  dependent: :destroy
+  has_many :charges,       dependent: :destroy
+  has_many :enrollments,   dependent: :destroy
   has_many :attendances, dependent: :destroy
   has_many :enrollments, dependent: :destroy
   has_many :teams, dependent: :destroy

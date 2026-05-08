@@ -16,10 +16,12 @@ Rails.application.routes.draw do
       member { get :pdf }
     end
     resources :leagues do
-      resources :matches, only: %i[new create edit update destroy]
+      resources :matches,     only: %i[new create edit update destroy]
+      resources :enrollments, only: %i[index new create edit update destroy]
     end
     resources :tournaments do
-      resources :matches, only: %i[new create edit update destroy]
+      resources :matches,     only: %i[new create edit update destroy]
+      resources :enrollments, only: %i[index new create edit update destroy]
     end
     resources :charges
     resource :walkin, only: %i[new create], controller: "walkins"
@@ -41,8 +43,13 @@ Rails.application.routes.draw do
     member { delete :cancel }
   end
 
-  resources :leagues,     only: %i[index show]
-  resources :tournaments, only: %i[index show]
+  resources :leagues, only: %i[index show] do
+    resources :enrollments, only: %i[create]
+  end
+  resources :tournaments, only: %i[index show] do
+    resources :enrollments, only: %i[create]
+  end
+  resources :enrollments, only: %i[index destroy]
 
   root to: "home#index"
 

@@ -3,6 +3,7 @@
   <%= link_to admin_leagues_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %>
   <%= link_to edit_admin_league_path(@league), class: "btn btn-warning" do %><i class="ti ti-pencil"></i> Editar<% end %>
   <%= link_to new_admin_league_match_path(@league), class: "btn btn-primary" do %><i class="ti ti-plus"></i> Agregar partido<% end %>
+  <%= link_to new_admin_league_enrollment_path(@league), class: "btn btn-success" do %><i class="ti ti-user-plus"></i> Inscribir equipo<% end %>
 <% end %>
 
 <div class="row g-4">
@@ -38,6 +39,38 @@
   </div>
 
   <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 class="card-title">Equipos inscriptos (<%= @league.enrollments.active.count %>)</h3>
+      </div>
+      <% enrollments = @league.enrollments.includes(:user).order(:team_name) %>
+      <% if enrollments.any? %>
+        <div class="table-responsive">
+          <table class="table table-vcenter card-table table-sm">
+            <thead><tr><th>Equipo</th><th>Capitán</th><th>Inscripto</th><th>Estado</th><th class="w-1"></th></tr></thead>
+            <tbody>
+              <% enrollments.each do |e| %>
+                <tr>
+                  <td class="fw-semibold"><%= e.team_name %></td>
+                  <td class="text-muted small"><%= e.user.full_name %></td>
+                  <td class="text-muted small"><%= l e.enrolled_at, format: "%-d/%m/%Y" %></td>
+                  <td><span class="badge <%= e.active? ? 'bg-success-lt' : 'bg-secondary-lt' %>"><%= e.active? ? 'Activa' : 'Cancelada' %></span></td>
+                  <td>
+                    <div class="d-flex gap-1">
+                      <%= link_to edit_admin_league_enrollment_path(@league, e), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
+                      <%= button_to admin_league_enrollment_path(@league, e), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar inscripción?" } do %><i class="ti ti-trash"></i><% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="card-body text-muted small">Sin equipos inscriptos.</div>
+      <% end %>
+    </div>
+
     <div class="card">
       <div class="card-header"><h3 class="card-title">Fixture / Partidos</h3></div>
       <%= render "admin/matches/table", matches: @matches, competition: @league, competition_type: :league %>
