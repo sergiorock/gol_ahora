@@ -3,8 +3,8 @@
   <td><span class="badge bg-blue-lt"><%= Tournament::FORMAT_LABELS[tournament.format] %></span></td>
   <td class="text-muted small">
     <% if tournament.start_date %>
-      <%= tournament.start_date.strftime("%-d %b %Y") %>
-      <% if tournament.end_date %> → <%= tournament.end_date.strftime("%-d %b %Y") %><% end %>
+      <%= l tournament.start_date, format: "%-d/%m/%Y" %>
+      <% if tournament.end_date %> → <%= l tournament.end_date, format: "%-d/%m/%Y" %><% end %>
     <% else %>—<% end %>
   </td>
   <td><%= tournament_status_badge(tournament.status) %></td>

@@ -6,26 +6,26 @@
     <h1 class="font-display text-5xl sm:text-6xl text-white">LIGAS</h1>
   </div>
 
-  <% current = @leagues.select { |l| l.open? || l.in_progress? } %>
+  <% current = @leagues.select { |lg| lg.open? || lg.in_progress? } %>
   <% historical = @leagues.select(&:finished?) %>
 
   <% if current.any? %>
     <h2 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Activas</h2>
     <div class="grid sm:grid-cols-2 gap-4 mb-10">
-      <% current.each do |l| %>
-        <%= link_to league_path(l), class: "bg-white/5 hover:bg-white/8 border border-white/10 hover:border-field/40 rounded-2xl p-6 transition-all block" do %>
+      <% current.each do |league| %>
+        <%= link_to league_path(league), class: "bg-white/5 hover:bg-white/8 border border-white/10 hover:border-field/40 rounded-2xl p-6 transition-all block" do %>
           <div class="flex items-start justify-between mb-3">
-            <h3 class="font-display text-2xl text-white"><%= l.name.upcase %></h3>
-            <span class="text-xs px-2.5 py-1 rounded-full <%= l.open? ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400' %>">
-              <%= l.status_label %>
+            <h3 class="font-display text-2xl text-white"><%= league.name.upcase %></h3>
+            <span class="text-xs px-2.5 py-1 rounded-full <%= league.open? ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400' %>">
+              <%= league.status_label %>
             </span>
           </div>
-          <% if l.description.present? %>
-            <p class="text-white/50 text-sm mb-3 line-clamp-2"><%= l.description %></p>
+          <% if league.description.present? %>
+            <p class="text-white/50 text-sm mb-3 line-clamp-2"><%= league.description %></p>
           <% end %>
           <div class="flex items-center gap-4 text-white/40 text-xs">
-            <span><i class="ti ti-ball-football me-1"></i><%= l.matches.count %> partidos</span>
-            <% if l.start_date %><span><i class="ti ti-calendar me-1"></i><%= l.start_date.strftime("%-d %b %Y") %></span><% end %>
+            <span><i class="ti ti-ball-football me-1"></i><%= league.matches.count %> partidos</span>
+            <% if league.start_date %><span><i class="ti ti-calendar me-1"></i><%= l(league.start_date, format: "%-d/%m/%Y") %></span><% end %>
           </div>
         <% end %>
       <% end %>
@@ -35,13 +35,13 @@
   <% if historical.any? %>
     <h2 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Historial</h2>
     <div class="grid sm:grid-cols-2 gap-4">
-      <% historical.each do |l| %>
-        <%= link_to league_path(l), class: "bg-white/5 hover:bg-white/8 border border-white/10 rounded-2xl p-5 transition-all block opacity-70 hover:opacity-100" do %>
+      <% historical.each do |league| %>
+        <%= link_to league_path(league), class: "bg-white/5 hover:bg-white/8 border border-white/10 rounded-2xl p-5 transition-all block opacity-70 hover:opacity-100" do %>
           <div class="flex items-start justify-between mb-2">
-            <h3 class="font-semibold text-white"><%= l.name %></h3>
+            <h3 class="font-semibold text-white"><%= league.name %></h3>
             <span class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/50">Finalizada</span>
           </div>
-          <div class="text-white/40 text-xs"><%= l.matches.count %> partidos</div>
+          <div class="text-white/40 text-xs"><%= league.matches.count %> partidos</div>
         <% end %>
       <% end %>
     </div>

@@ -4,22 +4,22 @@
       <tr><th>Nombre</th><th>Fechas</th><th>Estado</th><th>Partidos</th><th class="w-1">Acciones</th></tr>
     </thead>
     <tbody>
-      <% leagues.each do |l| %>
+      <% leagues.each do |league| %>
         <tr>
-          <td class="fw-semibold"><%= l.name %></td>
+          <td class="fw-semibold"><%= league.name %></td>
           <td class="text-muted small">
-            <% if l.start_date %>
-              <%= l.start_date.strftime("%-d %b %Y") %>
-              <% if l.end_date %> → <%= l.end_date.strftime("%-d %b %Y") %><% end %>
+            <% if league.start_date %>
+              <%= l league.start_date, format: "%-d/%m/%Y" %>
+              <% if league.end_date %> → <%= l league.end_date, format: "%-d/%m/%Y" %><% end %>
             <% else %>—<% end %>
           </td>
-          <td><%= league_status_badge(l.status) %></td>
-          <td class="text-muted"><%= l.matches.count %></td>
+          <td><%= league_status_badge(league.status) %></td>
+          <td class="text-muted"><%= league.matches.count %></td>
           <td>
             <div class="d-flex gap-1">
-              <%= link_to admin_league_path(l), class: "btn btn-sm btn-ghost-secondary" do %><i class="ti ti-eye"></i><% end %>
-              <%= link_to edit_admin_league_path(l), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
-              <%= button_to admin_league_path(l), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar liga?" } do %><i class="ti ti-trash"></i><% end %>
+              <%= link_to admin_league_path(league), class: "btn btn-sm btn-ghost-secondary" do %><i class="ti ti-eye"></i><% end %>
+              <%= link_to edit_admin_league_path(league), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>
+              <%= button_to admin_league_path(league), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar liga?" } do %><i class="ti ti-trash"></i><% end %>
             </div>
           </td>
         </tr>
