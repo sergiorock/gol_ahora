@@ -1,0 +1,45 @@
+<%= simple_form_for [:admin, clase] do |f| %>
+  <div class="card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <%= f.input :nombre, label: "Nombre de la clase", placeholder: "Ej: Fútbol para principiantes" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :status, label: "Estado",
+              collection: [["Activa", "activa"], ["Inactiva", "inactiva"]],
+              include_blank: false %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :personal_deportivo_id, label: "Profesor",
+              collection: @personal_deportivos.map { |pd| [pd.full_name, pd.id] },
+              include_blank: "Seleccioná un profesor" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :court_type_id, label: "Tipo de cancha (opcional)",
+              collection: @court_types.map { |ct| [ct.name, ct.id] },
+              include_blank: "Sin asignar" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :scheduled_at, label: "Fecha y hora", as: :datetime_local,
+              input_html: { value: clase.scheduled_at&.strftime("%Y-%m-%dT%H:%M") } %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :duration_minutes, label: "Duración (minutos)", placeholder: "60" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :max_students, label: "Cupo máximo", placeholder: "10" %>
+        </div>
+        <div class="col-12">
+          <%= f.input :descripcion, label: "Descripción", as: :text,
+              input_html: { rows: 3 }, placeholder: "Descripción de la clase..." %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <%= f.button :submit, clase.persisted? ? "Guardar cambios" : "Crear clase", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_clases_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

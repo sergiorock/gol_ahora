@@ -1,0 +1,74 @@
+<% content_for :page_title, "Personal Deportivo" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_personal_deportivo_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Nuevo integrante
+  <% end %>
+<% end %>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Certificación</th>
+          <th>Clases / Entrenam.</th>
+          <th class="w-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @personal_deportivos.each do |pd| %>
+          <tr>
+            <td>
+              <%= link_to admin_personal_deportivo_path(pd), class: "fw-semibold text-reset" do %>
+                <%= pd.full_name %>
+              <% end %>
+            </td>
+            <td>
+              <span class="badge <%= pd.tipo_profesor? ? 'bg-blue-lt' : 'bg-purple-lt' %>">
+                <%= PersonalDeportivo::TIPO_LABELS[pd.tipo] %>
+              </span>
+            </td>
+            <td class="text-muted small"><%= pd.email.presence || "—" %></td>
+            <td class="text-muted small"><%= pd.telefono.presence || "—" %></td>
+            <td class="text-muted small">
+              <% if pd.certificacion_deportiva.present? %>
+                <%= pd.certificacion_deportiva %>
+                <% if pd.fecha_certificacion %>
+                  <span class="text-muted">(<%= l pd.fecha_certificacion, format: :short %>)</span>
+                <% end %>
+              <% else %>
+                —
+              <% end %>
+            </td>
+            <td class="text-muted small">
+              <span class="badge bg-blue-lt"><%= pd.clases.count %> cls</span>
+              <span class="badge bg-purple-lt"><%= pd.entrenamientos.count %> ent</span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <%= link_to admin_personal_deportivo_path(pd), class: "btn btn-sm btn-ghost-secondary", title: "Ver" do %>
+                  <i class="ti ti-eye"></i>
+                <% end %>
+                <%= link_to edit_admin_personal_deportivo_path(pd), class: "btn btn-sm btn-ghost-warning", title: "Editar" do %>
+                  <i class="ti ti-pencil"></i>
+                <% end %>
+                <%= button_to admin_personal_deportivo_path(pd), method: :delete,
+                    form: { data: { confirm: "¿Eliminar a #{pd.full_name}?" } },
+                    class: "btn btn-sm btn-ghost-danger" do %>
+                  <i class="ti ti-trash"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @personal_deportivos.empty? %>
+          <tr><td colspan="7" class="text-center text-muted py-4">Sin personal cargado todavía.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

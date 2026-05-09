@@ -1,0 +1,79 @@
+<% content_for :title, "#{@clase.nombre} — Gol Ahora" %>
+
+<div class="max-w-4xl mx-auto pt-24 pb-16 px-4">
+
+  <div class="mb-8">
+    <%= link_to clases_path, class: "text-white/40 hover:text-white text-sm flex items-center gap-1 mb-6 transition-colors" do %>
+      ← Volver a clases
+    <% end %>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <% if @clase.court_type %>
+        <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 font-medium">
+          <%= @clase.court_type.name %>
+        </span>
+      <% end %>
+      <% if @clase.full? %>
+        <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 font-medium">Sin cupo</span>
+      <% else %>
+        <span class="text-xs px-2.5 py-1 rounded-full bg-green-500/20 text-green-400 font-medium">
+          <%= @clase.spots_available %> lugar<%= @clase.spots_available == 1 ? "" : "es" %> disponibles
+        </span>
+      <% end %>
+    </div>
+    <h1 class="font-display text-6xl sm:text-7xl text-white leading-none mb-2">
+      <%= @clase.nombre.upcase %>
+    </h1>
+    <p class="text-white/50">Prof. <%= @clase.personal_deportivo.full_name %></p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+      <div class="text-white/40 text-xs uppercase tracking-widest mb-1">Horario</div>
+      <div class="text-white font-medium text-sm"><%= @clase.schedule_label %></div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+      <div class="text-white/40 text-xs uppercase tracking-widest mb-1">Duración</div>
+      <div class="text-white font-medium"><%= @clase.duration_minutes %> minutos</div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+      <div class="text-white/40 text-xs uppercase tracking-widest mb-1">Cupo</div>
+      <div class="text-white font-medium"><%= @clase.spots_taken %> / <%= @clase.max_students %></div>
+    </div>
+  </div>
+
+  <% if @clase.descripcion.present? %>
+    <div class="bg-white/5 border border-white/10 rounded-xl p-6 mb-8">
+      <h2 class="text-white/60 text-xs font-semibold tracking-widest uppercase mb-3">Descripción</h2>
+      <p class="text-white/70 leading-relaxed"><%= @clase.descripcion %></p>
+    </div>
+  <% end %>
+
+  <div class="flex gap-3">
+    <% if user_signed_in? %>
+      <% if @my_asistencia %>
+        <%= button_to clase_asistencia_path(@clase, @my_asistencia),
+            method: :delete,
+            class: "bg-red-500/20 text-red-400 hover:bg-red-500/30 font-semibold px-6 py-3 rounded-xl transition-all text-sm border border-red-500/30" do %>
+          Cancelar inscripción
+        <% end %>
+      <% elsif !@clase.full? %>
+        <%= button_to clase_asistencias_path(@clase),
+            method: :post,
+            class: "bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-all text-sm" do %>
+          Inscribirse a esta clase
+        <% end %>
+      <% else %>
+        <button disabled class="bg-white/10 text-white/30 font-semibold px-6 py-3 rounded-xl text-sm cursor-not-allowed">
+          Clase completa
+        </button>
+      <% end %>
+    <% else %>
+      <%= link_to new_user_session_path,
+          class: "bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-all text-sm" do %>
+        Iniciar sesión para inscribirse
+      <% end %>
+    <% end %>
+    <%= link_to "Ver todas las clases", clases_path, class: "text-white/50 hover:text-white text-sm px-4 py-3 transition-colors" %>
+  </div>
+
+</div>

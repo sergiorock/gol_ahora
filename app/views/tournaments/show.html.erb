@@ -1,61 +1,78 @@
-<% content_for :title, "#{@tournament.name} — Gol Ahora" %>
+<% content_for :title, "\#{@tournament.name} — Gol Ahora" %>
 
-<div class="max-w-4xl mx-auto pt-24 pb-16 px-4">
-  <div class="flex items-center gap-4 mb-8">
-    <%= link_to tournaments_path, class: "text-white/40 hover:text-white transition-colors" do %>
+<div class="max-w-5xl mx-auto pt-24 pb-16 px-4">
+
+  <div class="flex items-start gap-4 mb-10">
+    <%= link_to tournaments_path, class: "mt-2 text-white/30 hover:text-white transition-colors flex-shrink-0" do %>
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
     <% end %>
     <div class="flex-1">
-      <p class="text-white/40 text-sm">Torneo · <span class="text-white/60"><%= Tournament::FORMAT_LABELS[@tournament.format] %></span></p>
-      <h1 class="font-display text-4xl text-white"><%= @tournament.name.upcase %></h1>
+      <p class="text-white/40 text-sm uppercase tracking-widest mb-1">Torneo</p>
+      <h1 class="font-display text-5xl sm:text-7xl text-white leading-none"><%= @tournament.name.upcase %></h1>
+      <div class="flex items-center gap-3 mt-3">
+        <span class="text-xs px-3 py-1 rounded-full font-medium <%= @tournament.in_progress? ? 'bg-blue-500/20 text-blue-400' : @tournament.open? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
+          <%= @tournament.status_label %>
+        </span>
+        <span class="px-2 py-0.5 rounded bg-white/10 text-white/50 text-xs"><%= Tournament::FORMAT_LABELS[@tournament.format] %></span>
+        <% if @tournament.start_date %><span class="text-white/30 text-xs"><%= l @tournament.start_date, format: "%-d/%m/%Y" %><% if @tournament.end_date %> → <%= l @tournament.end_date, format: "%-d/%m/%Y" %><% end %></span><% end %>
+      </div>
     </div>
-    <span class="text-sm px-3 py-1.5 rounded-full <%= @tournament.open? ? 'bg-green-500/20 text-green-400' : @tournament.in_progress? ? 'bg-blue-500/20 text-blue-400' : 'bg-white/10 text-white/50' %>">
-      <%= @tournament.status_label %>
-    </span>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3 mb-10">
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+      <div class="font-display text-4xl text-white"><%= @tournament.enrollments.active.count %></div>
+      <div class="text-white/40 text-xs mt-1 uppercase tracking-wider">Equipos</div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+      <div class="font-display text-4xl text-white"><%= @matches.count %></div>
+      <div class="text-white/40 text-xs mt-1 uppercase tracking-wider">Partidos</div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+      <div class="font-display text-4xl text-white"><%= @matches.count { |m| m.played? } %></div>
+      <div class="text-white/40 text-xs mt-1 uppercase tracking-wider">Jugados</div>
+    </div>
   </div>
 
   <div class="grid md:grid-cols-3 gap-6">
     <div class="space-y-4">
-      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
-        <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Info</h3>
-        <dl class="space-y-2 text-sm">
-          <div class="flex justify-between"><dt class="text-white/50">Formato</dt><dd class="text-white"><%= Tournament::FORMAT_LABELS[@tournament.format] %></dd></div>
-          <% if @tournament.start_date %>
-            <div class="flex justify-between"><dt class="text-white/50">Inicio</dt><dd class="text-white"><%= l @tournament.start_date, format: :short %></dd></div>
-          <% end %>
-          <% if @tournament.end_date %>
-            <div class="flex justify-between"><dt class="text-white/50">Fin</dt><dd class="text-white"><%= l @tournament.end_date, format: :short %></dd></div>
-          <% end %>
-          <div class="flex justify-between"><dt class="text-white/50">Partidos</dt><dd class="text-white"><%= @matches.count %></dd></div>
-        </dl>
-        <% if @tournament.description.present? %>
-          <p class="text-white/50 text-sm mt-4 leading-relaxed"><%= @tournament.description %></p>
-        <% end %>
-      </div>
-      <% if @tournament.rules.present? %>
+      <% if @tournament.description.present? %>
         <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
-          <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-3">Reglamento</h3>
-          <div class="text-white/60 text-sm leading-relaxed"><%= simple_format @tournament.rules %></div>
+          <h3 class="text-white/40 text-xs font-semibold tracking-widest uppercase mb-3">Descripción</h3>
+          <p class="text-white/60 text-sm leading-relaxed"><%= @tournament.description %></p>
         </div>
       <% end %>
-
-      <%# Inscripción %>
-      <% if (@tournament.open? || @tournament.in_progress?) %>
-        <% my_enrollment = user_signed_in? ? current_user.enrollments.find_by(enrollable: @tournament) : nil %>
+      <% if @tournament.rules.present? %>
         <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
-          <h3 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-3">Inscripción</h3>
+          <h3 class="text-white/40 text-xs font-semibold tracking-widest uppercase mb-3">Reglamento</h3>
+          <div class="text-white/50 text-sm leading-relaxed"><%= simple_format @tournament.rules %></div>
+        </div>
+      <% end %>
+      <% active_enrollments = @tournament.enrollments.active.includes(:user) %>
+      <% if active_enrollments.any? %>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+          <h3 class="text-white/40 text-xs font-semibold tracking-widest uppercase mb-3">Equipos</h3>
+          <div class="space-y-2">
+            <% active_enrollments.order(:team_name).each do |e| %>
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-field flex-shrink-0"></div>
+                <span class="text-white/70 text-sm"><%= e.team_name %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <% if @tournament.open? || @tournament.in_progress? %>
+        <% my_enrollment = user_signed_in? ? current_user.enrollments.find_by(enrollable: @tournament) : nil %>
+        <div class="bg-field/10 border border-field/30 rounded-2xl p-5">
+          <h3 class="text-field-light text-xs font-semibold tracking-widest uppercase mb-3">Tu inscripción</h3>
           <% if my_enrollment&.active? %>
-            <p class="text-green-400 text-sm mb-2">✓ Inscripto como <strong><%= my_enrollment.team_name %></strong></p>
-            <%= button_to enrollment_path(my_enrollment), method: :delete,
-                  class: "text-red-400/60 hover:text-red-400 text-sm transition-colors",
-                  data: { confirm: "¿Cancelar inscripción?" } do %>Cancelar<% end %>
+            <p class="text-green-400 text-sm mb-3">✓ <strong><%= my_enrollment.team_name %></strong></p>
+            <%= button_to enrollment_path(my_enrollment), method: :delete, class: "text-red-400/60 hover:text-red-400 text-xs transition-colors", data: { confirm: "¿Cancelar?" } do %>Cancelar<% end %>
           <% elsif user_signed_in? %>
-            <%= form_with url: tournament_enrollments_path(@tournament), method: :post do |f| %>
-              <input type="text" name="enrollment[team_name]" placeholder="Nombre de tu equipo"
-                     required class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:outline-none focus:border-field-light mb-3">
-              <button type="submit" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-2.5 rounded-xl transition-all text-sm">
-                Inscribir equipo
-              </button>
+            <%= form_with url: tournament_enrollments_path(@tournament), method: :post do %>
+              <input type="text" name="enrollment[team_name]" placeholder="Nombre de tu equipo" required class="w-full bg-black/20 border border-white/15 rounded-xl px-3 py-2 text-white text-sm placeholder-white/30 focus:outline-none focus:border-field-light mb-2">
+              <button type="submit" class="w-full bg-field hover:bg-field-dark text-white font-semibold py-2 rounded-xl transition-all text-sm">Inscribir equipo</button>
             <% end %>
           <% else %>
             <%= link_to "Iniciá sesión para inscribirte", new_user_session_path, class: "text-field-light text-sm hover:underline" %>
@@ -65,38 +82,35 @@
     </div>
 
     <div class="md:col-span-2">
-      <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-        <div class="px-5 py-4 border-b border-white/10">
-          <h3 class="font-semibold text-white">Fixture</h3>
-        </div>
-        <% if @matches.any? %>
-          <div class="divide-y divide-white/5">
-            <% @matches.each do |m| %>
-              <div class="px-5 py-4">
-                <div class="flex items-center gap-3">
-                  <span class="flex-1 text-white text-sm font-medium text-right"><%= m.home_team %></span>
-                  <div class="text-center min-w-[60px]">
-                    <% if m.played? %>
-                      <span class="font-display text-xl text-white"><%= m.home_goals %> – <%= m.away_goals %></span>
-                    <% else %>
-                      <span class="text-white/30 text-sm">vs</span>
-                    <% end %>
-                  </div>
-                  <span class="flex-1 text-white text-sm font-medium"><%= m.away_team %></span>
+      <h3 class="text-white/40 text-xs font-semibold tracking-widest uppercase mb-4">Fixture</h3>
+      <% if @matches.any? %>
+        <div class="space-y-2">
+          <% @matches.each do |m| %>
+            <div class="bg-white/5 border border-white/10 rounded-2xl px-5 py-4">
+              <div class="flex items-center gap-3">
+                <span class="flex-1 text-right font-semibold text-sm <%= m.played? && m.winner == :home ? 'text-field-light' : 'text-white' %>"><%= m.home_team %></span>
+                <div class="flex-shrink-0 w-20 text-center">
+                  <% if m.played? %>
+                    <div class="bg-black/30 rounded-xl px-2 py-1 inline-flex items-center gap-1.5">
+                      <span class="font-display text-2xl <%= m.winner == :home ? 'text-field-light' : 'text-white/60' %>"><%= m.home_goals %></span>
+                      <span class="text-white/20 text-xs">–</span>
+                      <span class="font-display text-2xl <%= m.winner == :away ? 'text-field-light' : 'text-white/60' %>"><%= m.away_goals %></span>
+                    </div>
+                  <% else %>
+                    <span class="text-white/20 font-display text-xl">VS</span>
+                  <% end %>
                 </div>
-                <% if m.played_at || m.court %>
-                  <div class="text-center text-white/30 text-xs mt-1">
-                    <%= m.played_at ? l(m.played_at, format: "%-d %b %Y, %H:%M") : "" %>
-                    <%= m.court ? "· #{m.court.name}" : "" %>
-                  </div>
-                <% end %>
+                <span class="flex-1 font-semibold text-sm <%= m.played? && m.winner == :away ? 'text-field-light' : 'text-white' %>"><%= m.away_team %></span>
               </div>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="px-5 py-10 text-center text-white/30 text-sm">Sin partidos cargados.</div>
-        <% end %>
-      </div>
+              <% if m.played_at || m.court %>
+                <div class="text-center text-white/25 text-xs mt-2"><%= m.played_at ? l(m.played_at, format: "%-d %b, %H:%M") : "" %><%= m.court ? " · \#{m.court.name}" : "" %></div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-10 text-center text-white/30">Sin partidos programados.</div>
+      <% end %>
     </div>
   </div>
 </div>

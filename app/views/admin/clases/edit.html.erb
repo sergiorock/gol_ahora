@@ -1,0 +1,8 @@
+<% content_for :page_title, "Editar — #{@clase.nombre}" %>
+<% content_for :header_actions do %>
+  <%= link_to admin_clase_path(@clase), class: "btn btn-secondary" do %>
+    <i class="ti ti-arrow-left"></i> Volver
+  <% end %>
+<% end %>
+
+<%= render "form", clase: @clase %>

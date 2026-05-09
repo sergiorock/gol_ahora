@@ -131,20 +131,20 @@
                 <span class="nav-link text-muted small text-uppercase fw-bold">Academia</span>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_personal_deportivos_path, class: "nav-link #{controller_name == 'personal_deportivos' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-id-badge"></i></span>
                   <span class="nav-link-title">Personal Deportivo</span>
                 <% end %>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
+                <%= link_to admin_clases_path, class: "nav-link #{controller_name == 'clases' ? 'active' : ''}" do %>
                   <span class="nav-link-icon"><i class="ti ti-school"></i></span>
                   <span class="nav-link-title">Clases</span>
                 <% end %>
               </li>
               <li class="nav-item">
-                <%= link_to "#", class: "nav-link" do %>
-                  <span class="nav-link-icon"><i class="ti ti-run"></i></span>
+                <%= link_to admin_entrenamientos_path, class: "nav-link #{controller_name == 'entrenamientos' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-barbell"></i></span>
                   <span class="nav-link-title">Entrenamientos</span>
                 <% end %>
               </li>

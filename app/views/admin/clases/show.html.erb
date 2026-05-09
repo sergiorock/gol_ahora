@@ -1,0 +1,127 @@
+<% content_for :page_title, @clase.nombre %>
+<% content_for :header_actions do %>
+  <%= link_to admin_clases_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %>
+  <%= link_to edit_admin_clase_path(@clase), class: "btn btn-warning" do %><i class="ti ti-pencil"></i> Editar<% end %>
+  <%= button_to admin_clase_path(@clase), method: :delete,
+      form: { data: { confirm: "¿Eliminar esta clase?" } },
+      class: "btn btn-danger" do %><i class="ti ti-trash"></i> Eliminar<% end %>
+<% end %>
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Datos de la clase</h3>
+        <div class="card-options">
+          <span class="badge <%= @clase.activa? ? 'bg-success-lt' : 'bg-secondary-lt' %>">
+            <%= @clase.activa? ? "Activa" : "Inactiva" %>
+          </span>
+        </div>
+      </div>
+      <div class="card-body">
+        <dl class="row g-2">
+          <dt class="col-5 text-muted">Profesor</dt>
+          <dd class="col-7">
+            <%= link_to @clase.personal_deportivo.full_name,
+                admin_personal_deportivo_path(@clase.personal_deportivo),
+                class: "text-reset fw-semibold" %>
+          </dd>
+          <dt class="col-5 text-muted">Horario</dt>
+          <dd class="col-7 small"><%= @clase.schedule_label %></dd>
+          <dt class="col-5 text-muted">Duración</dt>
+          <dd class="col-7"><%= @clase.duration_minutes %> minutos</dd>
+          <dt class="col-5 text-muted">Cupo</dt>
+          <dd class="col-7"><%= @clase.spots_taken %> / <%= @clase.max_students %> inscriptos</dd>
+          <% if @clase.court_type %>
+            <dt class="col-5 text-muted">Cancha</dt>
+            <dd class="col-7"><%= @clase.court_type.name %></dd>
+          <% end %>
+        </dl>
+        <% if @clase.descripcion.present? %>
+          <div class="mt-3">
+            <div class="text-muted small fw-semibold mb-1">Descripción</div>
+            <div class="small"><%= simple_format @clase.descripcion %></div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Inscriptos / Asistencia (<%= @asistencias.count %>)</h3>
+        <div class="card-options">
+          <% unless @clase.full? %>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#inscribir-form">
+              <i class="ti ti-user-plus"></i> Inscribir alumno
+            </button>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="collapse" id="inscribir-form">
+        <div class="card-body border-bottom">
+          <%= form_with url: admin_clase_asistencias_path(@clase), method: :post, local: true do |f| %>
+            <div class="row g-2 align-items-end">
+              <div class="col">
+                <label class="form-label">Usuario</label>
+                <select name="asistencia[user_id]" class="form-select ts-dark" data-placeholder="Buscar usuario...">
+                  <option value=""></option>
+                  <% User.where(role: :cliente).order(:last_name, :first_name).each do |u| %>
+                    <option value="<%= u.id %>"><%= u.full_name %> — <%= u.email %></option>
+                  <% end %>
+                </select>
+              </div>
+              <div class="col-auto">
+                <input type="hidden" name="asistencia[attended_on]" value="<%= @clase.scheduled_at&.to_date || Date.today %>">
+                <button type="submit" class="btn btn-success">Inscribir</button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @asistencias.any? %>
+        <div class="table-responsive">
+          <table class="table table-vcenter card-table table-sm">
+            <thead>
+              <tr><th>Alumno</th><th>Email</th><th>Asistencia</th><th class="w-1"></th></tr>
+            </thead>
+            <tbody>
+              <% @asistencias.each do |a| %>
+                <tr>
+                  <td class="fw-semibold"><%= a.user.full_name %></td>
+                  <td class="text-muted small"><%= a.user.email %></td>
+                  <td>
+                    <%= form_with url: admin_clase_asistencia_path(@clase, a), method: :patch, local: true do |f| %>
+                      <div class="d-flex gap-1">
+                        <button type="submit" name="present" value="true"
+                          class="btn btn-sm <%= a.present? ? 'btn-success' : 'btn-ghost-success' %>">
+                          <i class="ti ti-check"></i> Presente
+                        </button>
+                        <button type="submit" name="present" value="false"
+                          class="btn btn-sm <%= !a.present? ? 'btn-danger' : 'btn-ghost-danger' %>">
+                          <i class="ti ti-x"></i> Ausente
+                        </button>
+                      </div>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= button_to admin_clase_asistencia_path(@clase, a), method: :delete,
+                        form: { data: { confirm: "¿Quitar a #{a.user.full_name}?" } },
+                        class: "btn btn-sm btn-ghost-danger" do %>
+                      <i class="ti ti-trash"></i>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="card-body text-muted small">Sin inscriptos todavía.</div>
+      <% end %>
+    </div>
+  </div>
+</div>

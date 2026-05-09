@@ -1,56 +1,72 @@
 <% content_for :title, "Torneos — Gol Ahora" %>
 
 <div class="max-w-5xl mx-auto pt-24 pb-16 px-4">
-  <div class="mb-10">
+
+  <div class="mb-12">
     <p class="text-field-light text-sm font-medium tracking-widest uppercase mb-2">El Buen Deporte</p>
-    <h1 class="font-display text-5xl sm:text-6xl text-white">TORNEOS</h1>
+    <h1 class="font-display text-6xl sm:text-8xl text-white leading-none">TORNEOS</h1>
+    <div class="w-16 h-1 bg-field mt-4"></div>
   </div>
 
-  <% current = @tournaments.select { |tn| tn.open? || tn.in_progress? } %>
+  <% current    = @tournaments.select { |tn| tn.open? || tn.in_progress? } %>
   <% historical = @tournaments.select(&:finished?) %>
 
   <% if current.any? %>
-    <h2 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Activos</h2>
-    <div class="grid sm:grid-cols-2 gap-4 mb-10">
-      <% current.each do |tournament| %>
-        <%= link_to tournament_path(tournament), class: "bg-white/5 hover:bg-white/8 border border-white/10 hover:border-field/40 rounded-2xl p-6 transition-all block" do %>
-          <div class="flex items-start justify-between mb-3">
-            <h3 class="font-display text-2xl text-white"><%= tournament.name.upcase %></h3>
-            <span class="text-xs px-2.5 py-1 rounded-full <%= tournament.open? ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400' %>">
-              <%= tournament.status_label %>
-            </span>
-          </div>
-          <span class="inline-block text-xs px-2 py-0.5 rounded bg-white/10 text-white/50 mb-3">
-            <%= Tournament::FORMAT_LABELS[tournament.format] %>
-          </span>
-          <% if tournament.description.present? %>
-            <p class="text-white/50 text-sm mb-3 line-clamp-2"><%= tournament.description %></p>
+    <div class="mb-12">
+      <h2 class="text-white/40 text-xs font-semibold tracking-[0.2em] uppercase mb-5">Activos</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <% current.each do |tournament| %>
+          <%= link_to tournament_path(tournament), class: "group bg-white/5 border border-white/10 hover:border-field/50 rounded-2xl p-6 transition-all duration-300 block" do %>
+            <%# Badges %>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="text-xs px-2.5 py-1 rounded-full font-medium <%= tournament.in_progress? ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400' %>">
+                <%= tournament.status_label %>
+              </span>
+              <span class="text-xs px-2 py-0.5 rounded bg-white/10 text-white/40"><%= Tournament::FORMAT_LABELS[tournament.format] %></span>
+            </div>
+            <%# Título %>
+            <h3 class="font-display text-3xl text-white mb-2 group-hover:text-field-light transition-colors"><%= tournament.name.upcase %></h3>
+            <% if tournament.description.present? %>
+              <p class="text-white/40 text-sm mb-4 line-clamp-2"><%= tournament.description %></p>
+            <% else %>
+              <div class="mb-4"></div>
+            <% end %>
+            <%# Stats %>
+            <div class="flex items-center gap-5 text-white/40 text-xs border-t border-white/5 pt-4">
+              <span><%= tournament.enrollments.active.count %> equipos</span>
+              <span><%= tournament.matches.count %> partidos</span>
+              <% if tournament.start_date %><span><%= l tournament.start_date, format: "%-d/%m/%Y" %></span><% end %>
+            </div>
           <% end %>
-          <div class="flex items-center gap-4 text-white/40 text-xs">
-            <span><i class="ti ti-ball-football me-1"></i><%= tournament.matches.count %> partidos</span>
-            <% if tournament.start_date %><span><i class="ti ti-calendar me-1"></i><%= l(tournament.start_date, format: "%-d/%m/%Y") %></span><% end %>
-          </div>
         <% end %>
-      <% end %>
+      </div>
     </div>
   <% end %>
 
   <% if historical.any? %>
-    <h2 class="text-white/50 text-xs font-semibold tracking-widest uppercase mb-4">Historial</h2>
-    <div class="grid sm:grid-cols-2 gap-4">
-      <% historical.each do |tournament| %>
-        <%= link_to tournament_path(tournament), class: "bg-white/5 hover:bg-white/8 border border-white/10 rounded-2xl p-5 transition-all block opacity-70 hover:opacity-100" do %>
-          <div class="flex items-start justify-between mb-1">
-            <h3 class="font-semibold text-white"><%= tournament.name %></h3>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/50">Finalizado</span>
-          </div>
-          <div class="text-white/40 text-xs"><%= Tournament::FORMAT_LABELS[tournament.format] %> · <%= tournament.matches.count %> partidos</div>
+    <div>
+      <h2 class="text-white/40 text-xs font-semibold tracking-[0.2em] uppercase mb-5">Historial</h2>
+      <div class="space-y-2">
+        <% historical.each do |tournament| %>
+          <%= link_to tournament_path(tournament), class: "flex items-center gap-4 p-4 bg-white/3 hover:bg-white/6 border border-white/5 hover:border-white/10 rounded-xl transition-all group" do %>
+            <div class="flex-1 min-w-0">
+              <span class="text-white/50 group-hover:text-white/80 font-medium text-sm transition-colors"><%= tournament.name %></span>
+            </div>
+            <div class="text-white/30 text-xs flex items-center gap-3">
+              <span><%= Tournament::FORMAT_LABELS[tournament.format] %></span>
+              <span><%= tournament.matches.count %> partidos</span>
+              <span class="px-2 py-0.5 rounded bg-white/5 text-white/30">Finalizado</span>
+            </div>
+          <% end %>
         <% end %>
-      <% end %>
+      </div>
     </div>
   <% end %>
 
   <% if @tournaments.empty? %>
-    <div class="text-center py-20 text-white/30"><p class="text-lg">No hay torneos disponibles.</p></div>
+    <div class="text-center py-24 text-white/30">
+      <p class="text-lg">No hay torneos disponibles por el momento.</p>
+    </div>
   <% end %>
+
 </div>

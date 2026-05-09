@@ -1,0 +1,74 @@
+<% content_for :page_title, "Clases" %>
+<% content_for :header_actions do %>
+  <%= link_to new_admin_clase_path, class: "btn btn-primary" do %>
+    <i class="ti ti-plus"></i> Nueva clase
+  <% end %>
+<% end %>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Clase</th>
+          <th>Profesor</th>
+          <th>Horario</th>
+          <th>Duración</th>
+          <th>Alumnos</th>
+          <th>Estado</th>
+          <th class="w-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @clases.each do |clase| %>
+          <tr>
+            <td>
+              <%= link_to admin_clase_path(clase), class: "fw-semibold text-reset" do %>
+                <%= clase.nombre %>
+              <% end %>
+              <% if clase.court_type %>
+                <div class="text-muted small"><%= clase.court_type.name %></div>
+              <% end %>
+            </td>
+            <td class="text-muted small"><%= clase.personal_deportivo.full_name %></td>
+            <td class="text-muted small"><%= clase.schedule_label %></td>
+            <td class="text-muted small"><%= clase.duration_minutes %> min</td>
+            <td>
+              <% pct = clase.max_students > 0 ? (clase.spots_taken * 100 / clase.max_students) : 0 %>
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small"><%= clase.spots_taken %>/<%= clase.max_students %></span>
+                <div class="progress progress-sm flex-grow-1" style="width:60px">
+                  <div class="progress-bar <%= pct >= 100 ? 'bg-danger' : pct >= 70 ? 'bg-warning' : 'bg-success' %>"
+                       style="width:<%= pct %>%"></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge <%= clase.activa? ? 'bg-success-lt' : 'bg-secondary-lt' %>">
+                <%= clase.activa? ? "Activa" : "Inactiva" %>
+              </span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <%= link_to admin_clase_path(clase), class: "btn btn-sm btn-ghost-secondary" do %>
+                  <i class="ti ti-eye"></i>
+                <% end %>
+                <%= link_to edit_admin_clase_path(clase), class: "btn btn-sm btn-ghost-warning" do %>
+                  <i class="ti ti-pencil"></i>
+                <% end %>
+                <%= button_to admin_clase_path(clase), method: :delete,
+                    form: { data: { confirm: "¿Eliminar #{clase.nombre}?" } },
+                    class: "btn btn-sm btn-ghost-danger" do %>
+                  <i class="ti ti-trash"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @clases.empty? %>
+          <tr><td colspan="7" class="text-center text-muted py-4">Sin clases creadas todavía.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<% content_for :title, "Entrenamientos — Gol Ahora" %>
+
+<div class="max-w-5xl mx-auto pt-24 pb-16 px-4">
+
+  <div class="mb-12">
+    <p class="text-field-light text-sm font-medium tracking-widest uppercase mb-2">El Buen Deporte</p>
+    <h1 class="font-display text-6xl sm:text-8xl text-white leading-none">ENTRENAMIENTOS</h1>
+    <div class="w-16 h-1 bg-field mt-4"></div>
+  </div>
+
+  <% if @entrenamientos.any? %>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <% @entrenamientos.each do |ent| %>
+        <%= link_to entrenamiento_path(ent), class: "group bg-white/5 border border-white/10 hover:border-field/50 rounded-2xl p-6 transition-all duration-300 block" do %>
+          <div class="flex items-center gap-2 mb-4">
+            <% if ent.full? %>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 font-medium">Sin cupo</span>
+            <% else %>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-green-500/20 text-green-400 font-medium">
+                <%= ent.spots_available %> lugar<%= ent.spots_available == 1 ? "" : "es" %>
+              </span>
+            <% end %>
+          </div>
+
+          <h3 class="font-display text-3xl text-white mb-1 group-hover:text-field-light transition-colors">
+            <%= ent.nombre.upcase %>
+          </h3>
+          <p class="text-white/50 text-sm mb-1">
+            Entrenador: <%= ent.personal_deportivo.full_name %>
+          </p>
+          <% if ent.descripcion.present? %>
+            <p class="text-white/40 text-sm mb-4 line-clamp-2"><%= ent.descripcion %></p>
+          <% else %>
+            <div class="mb-4"></div>
+          <% end %>
+
+          <div class="flex items-center gap-5 text-white/40 text-xs border-t border-white/5 pt-4">
+            <span><%= ent.schedule_label %></span>
+            <span><%= ent.duration_minutes %> min</span>
+            <span><%= ent.spots_taken %>/<%= ent.max_students %> inscriptos</span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-24 text-white/30">
+      <p class="text-lg">No hay entrenamientos disponibles por el momento.</p>
+    </div>
+  <% end %>
+
+</div>

@@ -1,0 +1,50 @@
+<%= simple_form_for [:admin, personal_deportivo] do |f| %>
+  <div class="card">
+    <div class="card-header"><h3 class="card-title">Datos personales</h3></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.input :nombre, label: "Nombres", placeholder: "Ej: Carlos" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.input :apellido, label: "Apellido", placeholder: "Ej: García" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :tipo, label: "Tipo",
+              collection: PersonalDeportivo::TIPO_LABELS.map { |k, v| [v, k] },
+              include_blank: "Seleccioná tipo" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :email, label: "Email", placeholder: "carlos@email.com" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :telefono, label: "Teléfono", placeholder: "+54 9 11 1234-5678" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-header"><h3 class="card-title">Certificación deportiva</h3></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.input :certificacion_deportiva, label: "Certificación", placeholder: "Ej: Entrenador de Fútbol Nivel 2 — AFA" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.input :fecha_certificacion, label: "Fecha de certificación", as: :date,
+              start_year: 1990, end_year: Date.today.year %>
+        </div>
+        <div class="col-12">
+          <%= f.input :observaciones, label: "Observaciones", as: :text,
+              input_html: { rows: 3 }, placeholder: "Notas internas sobre el integrante..." %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <%= f.button :submit, personal_deportivo.persisted? ? "Guardar cambios" : "Crear integrante", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_personal_deportivos_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

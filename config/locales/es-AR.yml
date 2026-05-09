@@ -1,12 +1,16 @@
 es-AR:
   activerecord:
     models:
-      user:        Usuario
-      court_type:  Tipo de cancha
-      court:       Cancha
-      court_block: Bloqueo de cancha
-      reservation: Reserva
-      payment:     Pago
+      user:                 Usuario
+      court_type:           Tipo de cancha
+      court:                Cancha
+      court_block:          Bloqueo de cancha
+      reservation:          Reserva
+      payment:              Pago
+      personal_deportivo:   Personal deportivo
+      clase:                Clase
+      entrenamiento:        Entrenamiento
+      asistencia:           Asistencia
 
     attributes:
       user:
@@ -149,6 +153,21 @@ es-AR:
       open:        Abierto
       in_progress: En curso
       finished:    Finalizado
+
+  personal_deportivo:
+    tipos:
+      profesor:   Profesor
+      entrenador: Entrenador
+
+  clase:
+    statuses:
+      activa:   Activa
+      inactiva: Inactiva
+
+  entrenamiento:
+    statuses:
+      activo:   Activo
+      inactivo: Inactivo
 
   charge:
     types:

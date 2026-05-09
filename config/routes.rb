@@ -31,6 +31,13 @@ Rails.application.routes.draw do
     resources :receipts do
       member { get :pdf }
     end
+    resources :personal_deportivos
+    resources :clases do
+      resources :asistencias, only: %i[create update destroy]
+    end
+    resources :entrenamientos do
+      resources :asistencias, only: %i[create update destroy]
+    end
   end
 
   resource :profile, only: [:show, :edit, :update]
@@ -50,6 +57,13 @@ Rails.application.routes.draw do
     resources :enrollments, only: %i[create]
   end
   resources :enrollments, only: %i[index destroy]
+
+  resources :clases, only: %i[index show] do
+    resources :asistencias, only: %i[create destroy]
+  end
+  resources :entrenamientos, only: %i[index show] do
+    resources :asistencias, only: %i[create destroy]
+  end
 
   root to: "home#index"
 

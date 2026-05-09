@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_08_234916) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_09_024153) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "asistencias", force: :cascade do |t|
+    t.bigint "asistible_id", null: false
+    t.string "asistible_type", null: false
+    t.date "attended_on"
+    t.datetime "created_at", null: false
+    t.boolean "present", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["asistible_type", "asistible_id"], name: "index_asistencias_on_asistible"
+    t.index ["user_id"], name: "index_asistencias_on_user_id"
+  end
 
   create_table "charges", force: :cascade do |t|
     t.decimal "amount", null: false
@@ -31,6 +43,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_234916) do
     t.index ["reservation_id", "is_deposit"], name: "index_charges_one_balance_per_reservation", unique: true, where: "((reservation_id IS NOT NULL) AND (is_deposit = false))"
     t.index ["reservation_id"], name: "index_charges_on_reservation_id"
     t.index ["user_id"], name: "index_charges_on_user_id"
+  end
+
+  create_table "clases", force: :cascade do |t|
+    t.bigint "court_type_id"
+    t.datetime "created_at", null: false
+    t.text "descripcion"
+    t.integer "duration_minutes", null: false
+    t.integer "max_students", null: false
+    t.string "nombre", null: false
+    t.bigint "personal_deportivo_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["court_type_id"], name: "index_clases_on_court_type_id"
+    t.index ["personal_deportivo_id"], name: "index_clases_on_personal_deportivo_id"
   end
 
   create_table "court_blocks", force: :cascade do |t|
@@ -87,6 +114,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_234916) do
     t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
+  create_table "entrenamientos", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "descripcion"
+    t.integer "duration_minutes", null: false
+    t.integer "max_students", null: false
+    t.string "nombre", null: false
+    t.bigint "personal_deportivo_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["personal_deportivo_id"], name: "index_entrenamientos_on_personal_deportivo_id"
+  end
+
   create_table "leagues", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -125,6 +165,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_234916) do
     t.integer "status"
     t.datetime "updated_at", null: false
     t.index ["reservation_id"], name: "index_payments_on_reservation_id"
+  end
+
+  create_table "personal_deportivos", force: :cascade do |t|
+    t.string "apellido"
+    t.string "certificacion_deportiva"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.date "fecha_certificacion"
+    t.string "nombre"
+    t.text "observaciones"
+    t.string "telefono"
+    t.integer "tipo"
+    t.datetime "updated_at", null: false
   end
 
   create_table "receipts", force: :cascade do |t|
@@ -188,12 +241,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_08_234916) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "asistencias", "users"
   add_foreign_key "charges", "discounts"
   add_foreign_key "charges", "reservations"
   add_foreign_key "charges", "users"
+  add_foreign_key "clases", "court_types"
+  add_foreign_key "clases", "personal_deportivos"
   add_foreign_key "court_blocks", "courts"
   add_foreign_key "courts", "court_types"
   add_foreign_key "enrollments", "users"
+  add_foreign_key "entrenamientos", "personal_deportivos"
   add_foreign_key "matches", "courts"
   add_foreign_key "payments", "reservations"
   add_foreign_key "receipts", "charges"
