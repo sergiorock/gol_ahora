@@ -22,6 +22,6 @@ class Clase < ApplicationRecord
 
   def schedule_label
     return "—" unless scheduled_at
-    scheduled_at.strftime("%A %-d/%m, %H:%M hs").capitalize
+    I18n.l(scheduled_at, format: "%A %-d/%m, %H:%M hs").capitalize
   end
 end
