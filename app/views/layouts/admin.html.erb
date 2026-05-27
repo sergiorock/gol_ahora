@@ -148,6 +148,46 @@
                   <span class="nav-link-title">Entrenamientos</span>
                 <% end %>
               </li>
+
+              <li class="nav-item mt-2">
+                <span class="nav-link text-muted small text-uppercase fw-bold">Reportes</span>
+              </li>
+              <li class="nav-item">
+                <%= link_to reservas_admin_reportes_path, class: "nav-link #{controller_name == 'reportes' && action_name == 'reservas' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-calendar-stats"></i></span>
+                  <span class="nav-link-title">Reservas</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to cobros_admin_reportes_path, class: "nav-link #{controller_name == 'reportes' && action_name == 'cobros' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-report-money"></i></span>
+                  <span class="nav-link-title">Cobros</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to ocupacion_admin_reportes_path, class: "nav-link #{controller_name == 'reportes' && action_name == 'ocupacion' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-chart-bar"></i></span>
+                  <span class="nav-link-title">Ocupación canchas</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to tipos_cancha_admin_reportes_path, class: "nav-link #{controller_name == 'reportes' && action_name == 'tipos_cancha' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-list-details"></i></span>
+                  <span class="nav-link-title">Tipos de cancha</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to asistencias_clases_admin_reportes_path, class: "nav-link #{controller_name == 'reportes' && action_name == 'asistencias_clases' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-checklist"></i></span>
+                  <span class="nav-link-title">Asist. clases</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to asistencias_entrenamientos_admin_reportes_path, class: "nav-link #{controller_name == 'reportes' && action_name == 'asistencias_entrenamientos' ? 'active' : ''}" do %>
+                  <span class="nav-link-icon"><i class="ti ti-checklist"></i></span>
+                  <span class="nav-link-title">Asist. entrenamientos</span>
+                <% end %>
+              </li>
             </ul>
 
             <div class="mt-auto pt-3 border-top">

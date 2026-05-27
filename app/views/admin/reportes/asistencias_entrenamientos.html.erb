@@ -1,0 +1,114 @@
+<% content_for :page_title, "Reporte de Asistencia — Entrenamientos" %>
+<% content_for :header_actions do %>
+  <%= link_to asistencias_entrenamientos_admin_reportes_path(request.query_parameters.merge(format: :pdf)),
+      class: "btn btn-sm d-inline-flex align-items-center gap-1",
+      style: "background:#16a34a;color:#fff;border-color:#16a34a;",
+      target: "_blank" do %>
+    <i class="ti ti-file-type-pdf"></i> Descargar PDF
+  <% end %>
+<% end %>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="card-title"><i class="ti ti-filter me-1"></i>Filtros</h3>
+  </div>
+  <div class="card-body">
+    <%= form_with url: asistencias_entrenamientos_admin_reportes_path, method: :get, local: true do |f| %>
+      <div class="row g-3 align-items-end">
+        <div class="col-sm-6 col-md-4">
+          <label class="form-label">Entrenamiento</label>
+          <%= f.select :entrenamiento_id,
+              [["Todos los entrenamientos", ""]] + @entrenamientos.map { |e| [e.nombre, e.id] },
+              { selected: params[:entrenamiento_id] },
+              class: "form-select form-select-sm" %>
+        </div>
+        <div class="col-sm-6 col-md-2">
+          <label class="form-label">Desde</label>
+          <%= f.date_field :desde, value: params[:desde], class: "form-control form-control-sm" %>
+        </div>
+        <div class="col-sm-6 col-md-2">
+          <label class="form-label">Hasta</label>
+          <%= f.date_field :hasta, value: params[:hasta], class: "form-control form-control-sm" %>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+          <%= f.submit "Filtrar", class: "btn btn-sm btn-primary flex-fill" %>
+          <%= link_to "Limpiar", asistencias_entrenamientos_admin_reportes_path, class: "btn btn-sm btn-ghost-secondary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body p-3 text-center">
+        <div class="text-muted small mb-1">Total inscripciones</div>
+        <div class="h2 mb-0"><%= @asistencias.count %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body p-3 text-center">
+        <div class="text-muted small mb-1">Presentes</div>
+        <div class="h2 mb-0 text-green"><%= @presentes %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body p-3 text-center">
+        <div class="text-muted small mb-1">% Asistencia</div>
+        <% pct = @asistencias.count > 0 ? (@presentes.to_f / @asistencias.count * 100).round(1) : 0 %>
+        <div class="h2 mb-0 <%= pct >= 70 ? "text-green" : pct >= 40 ? "text-orange" : "text-red" %>"><%= pct %>%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title"><%= @asistencias.count %> registro<%= @asistencias.count == 1 ? "" : "s" %></h3>
+  </div>
+  <% if @asistencias.any? %>
+    <div class="table-responsive">
+      <table class="table table-vcenter table-hover card-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Entrenamiento</th>
+            <th>Entrenador</th>
+            <th>Alumno</th>
+            <th class="text-center">Asistencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @asistencias.each do |a| %>
+            <tr>
+              <td class="text-nowrap"><%= l a.attended_on, format: "%-d %b %Y" %></td>
+              <td class="fw-medium"><%= a.asistible&.nombre || "—" %></td>
+              <td class="text-muted"><%= a.asistible&.personal_deportivo&.full_name || "—" %></td>
+              <td><%= a.user.full_name %></td>
+              <td class="text-center">
+                <% if a.present %>
+                  <span class="badge bg-green-lt text-green"><i class="ti ti-check me-1"></i>Presente</span>
+                <% else %>
+                  <span class="badge bg-secondary-lt text-secondary">Pendiente</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="card-body">
+      <div class="empty py-5">
+        <div class="empty-icon"><i class="ti ti-user-off text-muted" style="font-size:2.5rem"></i></div>
+        <p class="empty-title mt-3">Sin resultados</p>
+        <p class="empty-subtitle text-muted">No hay registros con los filtros seleccionados.</p>
+      </div>
+    </div>
+  <% end %>
+</div>

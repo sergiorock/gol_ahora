@@ -1,109 +1,208 @@
 <% content_for :page_title, "Dashboard" %>
 
-<%# Header con fecha %>
+<style>
+  .stat-card-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .stat-card-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+  .stat-card-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    opacity: 0.08;
+    transform: translate(20px, -20px);
+  }
+  .stat-card-hero.verde::before  { background: #22c55e; }
+  .stat-card-hero.azul::before   { background: #3b82f6; }
+  .stat-card-hero.naranja::before{ background: #f97316; }
+  .stat-card-hero.violeta::before{ background: #a855f7; }
+  .stat-card-hero.cyan::before   { background: #06b6d4; }
+  .stat-card-hero.rosa::before   { background: #ec4899; }
+
+  .stat-card-hero .stat-icon {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+  .stat-card-hero.verde  .stat-icon { background: rgba(34,197,94,.18); color: #22c55e; }
+  .stat-card-hero.azul   .stat-icon { background: rgba(59,130,246,.18); color: #60a5fa; }
+  .stat-card-hero.naranja .stat-icon { background: rgba(249,115,22,.18); color: #fb923c; }
+  .stat-card-hero.violeta .stat-icon { background: rgba(168,85,247,.18); color: #c084fc; }
+  .stat-card-hero.cyan   .stat-icon { background: rgba(6,182,212,.18); color: #22d3ee; }
+  .stat-card-hero.rosa   .stat-icon { background: rgba(236,72,153,.18); color: #f472b6; }
+
+  .stat-card-hero .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.45);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .stat-card-hero .stat-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stat-card-hero .stat-sub {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    margin-top: 4px;
+  }
+
+  .reporte-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: background 0.12s, color 0.12s;
+    border: 1px solid transparent;
+  }
+  .reporte-link:hover {
+    background: rgba(22,163,74,0.12);
+    color: #4ade80;
+    border-color: rgba(22,163,74,0.2);
+  }
+  .reporte-link .reporte-icon {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+</style>
+
+<%# Fecha y hora %>
 <div class="d-flex align-items-center justify-content-between mb-4">
   <div>
-    <h2 class="mb-0"><%= l Time.zone.today, format: :long %></h2>
+    <div class="text-muted small text-uppercase fw-semibold" style="letter-spacing:.06em">
+      <%= I18n.l(Time.zone.today, format: "%A") %>,
+      <%= I18n.l(Time.zone.today, format: "%-d de %B de %Y") %>
+    </div>
   </div>
-  <%= link_to new_admin_court_path, class: "btn btn-primary d-none d-sm-inline-flex" do %>
-    <i class="ti ti-plus me-1"></i> Nueva cancha
-  <% end %>
+  <div class="d-flex gap-2">
+    <%= link_to new_admin_court_path, class: "btn btn-sm btn-primary d-none d-sm-inline-flex align-items-center gap-1" do %>
+      <i class="ti ti-plus"></i> Nueva cancha
+    <% end %>
+  </div>
 </div>
 
-<%# Stat cards %>
+<%# Stats principales — fila 1 %>
+<div class="row g-3 mb-3">
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero verde">
+      <div class="stat-icon"><i class="ti ti-users"></i></div>
+      <div class="stat-label">Clientes</div>
+      <div class="stat-value"><%= @stats[:users] %></div>
+      <div class="stat-sub">registrados en el sistema</div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero azul">
+      <div class="stat-icon"><i class="ti ti-ball-football"></i></div>
+      <div class="stat-label">Canchas activas</div>
+      <div class="stat-value"><%= @stats[:courts] %></div>
+      <div class="stat-sub">disponibles para reservar</div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero naranja">
+      <div class="stat-icon"><i class="ti ti-calendar-event"></i></div>
+      <div class="stat-label">Reservas hoy</div>
+      <div class="stat-value"><%= @stats[:reservations_today] %></div>
+      <div class="stat-sub">programadas para hoy</div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero violeta">
+      <div class="stat-icon"><i class="ti ti-calendar-check"></i></div>
+      <div class="stat-label">Confirmadas este mes</div>
+      <div class="stat-value"><%= @stats[:confirmed_this_month] %></div>
+      <div class="stat-sub">reservas del mes en curso</div>
+    </div>
+  </div>
+</div>
+
+<%# Stats secundarios — fila 2 %>
 <div class="row g-3 mb-4">
-  <div class="col-sm-6 col-xl-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div class="me-3">
-            <span class="avatar avatar-md bg-blue-lt text-blue rounded-3">
-              <i class="ti ti-users fs-3"></i>
-            </span>
-          </div>
-          <div class="text-muted">Clientes</div>
-        </div>
-        <div class="h1 mb-0"><%= @stats[:users] %></div>
-        <div class="text-muted mt-1" style="font-size:0.8rem">registrados en el sistema</div>
-      </div>
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero verde">
+      <div class="stat-icon"><i class="ti ti-cash"></i></div>
+      <div class="stat-label">Ingresos del mes</div>
+      <div class="stat-value" style="font-size:1.6rem">$<%= number_with_delimiter(@stats[:ingresos_mes].to_i, delimiter: ".") %></div>
+      <div class="stat-sub">cobros registrados en <%= I18n.l(Date.today, format: "%B") %></div>
     </div>
   </div>
-
-  <div class="col-sm-6 col-xl-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div class="me-3">
-            <span class="avatar avatar-md bg-green-lt text-green rounded-3">
-              <i class="ti ti-ball-football fs-3"></i>
-            </span>
-          </div>
-          <div class="text-muted">Canchas</div>
-        </div>
-        <div class="h1 mb-0"><%= @stats[:courts] %></div>
-        <div class="text-muted mt-1" style="font-size:0.8rem">activas disponibles</div>
-      </div>
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero cyan">
+      <div class="stat-icon"><i class="ti ti-users-group"></i></div>
+      <div class="stat-label">Asistencias del mes</div>
+      <div class="stat-value"><%= @stats[:asistencias_mes] %></div>
+      <div class="stat-sub">inscripciones a clases y entrenamientos</div>
     </div>
   </div>
-
-  <div class="col-sm-6 col-xl-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div class="me-3">
-            <span class="avatar avatar-md bg-orange-lt text-orange rounded-3">
-              <i class="ti ti-calendar-event fs-3"></i>
-            </span>
-          </div>
-          <div class="text-muted">Hoy</div>
-        </div>
-        <div class="h1 mb-0"><%= @stats[:reservations_today] %></div>
-        <div class="text-muted mt-1" style="font-size:0.8rem">reservas programadas</div>
-      </div>
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero rosa">
+      <div class="stat-icon"><i class="ti ti-school"></i></div>
+      <div class="stat-label">Clases activas</div>
+      <div class="stat-value"><%= @stats[:clases_activas] %></div>
+      <div class="stat-sub">con inscripción abierta</div>
     </div>
   </div>
-
-  <div class="col-sm-6 col-xl-3">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div class="me-3">
-            <span class="avatar avatar-md bg-purple-lt text-purple rounded-3">
-              <i class="ti ti-calendar-check fs-3"></i>
-            </span>
-          </div>
-          <div class="text-muted">Este mes</div>
-        </div>
-        <div class="h1 mb-0"><%= @stats[:confirmed_this_month] %></div>
-        <div class="text-muted mt-1" style="font-size:0.8rem">reservas confirmadas</div>
-      </div>
+  <div class="col-6 col-xl-3">
+    <div class="stat-card-hero naranja">
+      <div class="stat-icon"><i class="ti ti-barbell"></i></div>
+      <div class="stat-label">Entrenamientos activos</div>
+      <div class="stat-value"><%= @stats[:entrenamientos_activos] %></div>
+      <div class="stat-sub">con inscripción abierta</div>
     </div>
   </div>
 </div>
 
 <div class="row g-3">
-  <%# Reservas de hoy %>
+  <%# Agenda de hoy %>
   <div class="col-lg-4">
-    <div class="card h-100">
-      <div class="card-header">
-        <h3 class="card-title">
-          <span class="badge bg-orange me-2" style="width:8px;height:8px;border-radius:50%;padding:0;display:inline-block;vertical-align:middle"></span>
+    <div class="card h-100" style="background:#0f172a;border:1px solid rgba(255,255,255,0.06)">
+      <div class="card-header" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+        <h3 class="card-title text-white">
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#f97316;margin-right:8px;vertical-align:middle"></span>
           Agenda de hoy
         </h3>
+        <div class="card-options">
+          <span class="badge bg-orange-lt text-orange"><%= @upcoming_today.count %> turno<%= @upcoming_today.count == 1 ? "" : "s" %></span>
+        </div>
       </div>
       <% if @upcoming_today.any? %>
-        <div class="list-group list-group-flush overflow-auto" style="max-height:320px">
+        <div class="list-group list-group-flush overflow-auto" style="max-height:340px">
           <% @upcoming_today.each do |r| %>
-            <%= link_to admin_reservation_path(r), class: "list-group-item list-group-item-action px-3 py-2" do %>
+            <%= link_to admin_reservation_path(r), class: "list-group-item list-group-item-action px-3 py-2", style: "background:transparent;border-color:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8)" do %>
               <div class="d-flex align-items-center gap-3">
-                <div class="text-center" style="min-width:48px">
-                  <div class="fw-bold text-body" style="font-size:1rem;line-height:1"><%= l r.starts_at, format: "%H:%M" %></div>
-                  <div class="text-muted" style="font-size:0.7rem"><%= l r.ends_at, format: "%H:%M" %></div>
+                <div class="text-center" style="min-width:44px">
+                  <div class="fw-bold text-white" style="font-size:.95rem;line-height:1"><%= l r.starts_at, format: "%H:%M" %></div>
+                  <div style="font-size:.68rem;color:rgba(255,255,255,0.35)"><%= l r.ends_at, format: "%H:%M" %></div>
                 </div>
-                <div class="vr"></div>
+                <div class="vr" style="background:rgba(255,255,255,0.08)"></div>
                 <div class="flex-fill overflow-hidden">
-                  <div class="fw-medium text-truncate"><%= r.court.name %></div>
-                  <div class="text-muted text-truncate" style="font-size:0.78rem"><%= r.user.full_name %></div>
+                  <div class="fw-medium text-truncate" style="color:#fff"><%= r.court.name %></div>
+                  <div class="text-truncate" style="font-size:.75rem;color:rgba(255,255,255,0.4)"><%= r.user.full_name %></div>
                 </div>
                 <%= reservation_status_badge(r.status) %>
               </div>
@@ -112,70 +211,122 @@
         </div>
       <% else %>
         <div class="card-body">
-          <div class="empty py-3">
-            <div class="empty-icon"><i class="ti ti-calendar-off text-muted" style="font-size:2rem"></i></div>
-            <p class="empty-title text-muted mt-2 mb-0" style="font-size:0.875rem">Sin reservas para hoy</p>
+          <div class="empty py-4">
+            <div class="empty-icon"><i class="ti ti-calendar-off" style="font-size:2rem;color:rgba(255,255,255,0.2)"></i></div>
+            <p class="empty-title mt-2 mb-0" style="font-size:.85rem;color:rgba(255,255,255,0.3)">Sin reservas para hoy</p>
           </div>
         </div>
       <% end %>
     </div>
   </div>
 
-  <%# Últimas reservas %>
+  <%# Columna derecha: últimas reservas + accesos rápidos a reportes %>
   <div class="col-lg-8">
-    <div class="card h-100">
-      <div class="card-header">
-        <h3 class="card-title"><i class="ti ti-history me-1"></i>Últimas reservas</h3>
-        <div class="card-options">
-          <%= link_to admin_reservations_path, class: "btn btn-sm btn-ghost-secondary" do %>
-            Ver todas <i class="ti ti-chevron-right"></i>
+    <div class="row g-3 h-100">
+      <%# Últimas reservas %>
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="ti ti-history me-1"></i>Últimas reservas</h3>
+            <div class="card-options">
+              <%= link_to admin_reservations_path, class: "btn btn-sm btn-ghost-secondary" do %>
+                Ver todas <i class="ti ti-chevron-right"></i>
+              <% end %>
+            </div>
+          </div>
+          <% if @recent_reservations.any? %>
+            <div class="table-responsive">
+              <table class="table table-vcenter card-table">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Cancha</th>
+                    <th>Fecha y hora</th>
+                    <th>Estado</th>
+                    <th class="w-1"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @recent_reservations.each do |r| %>
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="avatar avatar-xs rounded-circle bg-blue-lt text-blue"><%= r.user.first_name[0].upcase %></span>
+                          <span class="text-truncate" style="max-width:130px"><%= r.user.full_name %></span>
+                        </div>
+                      </td>
+                      <td class="text-muted"><%= r.court.name %></td>
+                      <td class="text-muted text-nowrap"><%= l r.starts_at, format: "%-d %b, %H:%M" %></td>
+                      <td><%= reservation_status_badge(r.status) %></td>
+                      <td>
+                        <%= link_to admin_reservation_path(r), class: "btn btn-sm btn-ghost-secondary" do %>
+                          <i class="ti ti-eye"></i>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="card-body">
+              <div class="empty py-4">
+                <div class="empty-icon"><i class="ti ti-calendar text-muted" style="font-size:2rem"></i></div>
+                <p class="empty-title text-muted mt-2 mb-0">Aún no hay reservas registradas</p>
+              </div>
+            </div>
           <% end %>
         </div>
       </div>
-      <% if @recent_reservations.any? %>
-        <div class="table-responsive">
-          <table class="table table-vcenter card-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Cancha</th>
-                <th>Fecha y hora</th>
-                <th>Estado</th>
-                <th class="w-1"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @recent_reservations.each do |r| %>
-                <tr>
-                  <td>
-                    <div class="d-flex align-items-center gap-2">
-                      <span class="avatar avatar-xs rounded-circle bg-blue-lt text-blue">
-                        <%= r.user.first_name[0].upcase %>
-                      </span>
-                      <span class="text-truncate" style="max-width:120px"><%= r.user.full_name %></span>
-                    </div>
-                  </td>
-                  <td class="text-muted"><%= r.court.name %></td>
-                  <td class="text-muted text-nowrap"><%= l r.starts_at, format: "%-d %b, %H:%M" %></td>
-                  <td><%= reservation_status_badge(r.status) %></td>
-                  <td>
-                    <%= link_to admin_reservation_path(r), class: "btn btn-sm btn-ghost-secondary" do %>
-                      <i class="ti ti-eye"></i>
-                    <% end %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <div class="card-body">
-          <div class="empty py-4">
-            <div class="empty-icon"><i class="ti ti-calendar text-muted" style="font-size:2rem"></i></div>
-            <p class="empty-title text-muted mt-2 mb-0">Aún no hay reservas registradas</p>
+
+      <%# Accesos rápidos a reportes %>
+      <div class="col-12">
+        <div class="card" style="background:#0f172a;border:1px solid rgba(255,255,255,0.06)">
+          <div class="card-header" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+            <h3 class="card-title text-white"><i class="ti ti-chart-bar me-1" style="color:#22c55e"></i>Reportes</h3>
+          </div>
+          <div class="card-body py-2">
+            <div class="row g-1">
+              <div class="col-6">
+                <%= link_to reservas_admin_reportes_path, class: "reporte-link" do %>
+                  <span class="reporte-icon"><i class="ti ti-calendar"></i></span>
+                  Reservas
+                <% end %>
+              </div>
+              <div class="col-6">
+                <%= link_to cobros_admin_reportes_path, class: "reporte-link" do %>
+                  <span class="reporte-icon"><i class="ti ti-cash"></i></span>
+                  Cobros
+                <% end %>
+              </div>
+              <div class="col-6">
+                <%= link_to ocupacion_admin_reportes_path, class: "reporte-link" do %>
+                  <span class="reporte-icon"><i class="ti ti-map"></i></span>
+                  Ocupación de canchas
+                <% end %>
+              </div>
+              <div class="col-6">
+                <%= link_to tipos_cancha_admin_reportes_path, class: "reporte-link" do %>
+                  <span class="reporte-icon"><i class="ti ti-ball-football"></i></span>
+                  Tipos de cancha
+                <% end %>
+              </div>
+              <div class="col-6">
+                <%= link_to asistencias_clases_admin_reportes_path, class: "reporte-link" do %>
+                  <span class="reporte-icon"><i class="ti ti-school"></i></span>
+                  Asistencia a clases
+                <% end %>
+              </div>
+              <div class="col-6">
+                <%= link_to asistencias_entrenamientos_admin_reportes_path, class: "reporte-link" do %>
+                  <span class="reporte-icon"><i class="ti ti-barbell"></i></span>
+                  Asistencia entrenamientos
+                <% end %>
+              </div>
+            </div>
           </div>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </div>

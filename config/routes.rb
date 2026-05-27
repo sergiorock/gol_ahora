@@ -38,6 +38,16 @@ Rails.application.routes.draw do
     resources :entrenamientos do
       resources :asistencias, only: %i[create update destroy]
     end
+    resources :reportes, only: [] do
+      collection do
+        get :reservas
+        get :cobros
+        get :ocupacion
+        get :tipos_cancha
+        get :asistencias_clases
+        get :asistencias_entrenamientos
+      end
+    end
   end
 
   resource :profile, only: [:show, :edit, :update]

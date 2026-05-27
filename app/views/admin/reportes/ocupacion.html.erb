@@ -1,0 +1,83 @@
+<% content_for :page_title, "Reporte de Ocupación de Canchas" %>
+<% content_for :header_actions do %>
+  <%= link_to ocupacion_admin_reportes_path(request.query_parameters.merge(format: :pdf)),
+      class: "btn btn-sm d-inline-flex align-items-center gap-1",
+      style: "background:#16a34a;color:#fff;border-color:#16a34a;",
+      target: "_blank" do %>
+    <i class="ti ti-file-type-pdf"></i> Descargar PDF
+  <% end %>
+<% end %>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="card-title"><i class="ti ti-filter me-1"></i>Filtros</h3>
+  </div>
+  <div class="card-body">
+    <%= form_with url: ocupacion_admin_reportes_path, method: :get, local: true do |f| %>
+      <div class="row g-3 align-items-end">
+        <div class="col-sm-4 col-md-3">
+          <label class="form-label">Mes</label>
+          <%= f.month_field :mes, value: (params[:mes].presence || Date.today.strftime("%Y-%m")), class: "form-control form-control-sm" %>
+        </div>
+        <div class="col-auto d-flex gap-2">
+          <%= f.submit "Filtrar", class: "btn btn-sm btn-primary" %>
+          <%= link_to "Hoy", ocupacion_admin_reportes_path, class: "btn btn-sm btn-ghost-secondary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%# Mes header %>
+<div class="mb-3">
+  <h3 class="mb-0"><%= I18n.l(@mes, format: "%B %Y").capitalize %></h3>
+  <p class="text-muted small mb-0">Reservas confirmadas, en curso y finalizadas</p>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead>
+        <tr>
+          <th>Cancha</th>
+          <th>Tipo</th>
+          <th class="text-center">Reservas</th>
+          <th class="text-center">Horas totales</th>
+          <th>Ocupación relativa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% total_reservas = @datos.sum { |d| d[:reservas] } %>
+        <% @datos.each do |d| %>
+          <% pct = total_reservas > 0 ? (d[:reservas].to_f / total_reservas * 100).round(1) : 0 %>
+          <tr>
+            <td class="fw-medium"><%= d[:court].name %></td>
+            <td class="text-muted"><%= d[:court].court_type.name %></td>
+            <td class="text-center">
+              <span class="badge <%= d[:reservas] > 0 ? "bg-green-lt text-green" : "bg-secondary-lt text-secondary" %>">
+                <%= d[:reservas] %>
+              </span>
+            </td>
+            <td class="text-center text-muted"><%= d[:horas] %>h</td>
+            <td style="min-width:180px">
+              <div class="d-flex align-items-center gap-2">
+                <div class="flex-fill progress" style="height:6px">
+                  <div class="progress-bar bg-primary" style="width:<%= pct %>%"></div>
+                </div>
+                <span class="text-muted small" style="min-width:38px"><%= pct %>%</span>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr class="fw-bold border-top">
+          <td colspan="2">Total</td>
+          <td class="text-center"><%= total_reservas %></td>
+          <td class="text-center"><%= @datos.sum { |d| d[:horas] }.round(1) %>h</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
