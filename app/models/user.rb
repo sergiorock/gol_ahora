@@ -7,9 +7,7 @@ class User < ApplicationRecord
   has_many :reservations,  dependent: :destroy
   has_many :charges,       dependent: :destroy
   has_many :enrollments,   dependent: :destroy
-  has_many :attendances, dependent: :destroy
-  has_many :enrollments, dependent: :destroy
-  has_many :teams, dependent: :destroy
+  has_many :asistencias, dependent: :destroy
 
   validates :first_name, presence: true
   validates :last_name,  presence: true
