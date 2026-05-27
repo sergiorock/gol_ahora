@@ -64,7 +64,7 @@
                 <label class="form-label">Usuario</label>
                 <select name="asistencia[user_id]" class="form-select ts-dark" data-placeholder="Buscar usuario...">
                   <option value=""></option>
-                  <% User.where(role: :cliente).order(:last_name, :first_name).each do |u| %>
+                  <% User.where(role: :client).order(:last_name, :first_name).each do |u| %>
                     <option value="<%= u.id %>"><%= u.full_name %> — <%= u.email %></option>
                   <% end %>
                 </select>
