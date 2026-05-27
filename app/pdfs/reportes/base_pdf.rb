@@ -86,8 +86,9 @@ module Reportes
       header_row = headers.map { |h| { content: h, **th_style } }
       rows = [header_row] + data
 
+      table_width = col_widths ? col_widths.sum : bounds.width
       opts = {
-        width: bounds.width,
+        width: table_width,
         header: true,
         cell_style: td_style,
         row_colors: [BLANCO, GRIS_L]

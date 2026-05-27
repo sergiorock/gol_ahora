@@ -30,17 +30,18 @@ module Reportes
       canceladas  = @reservations.select { |r| r.status == "cancelled" }.count
 
       seccion_titulo "Resumen"
+      w = bounds.width
       table([
         ["Total reservas", @reservations.count.to_s, "Confirmadas/En curso/Finalizadas", confirmadas.to_s],
         ["Monto total", format_money(total_monto), "Canceladas", canceladas.to_s]
-      ], width: bounds.width,
+      ], width: w,
          cell_style: { size: 9, padding: [4, 8], border_color: BORDE, border_width: 0.5 }) do
         column(0).font_style = :bold
         column(0).text_color = GRIS
         column(2).font_style = :bold
         column(2).text_color = GRIS
         column(0).width = 130
-        column(1).width = bounds.width / 2 - 130
+        column(1).width = w / 2 - 130
         column(2).width = 180
       end
       move_down 14
