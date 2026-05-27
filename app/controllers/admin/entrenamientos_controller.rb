@@ -21,7 +21,14 @@ class Admin::EntrenamientosController < Admin::BaseController
     @entrenamiento = Entrenamiento.new(entrenamiento_params)
     authorize @entrenamiento
     if @entrenamiento.save
-      redirect_to admin_entrenamiento_path(@entrenamiento), notice: "Entrenamiento creado."
+      repeat = params[:repeat_weeks].to_i
+      if repeat > 1
+        (1...repeat).each do |i|
+          Entrenamiento.create!(entrenamiento_params.merge(scheduled_at: @entrenamiento.scheduled_at + i.weeks))
+        end
+      end
+      semanas_msg = repeat > 1 ? " (#{repeat} sesiones generadas)" : ""
+      redirect_to admin_entrenamientos_path, notice: "Entrenamiento creado#{semanas_msg}."
     else
       load_form_data
       render :new, status: :unprocessable_entity

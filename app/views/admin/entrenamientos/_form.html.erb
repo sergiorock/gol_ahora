@@ -25,6 +25,18 @@
         <div class="col-md-3">
           <%= f.input :max_students, label: "Cupo máximo", placeholder: "15" %>
         </div>
+        <% unless entrenamiento.persisted? %>
+          <div class="col-md-3">
+            <label class="form-label">Repetir (semanas)</label>
+            <select name="repeat_weeks" class="form-select">
+              <option value="1">Sin repetir</option>
+              <% [2, 4, 6, 8, 10, 12, 16, 20].each do |n| %>
+                <option value="<%= n %>"><%= n %> semanas</option>
+              <% end %>
+            </select>
+            <div class="form-text">Genera una sesión por semana a partir de la fecha elegida.</div>
+          </div>
+        <% end %>
         <div class="col-12">
           <%= f.input :descripcion, label: "Descripción", as: :text,
               input_html: { rows: 3 }, placeholder: "Descripción del entrenamiento..." %>
