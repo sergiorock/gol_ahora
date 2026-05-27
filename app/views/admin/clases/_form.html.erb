@@ -17,12 +17,12 @@
         </div>
         <div class="col-md-6">
           <%= f.input :court_type_id, label: "Tipo de cancha (opcional)",
-              collection: @court_types.map { |ct| [ct.name, ct.id] },
+              collection: @court_types.map { |ct| ["#{ct.name} — #{CourtType::SURFACE_LABELS[ct.surface]}", ct.id] },
               include_blank: "Sin asignar" %>
         </div>
         <div class="col-md-6">
-          <%= f.input :scheduled_at, label: "Fecha y hora", as: :datetime_local,
-              input_html: { value: clase.scheduled_at&.strftime("%Y-%m-%dT%H:%M") } %>
+          <%= f.input :scheduled_at, label: "Fecha y hora", as: :string,
+              input_html: { type: "datetime-local", value: clase.scheduled_at&.strftime("%Y-%m-%dT%H:%M") } %>
         </div>
         <div class="col-md-3">
           <%= f.input :duration_minutes, label: "Duración (minutos)", placeholder: "60" %>

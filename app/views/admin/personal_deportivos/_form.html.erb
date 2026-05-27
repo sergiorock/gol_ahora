@@ -32,8 +32,8 @@
           <%= f.input :certificacion_deportiva, label: "Certificación", placeholder: "Ej: Entrenador de Fútbol Nivel 2 — AFA" %>
         </div>
         <div class="col-md-3">
-          <%= f.input :fecha_certificacion, label: "Fecha de certificación", as: :date,
-              start_year: 1990, end_year: Date.today.year %>
+          <%= f.input :fecha_certificacion, label: "Fecha de certificación",
+              as: :string, input_html: { type: "date" } %>
         </div>
         <div class="col-12">
           <%= f.input :observaciones, label: "Observaciones", as: :text,

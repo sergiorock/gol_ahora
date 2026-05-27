@@ -16,8 +16,8 @@
               include_blank: "Seleccioná un entrenador" %>
         </div>
         <div class="col-md-6">
-          <%= f.input :scheduled_at, label: "Fecha y hora", as: :datetime_local,
-              input_html: { value: entrenamiento.scheduled_at&.strftime("%Y-%m-%dT%H:%M") } %>
+          <%= f.input :scheduled_at, label: "Fecha y hora", as: :string,
+              input_html: { type: "datetime-local", value: entrenamiento.scheduled_at&.strftime("%Y-%m-%dT%H:%M") } %>
         </div>
         <div class="col-md-3">
           <%= f.input :duration_minutes, label: "Duración (minutos)", placeholder: "90" %>
