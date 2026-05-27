@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_09_024153) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_27_195634) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,7 +53,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_09_024153) do
     t.integer "max_students", null: false
     t.string "nombre", null: false
     t.bigint "personal_deportivo_id", null: false
-    t.datetime "scheduled_at", null: false
+    t.datetime "scheduled_at", precision: nil, null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["court_type_id"], name: "index_clases_on_court_type_id"
@@ -121,7 +121,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_09_024153) do
     t.integer "max_students", null: false
     t.string "nombre", null: false
     t.bigint "personal_deportivo_id", null: false
-    t.datetime "scheduled_at", null: false
+    t.datetime "scheduled_at", precision: nil, null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["personal_deportivo_id"], name: "index_entrenamientos_on_personal_deportivo_id"
