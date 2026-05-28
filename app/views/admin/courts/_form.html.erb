@@ -7,7 +7,7 @@
         </div>
         <div class="col-md-3">
           <%= f.input :court_type_id, label: "Tipo de cancha",
-                collection: CourtType.order(:name).map { |ct| [ct.name, ct.id] },
+                collection: CourtType.order(:name).map { |ct| ["#{ct.name} — #{CourtType::SURFACE_LABELS[ct.surface]}", ct.id] },
                 include_blank: "Seleccioná un tipo" %>
         </div>
         <div class="col-md-3">
