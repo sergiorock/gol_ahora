@@ -1,4 +1,9 @@
 es-AR:
+  support:
+    array:
+      two_words_connector: " y "
+      last_word_connector: " y "
+
   activerecord:
     models:
       user:                 Usuario
