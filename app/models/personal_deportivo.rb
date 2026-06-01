@@ -1,6 +1,7 @@
 class PersonalDeportivo < ApplicationRecord
   has_many :clases, dependent: :restrict_with_error
   has_many :entrenamientos, dependent: :restrict_with_error
+  has_one_attached :certificacion_archivo
 
   enum :tipo, { profesor: 0, entrenador: 1 }, prefix: true
 

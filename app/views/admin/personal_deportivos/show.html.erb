@@ -31,6 +31,15 @@
           <dd class="col-7"><%= @personal_deportivo.certificacion_deportiva.presence || "—" %></dd>
           <dt class="col-5 text-muted">Fecha cert.</dt>
           <dd class="col-7"><%= @personal_deportivo.fecha_certificacion ? l(@personal_deportivo.fecha_certificacion, format: :long) : "—" %></dd>
+          <dt class="col-5 text-muted">Archivo</dt>
+          <dd class="col-7">
+            <% if @personal_deportivo.certificacion_archivo.attached? %>
+              <%= link_to "Ver certificado", rails_blob_path(@personal_deportivo.certificacion_archivo, disposition: "inline"),
+                  target: "_blank", class: "btn btn-sm btn-outline-success" %>
+            <% else %>
+              —
+            <% end %>
+          </dd>
           <dt class="col-5 text-muted">Observaciones</dt>
           <dd class="col-7"><%= @personal_deportivo.observaciones.presence || "—" %></dd>
         </dl>

@@ -1,4 +1,4 @@
-<%= simple_form_for [:admin, personal_deportivo] do |f| %>
+<%= simple_form_for [:admin, personal_deportivo], html: { multipart: true } do |f| %>
   <div class="card">
     <div class="card-header"><h3 class="card-title">Datos personales</h3></div>
     <div class="card-body">
@@ -28,12 +28,24 @@
     <div class="card-header"><h3 class="card-title">Certificación deportiva</h3></div>
     <div class="card-body">
       <div class="row g-3">
-        <div class="col-md-6">
+        <div class="col-12">
           <%= f.input :certificacion_deportiva, label: "Certificación", placeholder: "Ej: Entrenador de Fútbol Nivel 2 — AFA" %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <%= f.input :fecha_certificacion, label: "Fecha de certificación",
               as: :string, input_html: { type: "date" } %>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Archivo de certificación (PDF, imagen)</label>
+          <%= f.file_field :certificacion_archivo, class: "form-control",
+              accept: ".pdf,.jpg,.jpeg,.png" %>
+          <% if personal_deportivo.certificacion_archivo.attached? %>
+            <div class="form-text">
+              Archivo actual:
+              <%= link_to personal_deportivo.certificacion_archivo.filename, rails_blob_path(personal_deportivo.certificacion_archivo, disposition: "inline"), target: "_blank", class: "text-success fw-semibold" %>
+              — subí uno nuevo para reemplazarlo
+            </div>
+          <% end %>
         </div>
         <div class="col-12">
           <%= f.input :observaciones, label: "Observaciones", as: :text,

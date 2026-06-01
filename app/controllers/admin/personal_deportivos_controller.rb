@@ -55,7 +55,8 @@ class Admin::PersonalDeportivosController < Admin::BaseController
   def personal_deportivo_params
     params.require(:personal_deportivo).permit(
       :nombre, :apellido, :email, :telefono, :tipo,
-      :certificacion_deportiva, :fecha_certificacion, :observaciones
+      :certificacion_deportiva, :fecha_certificacion, :observaciones,
+      :certificacion_archivo
     )
   end
 end
