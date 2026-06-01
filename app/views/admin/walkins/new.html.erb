@@ -88,7 +88,7 @@
               <label class="form-label">Monto a cobrar</label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input type="text" id="walkin-amount" class="form-control fw-bold" readonly placeholder="—">
+                <input type="number" id="walkin-amount" name="walkin[amount]" class="form-control fw-bold" placeholder="0" min="0" step="1">
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@
   function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
   const fmtARS = n => '$' + Math.round(n).toLocaleString('es-AR');
 
-  let unavailable = [], maxDuration = 9999, userTouched = false;
+  let unavailable = [], maxDuration = 9999;
 
   const allStart = Array.from(startSel.options).map(o => o.value).filter(Boolean);
   const allEnd   = Array.from(endSel.options).map(o => o.value).filter(Boolean);
@@ -178,8 +178,6 @@
   }
 
   function recalculate() {
-    if (!userTouched) { summary.classList.add('d-none'); amountInput.value = ''; return; }
-
     const price = prices[courtSel.value];
     const diff  = timeToMin(endSel.value) - timeToMin(startSel.value);
 
@@ -209,15 +207,10 @@
     submitBtn.disabled = false;
   }
 
-  courtSel.addEventListener('change', fetchAvailability);
+  courtSel.addEventListener('change', () => { fetchAvailability(); recalculate(); });
   dateInput.addEventListener('change', fetchAvailability);
-  startSel.addEventListener('change', () => {
-    userTouched = true;
-    updateEndOptions();
-    autoCompleteEnd();
-    recalculate();
-  });
-  endSel.addEventListener('change',   () => { userTouched = true; recalculate(); });
+  startSel.addEventListener('change', () => { updateEndOptions(); autoCompleteEnd(); recalculate(); });
+  endSel.addEventListener('change', () => recalculate());
 
   // Carga disponibilidad si ya hay cancha y fecha
   if (courtSel.value && dateInput.value) {

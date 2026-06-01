@@ -15,7 +15,7 @@ class Admin::WalkinsController < Admin::BaseController
     starts_at = Time.zone.parse("#{date} #{params[:walkin][:start_time]}")
     ends_at   = Time.zone.parse("#{date} #{params[:walkin][:end_time]}")
     hours     = ((ends_at - starts_at) / 3600.0)
-    amount    = (court.court_type.price_per_hour * hours).ceil(2)
+    amount    = params[:walkin][:amount].presence&.to_d || (court.court_type.price_per_hour * hours).ceil(2)
 
     reservation = user.reservations.new(
       court:      court,
