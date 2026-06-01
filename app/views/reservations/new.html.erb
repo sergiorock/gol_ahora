@@ -61,14 +61,36 @@
       <% end %>
 
       <%# Fecha %>
+      <% init_date = params.dig(:reservation, :date) || Date.tomorrow.strftime('%Y-%m-%d') %>
+      <% init_display = Date.parse(init_date).strftime('%d/%m/%Y') rescue Date.tomorrow.strftime('%d/%m/%Y') %>
       <div>
         <label class="block text-white/60 text-sm mb-2">Fecha</label>
-        <input type="date"
-               name="reservation[date]"
-               value="<%= params.dig(:reservation, :date) || Date.tomorrow.strftime('%Y-%m-%d') %>"
-               min="<%= Date.today.strftime('%Y-%m-%d') %>"
-               max="<%= 30.days.from_now.strftime('%Y-%m-%d') %>"
-               class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-field-light">
+        <div class="relative cursor-pointer" onclick="document.getElementById('fecha-picker').showPicker()">
+          <div id="fecha-texto"
+               class="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white">
+            <%= init_display %>
+          </div>
+          <input type="date"
+                 id="fecha-picker"
+                 name="reservation[date]"
+                 value="<%= init_date %>"
+                 min="<%= Date.today.strftime('%Y-%m-%d') %>"
+                 max="<%= 30.days.from_now.strftime('%Y-%m-%d') %>"
+                 class="absolute inset-0 opacity-0 w-full cursor-pointer"
+                 tabindex="-1">
+        </div>
+        <script>
+          (function(){
+            var picker = document.getElementById('fecha-picker');
+            var texto  = document.getElementById('fecha-texto');
+            picker.addEventListener('change', function() {
+              if (!picker.value) return;
+              var parts = picker.value.split('-');
+              texto.textContent = parts[2] + '/' + parts[1] + '/' + parts[0];
+              if (typeof fetchAvailability === 'function') fetchAvailability();
+            });
+          })();
+        </script>
       </div>
 
       <%# Hora inicio / fin %>
