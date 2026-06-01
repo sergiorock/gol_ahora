@@ -3,9 +3,15 @@
     <div class="alert alert-danger"><ul class="mb-0"><% match.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul></div>
   <% end %>
   <div class="row g-3">
-    <div class="col-md-5"><%= f.input :home_team, label: "Equipo local" %></div>
+    <div class="col-md-5">
+      <%= f.input :home_team, label: "Equipo local",
+            collection: @teams, include_blank: "Seleccioná equipo local" %>
+    </div>
     <div class="col-md-2 d-flex align-items-end justify-content-center pb-3"><span class="fw-bold text-muted">vs</span></div>
-    <div class="col-md-5"><%= f.input :away_team, label: "Equipo visitante" %></div>
+    <div class="col-md-5">
+      <%= f.input :away_team, label: "Equipo visitante",
+            collection: @teams, include_blank: "Seleccioná equipo visitante" %>
+    </div>
     <div class="col-md-3">
       <%= f.input :home_goals, label: "Goles local", placeholder: "—",
             input_html: { min: 0, type: "number" } %>
