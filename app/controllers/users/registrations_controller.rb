@@ -5,7 +5,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     params.require(:user).permit(
       :email, :password, :password_confirmation,
       :first_name, :last_name, :dni, :birth_date, :phone,
-      :address, :postal_code, :country, :city
+      :address, :postal_code, :country, :city, :province
     )
   end
 
@@ -13,7 +13,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     params.require(:user).permit(
       :email, :password, :password_confirmation, :current_password,
       :first_name, :last_name, :dni, :birth_date, :phone,
-      :address, :postal_code, :country, :city
+      :address, :postal_code, :country, :city, :province
     )
   end
 end

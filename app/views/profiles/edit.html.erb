@@ -48,15 +48,44 @@
           <%= f.text_field :address, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
         </div>
         <div>
-          <label class="block text-sm font-medium text-white/70 mb-1.5">Ciudad</label>
-          <%= f.text_field :city, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
-        </div>
-        <div>
           <label class="block text-sm font-medium text-white/70 mb-1.5">País</label>
           <%= f.country_select :country,
               { priority_countries: %w[AR UY CL BR PY BO], selected: current_user.country.presence || "AR", include_blank: "Seleccioná un país" },
               { class: "country-tomselect", data: { placeholder: "Seleccioná un país" } } %>
         </div>
+        <div>
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Provincia / Estado</label>
+          <div id="province-select-wrap">
+            <%= f.select :province,
+                options_for_select(User::PROVINCIAS, current_user.province.presence || "Buenos Aires"),
+                { include_blank: "Seleccioná una provincia" },
+                { class: "ts-dark", data: { placeholder: "Seleccioná una provincia" } } %>
+          </div>
+          <div id="province-text-wrap" class="hidden">
+            <%= f.text_field :province,
+                class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
+                placeholder: "Provincia / Estado",
+                id: "province-text-input" %>
+          </div>
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-white/70 mb-1.5">Ciudad</label>
+          <%= f.text_field :city, class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors" %>
+        </div>
+        <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            function toggleProvince() {
+              var country = document.querySelector("select[name='user[country]']");
+              if (!country) return;
+              var isAR = country.value === "AR";
+              document.getElementById("province-select-wrap").classList.toggle("hidden", !isAR);
+              document.getElementById("province-text-wrap").classList.toggle("hidden", isAR);
+              if (!isAR) document.querySelector("select[name='user[province]']").value = "";
+            }
+            var countryEl = document.querySelector("select[name='user[country]']");
+            if (countryEl) { countryEl.addEventListener("change", toggleProvince); toggleProvince(); }
+          });
+        </script>
       </div>
 
       <div class="flex gap-3 mt-8">

@@ -4,6 +4,14 @@ class User < ApplicationRecord
 
   enum :role, { admin: 0, client: 1 }, default: :client
 
+  PROVINCIAS = [
+    "Buenos Aires", "CABA", "Catamarca", "Chaco", "Chubut",
+    "Córdoba", "Corrientes", "Entre Ríos", "Formosa", "Jujuy",
+    "La Pampa", "La Rioja", "Mendoza", "Misiones", "Neuquén",
+    "Río Negro", "Salta", "San Juan", "San Luis", "Santa Cruz",
+    "Santa Fe", "Santiago del Estero", "Tierra del Fuego", "Tucumán"
+  ].freeze
+
   has_many :reservations,  dependent: :destroy
   has_many :charges,       dependent: :destroy
   has_many :enrollments,   dependent: :destroy

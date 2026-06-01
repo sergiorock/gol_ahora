@@ -47,8 +47,12 @@
         <div class="col-md-3">
           <%= f.input :postal_code, label: "Código postal" %>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
           <%= f.input :city, label: "Ciudad" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :province, label: "Provincia",
+                collection: User::PROVINCIAS, include_blank: "Seleccioná una provincia" %>
         </div>
         <div class="col-md-4">
           <%= f.input :country, label: "País",

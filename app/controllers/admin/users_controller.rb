@@ -70,7 +70,7 @@ class Admin::UsersController < Admin::BaseController
     params.require(:user).permit(
       :email, :password, :password_confirmation, :role,
       :first_name, :last_name, :dni, :birth_date, :phone,
-      :address, :postal_code, :country, :city, :joined_at
+      :address, :postal_code, :country, :city, :province, :joined_at
     )
   end
 end

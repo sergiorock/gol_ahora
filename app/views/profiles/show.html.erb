@@ -47,12 +47,16 @@
           <dd class="text-white font-medium"><%= current_user.address.presence || "—" %></dd>
         </div>
         <div>
-          <dt class="text-white/40 text-xs mb-1">Ciudad</dt>
-          <dd class="text-white font-medium"><%= current_user.city.presence || "—" %></dd>
-        </div>
-        <div>
           <dt class="text-white/40 text-xs mb-1">País</dt>
           <dd class="text-white font-medium"><%= current_user.country.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">Provincia / Estado</dt>
+          <dd class="text-white font-medium"><%= current_user.province.presence || "—" %></dd>
+        </div>
+        <div>
+          <dt class="text-white/40 text-xs mb-1">Ciudad</dt>
+          <dd class="text-white font-medium"><%= current_user.city.presence || "—" %></dd>
         </div>
         <div>
           <dt class="text-white/40 text-xs mb-1">Código postal</dt>
