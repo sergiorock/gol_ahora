@@ -120,7 +120,7 @@
                     <%= link_to "Panel de administración", admin_root_path, class: "block px-4 py-2 text-sm text-field-light hover:text-white hover:bg-white/5 rounded-t-lg font-semibold" %>
                     <div class="border-t border-white/10 my-1"></div>
                   <% end %>
-                  <%= link_to "Mi perfil", profile_path, class: "block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 <%= current_user.admin? ? '' : 'rounded-t-lg' %>" %>
+                  <%= link_to "Mi perfil", profile_path, class: "block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 #{ current_user.admin? ? '' : 'rounded-t-lg' }" %>
                   <%= link_to "Mis Reservas", reservations_path, class: "block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5" %>
                   <%= link_to "Mis Inscripciones", enrollments_path, class: "block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5" %>
                   <%= link_to "Seguridad", edit_user_registration_path, class: "block px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5" %>
