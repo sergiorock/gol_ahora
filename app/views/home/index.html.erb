@@ -189,7 +189,7 @@
         <h2 class="font-display text-5xl sm:text-6xl text-white mb-6">ELEGÍ TU<br>FORMATO</h2>
         <p class="text-white/50 text-lg leading-relaxed mb-8">Contamos con tres tipos de cancha para que juegues como preferís. Cada formato tiene su duración y precio.</p>
         <% if user_signed_in? %>
-          <%= link_to "#", class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-all" do %>
+          <%= link_to courts_path, class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-all" do %>
             Ver disponibilidad
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           <% end %>
