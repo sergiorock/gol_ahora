@@ -5,6 +5,7 @@ class EnrollmentsController < ApplicationController
   def index
     @enrollments = policy_scope(Enrollment).includes(:enrollable).order(enrolled_at: :desc)
     authorize @enrollments
+    @asistencias = current_user.asistencias.includes(:asistible).order(attended_on: :desc)
   end
 
   def create

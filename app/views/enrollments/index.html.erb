@@ -6,51 +6,93 @@
     <h1 class="font-display text-5xl text-white">MIS INSCRIPCIONES</h1>
   </div>
 
-  <% if @enrollments.empty? %>
+  <% if @enrollments.empty? && @asistencias.empty? %>
     <div class="text-center py-20 text-white/30">
       <svg class="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>
       </svg>
-      <p class="text-lg font-medium">No estás inscripto en ninguna competencia</p>
-      <div class="flex justify-center gap-4 mt-4">
+      <p class="text-lg font-medium">No estás inscripto en ninguna actividad</p>
+      <div class="flex justify-center flex-wrap gap-4 mt-4">
         <%= link_to "Ver ligas", leagues_path, class: "text-field-light hover:underline text-sm" %>
         <%= link_to "Ver torneos", tournaments_path, class: "text-field-light hover:underline text-sm" %>
+        <%= link_to "Ver clases", clases_path, class: "text-field-light hover:underline text-sm" %>
+        <%= link_to "Ver entrenamientos", entrenamientos_path, class: "text-field-light hover:underline text-sm" %>
       </div>
     </div>
   <% else %>
-    <div class="space-y-3">
-      <% @enrollments.each do |e| %>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center gap-4">
-          <div class="w-10 h-10 rounded-xl bg-field/20 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-field-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-0.5">
-              <span class="text-white font-semibold"><%= e.team_name %></span>
-              <span class="text-white/40 text-xs">·</span>
-              <span class="text-white/50 text-sm"><%= e.enrollable.name %></span>
-              <span class="text-xs px-2 py-0.5 rounded bg-white/10 text-white/50">
-                <%= e.enrollable_type == "League" ? "Liga" : "Torneo" %>
-              </span>
+
+    <% if @enrollments.any? %>
+      <h2 class="text-white/40 text-xs font-semibold tracking-widest uppercase mb-3">Ligas y Torneos</h2>
+      <div class="space-y-3 mb-8">
+        <% @enrollments.each do |e| %>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-xl bg-field/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-field-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+              </svg>
             </div>
-            <p class="text-white/40 text-xs">Inscripto el <%= l e.enrolled_at, format: "%-d de %B de %Y" %></p>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-white font-semibold"><%= e.team_name %></span>
+                <span class="text-white/40 text-xs">·</span>
+                <span class="text-white/50 text-sm"><%= e.enrollable.name %></span>
+                <span class="text-xs px-2 py-0.5 rounded bg-white/10 text-white/50">
+                  <%= e.enrollable_type == "League" ? "Liga" : "Torneo" %>
+                </span>
+              </div>
+              <p class="text-white/40 text-xs">Inscripto el <%= l e.enrolled_at, format: "%-d de %B de %Y" %></p>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <span class="text-xs px-2.5 py-1 rounded-full <%= e.active? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
+                <%= e.active? ? "Activa" : "Cancelada" %>
+              </span>
+              <% if e.active? %>
+                <%= button_to enrollment_path(e), method: :delete,
+                      class: "text-red-400/60 hover:text-red-400 transition-colors text-xs",
+                      data: { confirm: "¿Cancelar inscripción de #{e.team_name}?" } do %>
+                  Cancelar
+                <% end %>
+              <% end %>
+            </div>
           </div>
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="text-xs px-2.5 py-1 rounded-full <%= e.active? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
-              <%= e.active? ? "Activa" : "Cancelada" %>
-            </span>
-            <% if e.active? %>
-              <%= button_to enrollment_path(e), method: :delete,
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @asistencias.any? %>
+      <h2 class="text-white/40 text-xs font-semibold tracking-widest uppercase mb-3">Clases y Entrenamientos</h2>
+      <div class="space-y-3">
+        <% @asistencias.each do |a| %>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-white font-semibold"><%= a.asistible.nombre %></span>
+                <span class="text-xs px-2 py-0.5 rounded bg-white/10 text-white/50">
+                  <%= a.asistible_type == "Clase" ? "Clase" : "Entrenamiento" %>
+                </span>
+              </div>
+              <p class="text-white/40 text-xs"><%= a.asistible.schedule_label %></p>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <span class="text-xs px-2.5 py-1 rounded-full <%= a.present? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
+                <%= a.present? ? "Presente" : "Inscripto" %>
+              </span>
+              <%= button_to a.asistible_type == "Clase" ? clase_asistencia_path(a.asistible, a) : entrenamiento_asistencia_path(a.asistible, a),
+                    method: :delete,
                     class: "text-red-400/60 hover:text-red-400 transition-colors text-xs",
-                    data: { confirm: "¿Cancelar inscripción de #{e.team_name}?" } do %>
+                    data: { confirm: "¿Cancelar inscripción?" } do %>
                 Cancelar
               <% end %>
-            <% end %>
+            </div>
           </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+
   <% end %>
 </div>
