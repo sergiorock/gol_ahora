@@ -1,5 +1,6 @@
 class EnrollmentsController < ApplicationController
   before_action :set_enrollment, only: %i[destroy]
+  before_action :verificar_cliente, only: %i[create]
 
   def index
     @enrollments = policy_scope(Enrollment).includes(:enrollable).order(enrolled_at: :desc)
@@ -32,6 +33,10 @@ class EnrollmentsController < ApplicationController
 
   def set_enrollment
     @enrollment = current_user.enrollments.find(params[:id])
+  end
+
+  def verificar_cliente
+    redirect_to root_path, alert: "Usá el panel de administración para inscribir equipos." if current_user.admin?
   end
 
   def find_competition
