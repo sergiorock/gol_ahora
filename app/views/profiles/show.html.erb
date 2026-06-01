@@ -18,7 +18,9 @@
       </div>
       <h2 class="text-white font-semibold text-lg"><%= current_user.full_name %></h2>
       <p class="text-white/50 text-sm mt-1"><%= current_user.email %></p>
-      <span class="inline-block mt-3 text-xs bg-field/20 text-field-light px-3 py-1 rounded-full">Cliente</span>
+      <span class="inline-block mt-3 text-xs <%= current_user.admin? ? 'bg-purple-500/20 text-purple-400' : 'bg-field/20 text-field-light' %> px-3 py-1 rounded-full">
+        <%= current_user.admin? ? "Administrador" : "Cliente" %>
+      </span>
     </div>
 
     <%# Datos personales %>
