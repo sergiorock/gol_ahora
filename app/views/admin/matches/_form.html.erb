@@ -20,7 +20,7 @@
     </div>
     <div class="col-md-3">
       <%= f.input :court_id, label: "Cancha (opcional)",
-            collection: @courts, value_method: :id, label_method: :name,
+            collection: @courts.map { |c| ["#{c.name} — #{c.court_type.name} #{CourtType::SURFACE_LABELS[c.court_type.surface]}", c.id] },
             include_blank: "Sin asignar" %>
     </div>
     <div class="col-12">

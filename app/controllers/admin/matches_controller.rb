@@ -5,7 +5,7 @@ class Admin::MatchesController < Admin::BaseController
   def new
     @match = @competition.matches.new
     authorize @match
-    @courts = Court.available.order(:name)
+    @courts = Court.available.includes(:court_type).order(:name)
   end
 
   def create
@@ -14,14 +14,14 @@ class Admin::MatchesController < Admin::BaseController
     if @match.save
       redirect_to competition_path, notice: "Partido agregado."
     else
-      @courts = Court.available.order(:name)
+      @courts = Court.available.includes(:court_type).order(:name)
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
     authorize @match
-    @courts = Court.available.order(:name)
+    @courts = Court.available.includes(:court_type).order(:name)
   end
 
   def update
@@ -29,7 +29,7 @@ class Admin::MatchesController < Admin::BaseController
     if @match.update(match_params)
       redirect_to competition_path, notice: "Partido actualizado."
     else
-      @courts = Court.available.order(:name)
+      @courts = Court.available.includes(:court_type).order(:name)
       render :edit, status: :unprocessable_entity
     end
   end
