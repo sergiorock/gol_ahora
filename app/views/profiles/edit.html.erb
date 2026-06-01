@@ -65,7 +65,8 @@
             <%= f.text_field :province,
                 class: "w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-field-light focus:ring-1 focus:ring-field-light transition-colors",
                 placeholder: "Provincia / Estado",
-                id: "province-text-input" %>
+                id: "province-text-input",
+                disabled: true %>
           </div>
         </div>
         <div class="sm:col-span-2">
@@ -80,6 +81,7 @@
               var isAR = country.value === "AR";
               document.getElementById("province-select-wrap").classList.toggle("hidden", !isAR);
               document.getElementById("province-text-wrap").classList.toggle("hidden", isAR);
+              document.getElementById("province-text-input").disabled = isAR;
               if (!isAR) document.querySelector("select[name='user[province]']").value = "";
             }
             var countryEl = document.querySelector("select[name='user[country]']");

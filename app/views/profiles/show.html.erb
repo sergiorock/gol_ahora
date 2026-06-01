@@ -48,7 +48,7 @@
         </div>
         <div>
           <dt class="text-white/40 text-xs mb-1">País</dt>
-          <dd class="text-white font-medium"><%= current_user.country.presence || "—" %></dd>
+          <dd class="text-white font-medium"><%= current_user.country.present? ? (ISO3166::Country[current_user.country]&.common_name || current_user.country) : "—" %></dd>
         </div>
         <div>
           <dt class="text-white/40 text-xs mb-1">Provincia / Estado</dt>
