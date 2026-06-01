@@ -16,15 +16,15 @@ class PersonalDeportivo < ApplicationRecord
     message: "no puede ser una fecha futura" }, allow_blank: true
   validate :archivo_requerido_si_hay_fecha
 
+  def full_name
+    "#{nombre} #{apellido}"
+  end
+
   private
 
   def archivo_requerido_si_hay_fecha
     if fecha_certificacion.present? && !certificacion_archivo.attached?
       errors.add(:certificacion_archivo, "es obligatorio si se indica una fecha de certificación")
     end
-  end
-
-  def full_name
-    "#{nombre} #{apellido}"
   end
 end
