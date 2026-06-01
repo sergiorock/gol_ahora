@@ -48,3 +48,8 @@
   border-color: #16a34a;
   box-shadow: 0 0 0 0.2rem rgba(22, 163, 74, 0.15);
 }
+
+/* Botones de acciones del header alineados horizontalmente */
+.col-auto.d-flex form {
+  display: contents;
+}

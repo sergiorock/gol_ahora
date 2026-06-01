@@ -214,7 +214,7 @@
                 <h2 class="page-title"><%= content_for(:page_title) { "Dashboard" } %></h2>
               </div>
               <% if content_for?(:header_actions) %>
-                <div class="col-auto ms-auto">
+                <div class="col-auto ms-auto d-flex gap-2 align-items-center flex-wrap">
                   <%= yield :header_actions %>
                 </div>
               <% end %>
