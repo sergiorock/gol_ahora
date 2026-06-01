@@ -21,14 +21,7 @@ class Admin::ClasesController < Admin::BaseController
     @clase = Clase.new(clase_params)
     authorize @clase
     if @clase.save
-      repeat = params[:repeat_weeks].to_i
-      if repeat > 1
-        (1...repeat).each do |i|
-          Clase.create!(clase_params.merge(scheduled_at: @clase.scheduled_at + i.weeks))
-        end
-      end
-      semanas_msg = repeat > 1 ? " (#{repeat} sesiones generadas)" : ""
-      redirect_to admin_clases_path, notice: "Clase creada#{semanas_msg}."
+      redirect_to admin_clase_path(@clase), notice: "Clase creada."
     else
       load_form_data
       render :new, status: :unprocessable_entity
