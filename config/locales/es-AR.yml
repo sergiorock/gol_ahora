@@ -49,6 +49,12 @@ es-AR:
         ends_at:   Fecha de fin
         reason:    Motivo
 
+      payment:
+        amount:           Monto
+        last_four_digits: Últimos 4 dígitos
+        cardholder_name:  Nombre del titular
+        expiry_date:      Vencimiento
+
     errors:
       models:
         user:
