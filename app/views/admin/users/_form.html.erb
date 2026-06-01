@@ -48,18 +48,45 @@
           <%= f.input :postal_code, label: "Código postal" %>
         </div>
         <div class="col-md-4">
-          <%= f.input :city, label: "Ciudad" %>
-        </div>
-        <div class="col-md-4">
-          <%= f.input :province, label: "Provincia",
-                collection: User::PROVINCIAS, include_blank: "Seleccioná una provincia" %>
-        </div>
-        <div class="col-md-4">
           <%= f.input :country, label: "País",
                 as: :country,
                 priority_countries: %w[AR UY CL BR PY BO],
-                input_html: { class: "country-tomselect", data: { placeholder: "Seleccioná un país" } } %>
+                selected: user.country.presence || "AR",
+                include_blank: "Seleccioná un país",
+                input_html: { id: "admin-user-country" } %>
         </div>
+        <div class="col-md-4" id="admin-province-select-wrap">
+          <%= f.input :province, label: "Provincia / Estado",
+                collection: User::PROVINCIAS,
+                include_blank: "Seleccioná una provincia",
+                selected: user.province %>
+        </div>
+        <div class="col-md-4 d-none" id="admin-province-text-wrap">
+          <label class="form-label">Provincia / Estado</label>
+          <input type="text" name="user[province]" id="admin-province-text"
+                 class="form-control" placeholder="Provincia / Estado"
+                 value="<%= user.province %>" disabled>
+        </div>
+        <div class="col-md-4">
+          <%= f.input :city, label: "Ciudad" %>
+        </div>
+        <script>
+          (function() {
+            var country = document.getElementById('admin-user-country');
+            var selectWrap = document.getElementById('admin-province-select-wrap');
+            var textWrap   = document.getElementById('admin-province-text-wrap');
+            var textInput  = document.getElementById('admin-province-text');
+            function toggle() {
+              var isAR = country.value === 'AR';
+              selectWrap.classList.toggle('d-none', !isAR);
+              textWrap.classList.toggle('d-none', isAR);
+              textInput.disabled = isAR;
+              if (!isAR) document.querySelector('select[name="user[province]"]').value = '';
+            }
+            country.addEventListener('change', toggle);
+            toggle();
+          })();
+        </script>
         <div class="col-md-4">
           <%= f.input :joined_at, label: "Fecha de ingreso", as: :string,
                 input_html: { type: "datetime-local", value: f.object.joined_at&.strftime("%Y-%m-%dT%H:%M") } %>
