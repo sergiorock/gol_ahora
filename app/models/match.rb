@@ -5,13 +5,6 @@ class Match < ApplicationRecord
   validates :home_team, :away_team, presence: true
   validate :equipos_distintos
 
-  private
-
-  def equipos_distintos
-    return if home_team.blank? || away_team.blank?
-    errors.add(:away_team, "no puede ser igual al equipo local") if home_team == away_team
-  end
-
   def played?
     home_goals.present? && away_goals.present?
   end
@@ -25,5 +18,12 @@ class Match < ApplicationRecord
     return nil unless played?
     return :draw if home_goals == away_goals
     home_goals > away_goals ? :home : :away
+  end
+
+  private
+
+  def equipos_distintos
+    return if home_team.blank? || away_team.blank?
+    errors.add(:away_team, "no puede ser igual al equipo local") if home_team == away_team
   end
 end
