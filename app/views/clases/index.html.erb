@@ -32,8 +32,11 @@
           <h3 class="font-display text-3xl text-white mb-1 group-hover:text-field-light transition-colors">
             <%= clase.nombre.upcase %>
           </h3>
-          <p class="text-white/50 text-sm mb-1">
+          <p class="text-white/50 text-sm mb-1 flex items-center gap-2">
             Prof. <%= clase.personal_deportivo.full_name %>
+            <% if clase.personal_deportivo.certificacion_archivo.attached? %>
+              <span class="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-medium">Certificado</span>
+            <% end %>
           </p>
           <% if clase.descripcion.present? %>
             <p class="text-white/40 text-sm mb-4 line-clamp-2"><%= clase.descripcion %></p>

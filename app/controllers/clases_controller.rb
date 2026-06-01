@@ -1,6 +1,8 @@
 class ClasesController < ApplicationController
+  skip_before_action :authenticate_user!, only: %i[index show]
+
   def index
-    @clases = Clase.includes(:personal_deportivo, :court_type)
+    @clases = Clase.includes(:personal_deportivo, :court_type, personal_deportivo: { certificacion_archivo_attachment: :blob })
                    .where(status: :activa)
                    .order(:scheduled_at)
     authorize @clases
