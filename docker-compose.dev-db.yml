@@ -1,4 +1,4 @@
-name: gol_ahora_dev_db
+name: deskmatch_db
 
 services:
   dev_db:
