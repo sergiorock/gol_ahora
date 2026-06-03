@@ -5,6 +5,7 @@
 /.env*
 !/.env*.erb
 !/.env.example
+!/.env.dev-db.example
 
 # Logs
 /log/*
