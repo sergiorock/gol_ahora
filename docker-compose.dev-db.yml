@@ -5,16 +5,16 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DEV_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${DEV_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${DEV_POSTGRES_DB}
+      POSTGRES_USER: ${DEV_POSTGRES_USER_DESKMATCH}
+      POSTGRES_PASSWORD: ${DEV_POSTGRES_PASSWORD_DESKMATCH}
+      POSTGRES_DB: ${DEV_POSTGRES_DB_DESKMATCH}
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     ports:
-      - "${DEV_POSTGRES_PUBLIC_PORT:-15432}:5432"
+      - "${DEV_POSTGRES_PUBLIC_PORT_DESKMATCH:-15432}:5432"
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DEV_POSTGRES_USER} -d postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DEV_POSTGRES_USER_DESKMATCH} -d postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
