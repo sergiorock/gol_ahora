@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_01_154224) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_02_020731) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "btree_gist"
   enable_extension "pg_catalog.plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -216,6 +217,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_01_154224) do
     t.string "receipt_number"
     t.datetime "updated_at", null: false
     t.index ["charge_id"], name: "index_receipts_on_charge_id"
+    t.index ["receipt_number"], name: "index_receipts_on_receipt_number", unique: true
   end
 
   create_table "reservations", force: :cascade do |t|
@@ -232,6 +234,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_01_154224) do
     t.index ["court_id", "starts_at", "ends_at"], name: "index_reservations_on_court_id_and_starts_at_and_ends_at"
     t.index ["court_id"], name: "index_reservations_on_court_id"
     t.index ["user_id"], name: "index_reservations_on_user_id"
+    t.exclusion_constraint "court_id WITH =, tsrange(starts_at, ends_at, '[)'::text) WITH &&", where: "(status)::text <> 'cancelled'::text", using: :gist, name: "no_overlapping_reservations"
   end
 
   create_table "tournaments", force: :cascade do |t|

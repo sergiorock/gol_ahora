@@ -1,13 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+cancha_a:
+  name: "Cancha A"
+  status: 0
+  court_type: futbol5
 
-one:
-  name: MyString
-  description: MyText
-  status: 1
-  court_type: one
-
-two:
-  name: MyString
-  description: MyText
-  status: 1
-  court_type: two
+cancha_b:
+  name: "Cancha B"
+  status: 0
+  court_type: tenis

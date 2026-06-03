@@ -33,9 +33,8 @@ class Admin::WalkinsController < Admin::BaseController
       return render :new, status: :unprocessable_entity
     end
 
-    ActiveRecord::Base.transaction do
+    court.with_lock do
       reservation.save!
-      reservation.confirm!
 
       charge = reservation.create_balance_charge!(
         user:           user,
@@ -45,8 +44,9 @@ class Admin::WalkinsController < Admin::BaseController
         payment_method: params[:walkin][:payment_method],
         date:           Date.today
       )
-
       charge.create_receipt!(concept: charge.concept)
+
+      raise ActiveRecord::RecordInvalid.new(reservation) unless reservation.confirm!
     end
 
     redirect_to admin_charges_path, notice: "Reserva presencial registrada y recibo generado."

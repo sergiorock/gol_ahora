@@ -11,9 +11,19 @@
               include_blank: false %>
         </div>
         <div class="col-md-6">
-          <%= f.input :personal_deportivo_id, label: "Profesor",
-              collection: @personal_deportivos.map { |pd| [pd.full_name, pd.id] },
-              include_blank: "Seleccioná un profesor" %>
+          <% if @personal_deportivos.empty? %>
+            <div class="mb-3">
+              <label class="form-label">Profesor</label>
+              <div class="alert alert-warning py-2 mb-0 small">
+                <i class="ti ti-alert-triangle me-1"></i>
+                No existen profesores con certificación válida registrados en el sistema.
+              </div>
+            </div>
+          <% else %>
+            <%= f.input :personal_deportivo_id, label: "Profesor",
+                collection: @personal_deportivos.map { |pd| [pd.full_name, pd.id] },
+                include_blank: "Seleccioná un profesor" %>
+          <% end %>
         </div>
         <div class="col-md-6">
           <%= f.input :court_type_id, label: "Tipo de cancha (opcional)",

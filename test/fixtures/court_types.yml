@@ -1,15 +1,13 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+futbol5:
+  name: "Fútbol 5"
+  surface: synthetic
+  capacity: 10
+  max_duration_minutes: 120
+  price_per_hour: 1000.0
 
-one:
-  name: MyString
-  surface: MyString
-  capacity: 1
-  max_duration_minutes: 1
-  price_per_hour: 9.99
-
-two:
-  name: MyString
-  surface: MyString
-  capacity: 1
-  max_duration_minutes: 1
-  price_per_hour: 9.99
+tenis:
+  name: "Tenis"
+  surface: cement
+  capacity: 4
+  max_duration_minutes: 90
+  price_per_hour: 800.0

@@ -63,7 +63,10 @@ class Admin::ClasesController < Admin::BaseController
   end
 
   def load_form_data
-    @personal_deportivos = PersonalDeportivo.order(:apellido, :nombre)
+    @personal_deportivos = PersonalDeportivo.tipo_profesor
+                                            .includes(:certificacion_archivo_attachment)
+                                            .order(:apellido, :nombre)
+                                            .select(&:certificacion_valida?)
     @court_types = CourtType.order(:name)
   end
 end

@@ -40,13 +40,33 @@ class ReservationsController < ApplicationController
     )
 
     if @reservation.valid? && @payment.valid?
-      ActiveRecord::Base.transaction do
-        @reservation.save!
-        @payment.reservation = @reservation
-        @payment.save!
-        @reservation.confirm!
+      begin
+        # Lock the court row to serialize concurrent reservation attempts for the same court
+        @court.with_lock do
+          ActiveRecord::Base.transaction do
+            @reservation.save!
+            @payment.reservation = @reservation
+            @payment.save!
+
+            # Confirm only if we have evidence of approved deposit
+            if @reservation.deposit_paid?
+              @reservation.confirm!
+            end
+          end
+        end
+
+        if @reservation.confirmed?
+          redirect_to @reservation, notice: "¡Reserva confirmada! Tu seña fue procesada exitosamente."
+        else
+          redirect_to @reservation, notice: "Reserva creada. Seña pendiente: la reserva permanece en estado pendiente hasta validar el pago."
+        end
+      rescue ActiveRecord::RecordInvalid => _e
+        render :new, status: :unprocessable_entity
+      rescue ActiveRecord::StatementInvalid => e
+        # Manejo genérico de violaciones de constraint (p. ej. exclusion constraint de solapamiento)
+        @reservation.errors.add(:base, "No se pudo crear la reserva: otra reserva ocupó ese horario. Intentá nuevamente.")
+        render :new, status: :unprocessable_entity
       end
-      redirect_to @reservation, notice: "¡Reserva confirmada! Tu seña fue procesada exitosamente."
     else
       render :new, status: :unprocessable_entity
     end

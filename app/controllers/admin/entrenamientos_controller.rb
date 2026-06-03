@@ -63,6 +63,9 @@ class Admin::EntrenamientosController < Admin::BaseController
   end
 
   def load_form_data
-    @personal_deportivos = PersonalDeportivo.where(tipo: :entrenador).order(:apellido, :nombre)
+    @personal_deportivos = PersonalDeportivo.tipo_entrenador
+                                            .includes(:certificacion_archivo_attachment)
+                                            .order(:apellido, :nombre)
+                                            .select(&:certificacion_valida?)
   end
 end

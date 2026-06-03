@@ -20,6 +20,12 @@ class PersonalDeportivo < ApplicationRecord
     "#{nombre} #{apellido}"
   end
 
+  def certificacion_valida?
+    certificacion_deportiva.present? &&
+      fecha_certificacion.present? &&
+      certificacion_archivo.attached?
+  end
+
   private
 
   def archivo_requerido_si_hay_fecha

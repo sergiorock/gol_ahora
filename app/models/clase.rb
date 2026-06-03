@@ -7,6 +7,7 @@ class Clase < ApplicationRecord
 
   validates :nombre, :scheduled_at, :duration_minutes, :max_students, presence: true
   validates :duration_minutes, :max_students, numericality: { greater_than: 0 }
+  validate :profesor_con_certificacion_valida, if: :personal_deportivo_id?
 
   def spots_taken
     asistencias.count
@@ -23,5 +24,14 @@ class Clase < ApplicationRecord
   def schedule_label
     return "—" unless scheduled_at
     I18n.l(scheduled_at, format: "%A %-d/%m, %H:%M hs").capitalize
+  end
+
+  private
+
+  def profesor_con_certificacion_valida
+    return unless personal_deportivo
+    unless personal_deportivo.certificacion_valida?
+      errors.add(:personal_deportivo_id, "no posee certificación válida registrada")
+    end
   end
 end

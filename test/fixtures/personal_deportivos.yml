@@ -1,0 +1,36 @@
+profesor_sin_certificacion:
+  nombre: "María"
+  apellido: "López"
+  tipo: 0
+
+entrenador_sin_certificacion:
+  nombre: "Patricia"
+  apellido: "Martínez"
+  tipo: 1
+
+profesor_solo_texto:
+  nombre: "Juan"
+  apellido: "Pérez"
+  tipo: 0
+  certificacion_deportiva: "Prof. Tenis Nivel 1 — ATF"
+
+profesor_solo_fecha:
+  nombre: "Laura"
+  apellido: "Gómez"
+  tipo: 0
+  fecha_certificacion: "2024-03-15"
+
+# Tienen texto + fecha. El certificacion_archivo se adjunta en cada test con attach_cert().
+profesor_apto:
+  nombre: "Carlos"
+  apellido: "González"
+  tipo: 0
+  certificacion_deportiva: "Profesor de Tenis Nivel 1 — ATF"
+  fecha_certificacion: "2024-03-15"
+
+entrenador_apto:
+  nombre: "Roberto"
+  apellido: "Sánchez"
+  tipo: 1
+  certificacion_deportiva: "Entrenador de Fútbol Nivel 2 — AFA"
+  fecha_certificacion: "2024-06-01"

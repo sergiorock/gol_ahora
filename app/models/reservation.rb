@@ -39,8 +39,9 @@ class Reservation < ApplicationRecord
   validate :ends_after_starts
   validate :within_max_duration
   validate :not_too_far_in_advance
-  validate :no_overlap, on: :create
-  validate :not_blocked, on: :create
+  validate :no_overlap
+  validate :not_blocked
+  validate :confirmed_requires_deposit
 
   def duration_minutes
     ((ends_at - starts_at) / 60).to_i
@@ -72,12 +73,27 @@ class Reservation < ApplicationRecord
     return unless starts_at && ends_at && court
     overlap = Reservation.where(court_id: court_id)
                          .where.not(status: %w[cancelled])
-                         .where("starts_at < ? AND ends_at > ?", ends_at, starts_at)
+    overlap = overlap.where.not(id: id) if id.present?
+    overlap = overlap.where("starts_at < ? AND ends_at > ?", ends_at, starts_at)
     errors.add(:base, "la cancha ya está reservada en ese horario") if overlap.exists?
   end
 
   def not_blocked
     return unless starts_at && ends_at && court
     errors.add(:base, "la cancha está bloqueada en ese horario") if court.blocked_at?(starts_at, ends_at)
+  end
+
+  def confirmed_requires_deposit
+    return unless status.to_s == "confirmed"
+    if deposit_amount.to_d.zero?
+      errors.add(:base, "no se puede confirmar la reserva presencial sin cobro registrado") unless balance_charge.present?
+    else
+      paid = deposit_charge.present? || approved_deposit.present? || payments.where(payment_type: :deposit, status: :approved).exists?
+      errors.add(:base, "no se puede confirmar la reserva sin el pago de la seña") unless paid
+    end
+  end
+
+  def deposit_paid?
+    deposit_charge.present? || approved_deposit.present? || payments.where(payment_type: :deposit, status: :approved).exists?
   end
 end
