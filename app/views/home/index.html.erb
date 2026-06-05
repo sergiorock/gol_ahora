@@ -51,21 +51,16 @@
         <% end %>
       </div>
 
-      <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">
-        <%= link_to "Soy jugador", new_user_registration_path, class: "text-field-light hover:text-white" %>
-        <%= link_to "Soy complejo", new_user_session_path, class: "text-white/80 hover:text-white" %>
-      </div>
-
-      <div class="mt-12 grid max-w-2xl gap-px border border-white/15 bg-white/15 sm:grid-cols-3">
-        <div class="bg-black/35 p-4 backdrop-blur">
+      <div class="mt-12 grid max-w-2xl gap-px border border-white/18 bg-white/15 shadow-2xl shadow-[#071323]/30 sm:grid-cols-3">
+        <div class="bg-[#071323]/45 p-4 backdrop-blur">
           <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/65">Formatos</p>
           <p class="mt-2 text-lg font-black">F5 · F7 · F11</p>
         </div>
-        <div class="bg-black/35 p-4 backdrop-blur">
+        <div class="bg-[#071323]/45 p-4 backdrop-blur">
           <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/65">Reserva</p>
           <p class="mt-2 text-lg font-black">100% web</p>
         </div>
-        <div class="bg-black/35 p-4 backdrop-blur">
+        <div class="bg-[#071323]/45 p-4 backdrop-blur">
           <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/65">Estado</p>
           <p class="mt-2 text-lg font-black">Confirmación online</p>
         </div>
@@ -100,7 +95,7 @@
 
     <div id="flow-grid" class="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <% steps.each do |number, title, body| %>
-        <div class="border border-[#071323]/12 bg-white/70 p-6 shadow-sm">
+        <div class="flow-card border border-[#071323]/12 bg-white/80 p-6 shadow-sm">
           <p class="inline-flex bg-field px-3 py-2 text-xs font-black text-zinc-950"><%= number %></p>
           <h3 class="mt-8 text-xl font-black"><%= title %></h3>
           <p class="mt-3 text-sm leading-6 text-[#373737]/75"><%= body %></p>
@@ -125,8 +120,8 @@
   </div>
 </section>
 
-<section id="canchas" class="bg-[#faf9f6] py-24 text-[#071323]">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<section id="canchas" class="benefits-field-bg relative overflow-hidden bg-[#faf9f6] py-24 text-[#071323]">
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
       <div>
         <p class="text-xs font-bold uppercase tracking-[0.22em] text-field-dark">Beneficios</p>
@@ -137,9 +132,9 @@
 
     <div id="benefits-grid" class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <% benefits.each do |title, body, icon| %>
-        <div class="border border-[#071323]/12 bg-white p-6 shadow-sm">
-          <div class="mb-5 grid h-11 w-11 place-items-center bg-field/12 text-field-dark">
-            <i class="ti ti-<%= icon %> text-2xl" aria-hidden="true"></i>
+        <div class="benefit-card border border-[#071323]/12 bg-white/90 p-6 shadow-sm">
+          <div class="mb-7 grid h-12 w-12 place-items-center border border-field/20 bg-field/10 text-field-dark">
+            <i class="ti ti-<%= icon %> text-3xl" aria-hidden="true"></i>
           </div>
           <h3 class="text-lg font-black"><%= title %></h3>
           <p class="mt-3 text-sm leading-6 text-[#373737]/75"><%= body %></p>
