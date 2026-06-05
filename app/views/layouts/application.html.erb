@@ -8,6 +8,7 @@
     <%= csp_meta_tag %>
     <link rel="icon" href="/icon.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <script>
@@ -15,10 +16,10 @@
         theme: {
           extend: {
             colors: {
-              field: '#16a34a',
-              'field-light': '#22c55e',
-              'field-dark': '#15803d',
-              pitch: '#030712',
+              field: '#ff6b35',
+              'field-light': '#ff8a5c',
+              'field-dark': '#e3521d',
+              pitch: '#071323',
             },
             fontFamily: {
               display: ['Bebas Neue', 'sans-serif'],
@@ -53,7 +54,7 @@
         box-shadow: none;
       }
       .ts-dark.ts-wrapper.focus .ts-control {
-        border-color: #22c55e;
+        border-color: #ff8a5c;
         box-shadow: none;
         outline: none;
       }
@@ -75,7 +76,7 @@
       .ts-dark.ts-wrapper .ts-dropdown .option { padding: 0.5rem 1rem; color: rgba(255,255,255,0.8); }
       .ts-dark.ts-wrapper .ts-dropdown .option:hover,
       .ts-dark.ts-wrapper .ts-dropdown .option.active { background: rgba(255,255,255,0.07); color: #fff; }
-      .ts-dark.ts-wrapper .ts-dropdown .option.selected { color: #22c55e; }
+      .ts-dark.ts-wrapper .ts-dropdown .option.selected { color: #ff8a5c; }
       .ts-dark.ts-wrapper .ts-dropdown .no-results { padding: 0.6rem 1rem; color: rgba(255,255,255,0.4); font-size: 0.875rem; }
       .ts-dark.ts-wrapper .ts-dropdown .option[aria-disabled="true"],
       .ts-dark.ts-wrapper .ts-dropdown .option.disabled {
@@ -89,20 +90,20 @@
   </head>
   <body class="bg-pitch text-white antialiased">
 
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-pitch/80 backdrop-blur-md border-b border-white/10">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#071323] border-b border-white/10 shadow-lg shadow-black/20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <%= link_to root_path, class: "flex items-center gap-2 group" do %>
-            <span class="text-field-light text-2xl">⚽</span>
-            <span class="font-display text-2xl tracking-wider text-white group-hover:text-field-light transition-colors">GOL AHORA</span>
+            <span class="grid h-8 w-8 place-items-center bg-field text-xs font-black text-zinc-950">GA</span>
+            <span class="text-sm font-black tracking-[0.2em] text-white group-hover:text-field-light transition-colors">GOL AHORA</span>
           <% end %>
 
           <div class="hidden md:flex items-center gap-8">
-            <%= link_to "Canchas", courts_path, class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
-            <%= link_to "Ligas", leagues_path, class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
-            <%= link_to "Torneos", tournaments_path, class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
-            <%= link_to "Clases", clases_path, class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
-            <%= link_to "Entrenamientos", entrenamientos_path, class: "text-white/70 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+            <%= link_to "Canchas", courts_path, class: "text-white/85 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+            <%= link_to "Ligas", leagues_path, class: "text-white/85 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+            <%= link_to "Torneos", tournaments_path, class: "text-white/85 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+            <%= link_to "Clases", clases_path, class: "text-white/85 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
+            <%= link_to "Entrenamientos", entrenamientos_path, class: "text-white/85 hover:text-field-light transition-colors text-sm font-medium tracking-wide" %>
           </div>
 
           <div class="flex items-center gap-3">
@@ -111,8 +112,8 @@
             <% end %>
             <% if user_signed_in? %>
               <div class="relative group">
-                <button class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors">
-                  <span class="w-8 h-8 rounded-full bg-field flex items-center justify-center text-xs font-bold">
+                <button class="flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white transition-colors">
+                  <span class="w-8 h-8 rounded-full bg-field flex items-center justify-center text-xs font-black text-zinc-950">
                     <%= current_user.first_name[0].upcase %>
                   </span>
                   <span class="hidden sm:block"><%= current_user.first_name %></span>

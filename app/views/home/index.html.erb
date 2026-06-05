@@ -1,287 +1,218 @@
-<% content_for :title, "Gol Ahora — El Buen Deporte" %>
+<% content_for :title, "Gol Ahora - Reservas de canchas" %>
 
-<%# ── HERO ─────────────────────────────────────────────────────────── %>
-<section class="relative min-h-screen flex items-center overflow-hidden">
+<% stats = [
+  ["+2.000", "turnos concretados"],
+  ["+500", "jugadores activos"],
+  ["8", "canchas disponibles"],
+  ["24/7", "reservas online"]
+] %>
 
-  <%# Fondo: césped nocturno con líneas de cancha %>
-  <div class="absolute inset-0 bg-pitch">
-    <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 60% at 60% 50%, #052e16 0%, #030712 70%);"></div>
-    <%# Líneas de cancha %>
-    <%#
-      SVG cancha de fútbol — medidas escaladas a 6px por metro (campo 105x68m)
-      Campo SVG: x=100..700 (600px) × y=80..520 (440px)
-      Escala horizontal: 600/105 ≈ 5.7px/m  |  Escala vertical: 440/68 ≈ 6.5px/m
-      Usamos 6px/m uniforme para proporciones correctas
+<% steps = [
+  ["01", "Elegí cancha", "Filtrá por formato, superficie y horario libre."],
+  ["02", "Reservá el turno", "Bloqueá el horario con seña online y confirmación."],
+  ["03", "Armá el equipo", "Compartí la reserva y llegá con el partido listo."],
+  ["04", "Jugá", "El complejo valida el turno y cobra el saldo."]
+] %>
 
-      Medidas reglamentarias:
-        Círculo central:     r=9.15m  →  55px
-        Área grande:         16.5m prof × 40.32m ancho  →  99px × 242px
-        Área chica:          5.5m prof × 18.32m ancho   →  33px × 110px
-        Punto del penal:     11m del arco                →  66px
-        Radio medialuna:     r=9.15m                    →  55px
-        Arcos de esquina:    r=1m                        →  6px
-    %>
-    <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-      <%# Borde del campo %>
-      <rect x="100" y="80" width="600" height="440" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <%# Línea del medio %>
-      <line x1="400" y1="80" x2="400" y2="520" stroke="#16a34a" stroke-width="2"/>
-      <%# Círculo central %>
-      <circle cx="400" cy="300" r="55" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <%# Punto central %>
-      <circle cx="400" cy="300" r="3" fill="#16a34a"/>
+<% benefits = [
+  ["Agenda clara", "Horarios, precios y disponibilidad en una sola pantalla.", "calendar-event"],
+  ["Menos cancelaciones", "La seña online deja el turno tomado y reduce ausencias.", "shield-check"],
+  ["Competencias", "Ligas, torneos, fixtures y resultados conectados al complejo.", "trophy"],
+  ["Formación", "Clases y entrenamientos con asistencia registrada.", "school"],
+  ["Autogestión", "Reservas, inscripciones y pagos sin llamadas cruzadas.", "device-mobile-check"],
+  ["Panel admin", "El complejo administra canchas, bloqueos, usuarios y reportes.", "layout-dashboard"]
+] %>
 
-      <%# Área grande izquierda (16.5m prof, 20.16m a cada lado del centro del arco) %>
-      <rect x="100" y="179" width="99" height="242" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <%# Área grande derecha %>
-      <rect x="601" y="179" width="99" height="242" fill="none" stroke="#16a34a" stroke-width="2"/>
-
-      <%# Área chica izquierda (5.5m prof, 9.16m a cada lado) %>
-      <rect x="100" y="245" width="33" height="110" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <%# Área chica derecha %>
-      <rect x="667" y="245" width="33" height="110" fill="none" stroke="#16a34a" stroke-width="2"/>
-
-      <%# Punto del penal izquierdo (11m del arco) %>
-      <circle cx="166" cy="300" r="3" fill="#16a34a"/>
-      <%# Punto del penal derecho %>
-      <circle cx="634" cy="300" r="3" fill="#16a34a"/>
-
-      <%#
-        Medialuna izquierda: arco de círculo r=55px centrado en el punto del penal (166,300)
-        Solo la parte FUERA del área grande (derecha de x=199)
-        Intersección con x=199: y = 300 ± sqrt(55²-33²) = 300 ± 44 → y=256 y y=344
-        sweep=1 → sentido horario en SVG → el arco curva hacia la derecha (hacia centro cancha)
-      %>
-      <path d="M 199 256 A 55 55 0 0 1 199 344" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <%#
-        Medialuna derecha: centrada en (634,300), fuera de x=601
-        Intersección con x=601: y = 300 ± 44 → y=256 y y=344
-        sweep=0 → sentido antihorario → arco curva hacia la izquierda (hacia centro cancha)
-      %>
-      <path d="M 601 256 A 55 55 0 0 0 601 344" fill="none" stroke="#16a34a" stroke-width="2"/>
-
-      <%# Arcos de esquina (r=6px) %>
-      <path d="M 100 86  A 6 6 0 0 0 106 80"  fill="none" stroke="#16a34a" stroke-width="2"/>
-      <path d="M 694 80  A 6 6 0 0 0 700 86"  fill="none" stroke="#16a34a" stroke-width="2"/>
-      <path d="M 100 514 A 6 6 0 0 1 106 520" fill="none" stroke="#16a34a" stroke-width="2"/>
-      <path d="M 694 520 A 6 6 0 0 1 700 514" fill="none" stroke="#16a34a" stroke-width="2"/>
-    </svg>
-    <%# Glow verde %>
-    <div class="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-field/20 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-1/3 w-64 h-64 bg-field/10 rounded-full blur-2xl"></div>
+<section class="relative min-h-[780px] overflow-hidden bg-[#071323] text-white sm:min-h-[860px]">
+  <div class="absolute inset-0">
+    <%= image_tag "home/hero-video-poster.png", alt: "", class: "absolute inset-0 h-full w-full object-cover object-center opacity-90" %>
+    <video id="hero-video" class="absolute inset-0 h-full w-full object-cover object-center opacity-90 motion-reduce:hidden" autoplay muted loop playsinline preload="metadata" poster="<%= asset_path("home/hero-video-poster.png") %>" aria-hidden="true">
+      <source src="/videos/home/hero-goal.mp4" type="video/mp4">
+    </video>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#071323]/90 via-[#071323]/56 to-[#071323]/5"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#071323]/70 via-transparent to-[#071323]/5"></div>
   </div>
 
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20">
+  <div class="relative mx-auto flex min-h-[780px] max-w-7xl items-center px-4 pb-20 pt-32 sm:min-h-[860px] sm:px-6 sm:pb-24 lg:px-8">
     <div class="max-w-3xl">
-
-      <div id="hero-badge" class="inline-flex items-center gap-2 bg-field/20 border border-field/40 rounded-full px-4 py-1.5 text-field-light text-sm font-medium mb-8">
-        <span class="w-2 h-2 bg-field-light rounded-full animate-pulse"></span>
-        Canchas disponibles ahora
+      <div id="hero-badge" class="mb-6 inline-flex items-center gap-3 border border-blue-300/30 bg-blue-500/15 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-100">
+        <span class="h-2 w-2 bg-blue-300"></span>
+        Plataforma de reservas deportivas
       </div>
 
-      <h1 id="hero-title" class="font-display text-7xl sm:text-8xl lg:text-9xl leading-none tracking-wide mb-6">
-        <span class="text-white">RESERVÁ</span><br>
-        <span class="text-field-light">TU CANCHA.</span><br>
-        <span class="text-white/40">JUGÁ AHORA.</span>
+      <h1 id="hero-title" class="text-5xl font-black leading-[0.95] tracking-normal text-white sm:text-6xl lg:text-7xl">
+        Tu cancha, tu equipo, tu horario.
       </h1>
 
-      <p id="hero-sub" class="text-white/60 text-lg sm:text-xl max-w-xl mb-10 leading-relaxed font-light">
-        El complejo deportivo <span class="text-white font-medium">El Buen Deporte</span> — canchas de fútbol 5, 7 y 11,
-        ligas, torneos y clases con entrenadores certificados.
+      <p id="hero-sub" class="mt-6 max-w-xl text-base leading-7 text-white/70 sm:text-lg">
+        Reservá fútbol 5, 7 y 11 en minutos. Gol Ahora ordena turnos, señas, ligas, torneos y entrenamientos para que el partido no dependa de mensajes sueltos.
       </p>
 
-      <div id="hero-cta" class="flex flex-col sm:flex-row gap-4">
-        <%= link_to courts_path, class: "inline-flex items-center justify-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:shadow-lg hover:shadow-field/30 hover:-translate-y-0.5" do %>
-          Reservar cancha
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      <div id="hero-cta" class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <%= link_to courts_path, class: "inline-flex items-center justify-center gap-2 bg-field px-6 py-3 text-sm font-black text-zinc-950 transition hover:bg-field-light" do %>
+          Reservar una cancha
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         <% end %>
-        <%= link_to courts_path, class: "inline-flex items-center justify-center gap-2 border border-white/20 hover:border-white/40 text-white font-medium px-8 py-4 rounded-xl text-base transition-all hover:bg-white/5" do %>
-          Ver canchas
+        <%= link_to tournaments_path, class: "inline-flex items-center justify-center border border-white/25 bg-white/10 px-6 py-3 text-sm font-bold text-white transition hover:border-blue-300 hover:text-blue-100" do %>
+          Ver competencias
         <% end %>
       </div>
 
-      <%# Stats %>
-      <div id="hero-stats" class="flex gap-8 mt-16 pt-8 border-t border-white/10">
-        <div>
-          <p class="font-display text-4xl text-field-light">3</p>
-          <p class="text-white/50 text-sm mt-1">Tipos de cancha</p>
+      <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">
+        <%= link_to "Soy jugador", new_user_registration_path, class: "text-field-light hover:text-white" %>
+        <%= link_to "Soy complejo", new_user_session_path, class: "text-blue-100 hover:text-white" %>
+      </div>
+
+      <div class="mt-12 grid max-w-2xl gap-px border border-white/15 bg-white/15 sm:grid-cols-3">
+        <div class="bg-[#071323]/45 p-4 backdrop-blur">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-100">Formatos</p>
+          <p class="mt-2 text-lg font-black">F5 · F7 · F11</p>
         </div>
-        <div>
-          <p class="font-display text-4xl text-field-light">7</p>
-          <p class="text-white/50 text-sm mt-1">Días a la semana</p>
+        <div class="bg-[#071323]/45 p-4 backdrop-blur">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-100">Reserva</p>
+          <p class="mt-2 text-lg font-black">100% web</p>
         </div>
-        <div>
-          <p class="font-display text-4xl text-field-light">100%</p>
-          <p class="text-white/50 text-sm mt-1">Online</p>
+        <div class="bg-[#071323]/45 p-4 backdrop-blur">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-100">Estado</p>
+          <p class="mt-2 text-lg font-black">Confirmación online</p>
         </div>
       </div>
     </div>
   </div>
-
 </section>
 
-<%# ── SERVICIOS ───────────────────────────────────────────────────── %>
-<section id="canchas" class="relative py-24 bg-gray-950">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="bg-[#071323] text-white">
+  <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px px-4 py-8 sm:px-6 lg:grid-cols-4 lg:px-8">
+    <% stats.each do |value, label| %>
+      <div class="border-white/10 py-4 text-center lg:border-r last:border-r-0">
+        <p class="text-3xl font-black text-white"><%= value %></p>
+        <p class="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-orange-200"><%= label %></p>
+      </div>
+    <% end %>
+  </div>
+</section>
 
-    <div class="text-center mb-16">
-      <p class="text-field-light font-medium text-sm tracking-widest uppercase mb-3">Lo que ofrecemos</p>
-      <h2 class="font-display text-5xl sm:text-6xl text-white">NUESTROS SERVICIOS</h2>
+<section class="relative overflow-hidden bg-[#f4f7fb] py-24 text-[#071323]">
+  <div class="absolute inset-0 opacity-70" style="background-image: linear-gradient(rgba(7,19,35,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(7,19,35,0.055) 1px, transparent 1px); background-size: 48px 48px;"></div>
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="inline-flex items-center gap-2 border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-blue-700">
+        <span class="h-2 w-2 bg-blue-600"></span>
+        Cómo funciona
+      </p>
+      <h2 class="mt-5 text-4xl font-black leading-tight sm:text-5xl">
+        Mirá turnos libres y cerrá la reserva sin llamar al complejo.
+      </h2>
     </div>
 
-    <div id="services-grid" class="grid md:grid-cols-3 gap-6">
+    <div id="flow-grid" class="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <% steps.each do |number, title, body| %>
+        <div class="border border-slate-200 bg-white p-6 shadow-sm">
+          <p class="inline-flex bg-field px-3 py-2 text-xs font-black text-zinc-950"><%= number %></p>
+          <h3 class="mt-8 text-xl font-black"><%= title %></h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600"><%= body %></p>
+        </div>
+      <% end %>
+    </div>
 
-      <div class="group relative bg-white/5 hover:bg-white/8 border border-white/10 hover:border-field/40 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
-        <div class="w-12 h-12 bg-field/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-field/30 transition-colors">
-          <svg class="w-6 h-6 text-field-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-        </div>
-        <h3 class="font-display text-3xl text-white mb-3">RESERVAS ONLINE</h3>
-        <p class="text-white/50 leading-relaxed">Reservá tu cancha desde cualquier dispositivo, en cualquier momento. Pagá la seña online y asegurá tu horario.</p>
-        <div class="mt-6 flex flex-wrap gap-2">
-          <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">Fútbol 5</span>
-          <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">Fútbol 7</span>
-          <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">Fútbol 11</span>
-        </div>
+    <div class="mt-6 grid gap-px border border-slate-200 bg-slate-200 md:grid-cols-3">
+      <div class="bg-[#071323] p-5 text-white">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-200">Disponibilidad</p>
+        <p class="mt-2 text-sm leading-6 text-white/70">La cancha publicada muestra horarios disponibles y evita consultas repetidas.</p>
       </div>
-
-      <div class="group relative bg-field/10 hover:bg-field/15 border border-field/30 hover:border-field/60 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
-        <div class="w-12 h-12 bg-field/30 rounded-xl flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-field-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-          </svg>
-        </div>
-        <h3 class="font-display text-3xl text-white mb-3">LIGAS Y TORNEOS</h3>
-        <p class="text-white/50 leading-relaxed">Inscribí tu equipo en competencias organizadas. Seguí el fixture, resultados y tabla de posiciones en tiempo real.</p>
-        <div class="mt-6 flex flex-wrap gap-2">
-          <span class="text-xs bg-field/20 text-field-light px-3 py-1 rounded-full">Fixture automático</span>
-          <span class="text-xs bg-field/20 text-field-light px-3 py-1 rounded-full">Resultados online</span>
-        </div>
+      <div class="bg-[#071323] p-5 text-white">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-200">Seña</p>
+        <p class="mt-2 text-sm leading-6 text-white/70">El turno queda tomado con pago inicial y el complejo cobra el saldo al llegar.</p>
       </div>
-
-      <div class="group relative bg-white/5 hover:bg-white/8 border border-white/10 hover:border-field/40 rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1">
-        <div class="w-12 h-12 bg-field/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-field/30 transition-colors">
-          <svg class="w-6 h-6 text-field-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-          </svg>
-        </div>
-        <h3 class="font-display text-3xl text-white mb-3">ACADEMIA</h3>
-        <p class="text-white/50 leading-relaxed">Clases y entrenamientos con profesores y entrenadores certificados. Mejorá tu juego con seguimiento personalizado.</p>
-        <div class="mt-6 flex flex-wrap gap-2">
-          <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">Profesores certificados</span>
-          <span class="text-xs bg-white/10 text-white/60 px-3 py-1 rounded-full">Grupos e individuales</span>
-        </div>
+      <div class="bg-[#071323] p-5 text-white">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-200">Confirmación</p>
+        <p class="mt-2 text-sm leading-6 text-white/70">Jugador y complejo comparten el mismo estado de la reserva.</p>
       </div>
-
     </div>
   </div>
 </section>
 
-<%# ── TIPOS DE CANCHA ─────────────────────────────────────────────── %>
-<section class="py-24 bg-pitch relative overflow-hidden">
-  <div class="absolute inset-0" style="background: linear-gradient(135deg, #052e16 0%, transparent 50%);"></div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-    <div class="grid lg:grid-cols-2 gap-16 items-center">
+<section id="canchas" class="bg-white py-24 text-[#071323]">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
       <div>
-        <p class="text-field-light font-medium text-sm tracking-widest uppercase mb-3">Canchas disponibles</p>
-        <h2 class="font-display text-5xl sm:text-6xl text-white mb-6">ELEGÍ TU<br>FORMATO</h2>
-        <p class="text-white/50 text-lg leading-relaxed mb-8">Contamos con tres tipos de cancha para que juegues como preferís. Cada formato tiene su duración y precio.</p>
-        <% if user_signed_in? %>
-          <%= link_to courts_path, class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-all" do %>
-            Ver disponibilidad
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          <% end %>
-        <% else %>
-          <%= link_to new_user_session_path, class: "inline-flex items-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-6 py-3 rounded-xl transition-all" do %>
-            Iniciar sesión para reservar
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          <% end %>
-        <% end %>
+        <p class="text-xs font-bold uppercase tracking-[0.22em] text-field-dark">Beneficios</p>
+        <h2 class="mt-4 text-4xl font-black sm:text-5xl">Una app para jugadores y para el complejo.</h2>
       </div>
+      <%= link_to "Ver canchas", courts_path, class: "inline-flex w-fit border border-slate-300 px-5 py-3 text-sm font-black text-[#071323] transition hover:border-field hover:text-field-dark" %>
+    </div>
 
-      <div id="court-types" class="space-y-4">
-        <div class="flex items-center gap-6 bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-field/40 transition-colors">
-          <div class="font-display text-5xl text-field-light w-16 text-center">5</div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-white text-lg">Fútbol 5</h4>
-            <p class="text-white/40 text-sm">Hasta 1 hora · Superficie sintética · 10 jugadores</p>
+    <div id="benefits-grid" class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <% benefits.each do |title, body, icon| %>
+        <div class="border border-slate-200 bg-[#f8fafc] p-6 shadow-sm">
+          <div class="mb-5 grid h-11 w-11 place-items-center bg-field/15 text-field-dark">
+            <i class="ti ti-<%= icon %> text-2xl" aria-hidden="true"></i>
           </div>
-          <div class="w-2 h-2 bg-field-light rounded-full"></div>
+          <h3 class="text-lg font-black"><%= title %></h3>
+          <p class="mt-3 text-sm leading-6 text-slate-600"><%= body %></p>
         </div>
-        <div class="flex items-center gap-6 bg-field/10 border border-field/30 rounded-2xl p-6">
-          <div class="font-display text-5xl text-field-light w-16 text-center">7</div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-white text-lg">Fútbol 7</h4>
-            <p class="text-white/40 text-sm">Hasta 1.5 horas · Superficie natural · 14 jugadores</p>
-          </div>
-          <div class="w-2 h-2 bg-field-light rounded-full"></div>
-        </div>
-        <div class="flex items-center gap-6 bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-field/40 transition-colors">
-          <div class="font-display text-5xl text-field-light w-16 text-center">11</div>
-          <div class="flex-1">
-            <h4 class="font-semibold text-white text-lg">Fútbol 11</h4>
-            <p class="text-white/40 text-sm">Hasta 2 horas · Cancha reglamentaria · 22 jugadores</p>
-          </div>
-          <div class="w-2 h-2 bg-field-light rounded-full"></div>
-        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<section class="relative min-h-[520px] overflow-hidden bg-[#071323] text-white">
+  <%= image_tag "home/training-session-1920.jpg", alt: "", class: "absolute inset-0 h-full w-full object-cover object-center opacity-85" %>
+  <div class="absolute inset-0 bg-gradient-to-r from-[#071323]/92 via-[#071323]/62 to-[#071323]/15"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-[#071323] via-transparent to-transparent"></div>
+
+  <div class="relative mx-auto grid min-h-[520px] max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+    <div>
+      <p class="inline-flex border border-field/30 bg-field/15 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-field-light">Profesores</p>
+      <h2 class="mt-5 text-4xl font-black leading-tight sm:text-5xl">Clases y entrenamientos también se reservan desde acá.</h2>
+      <p class="mt-5 max-w-xl text-sm leading-7 text-white/60">
+        Sumá actividad fuera del alquiler por hora: profesores, cupos, asistencias e inscripciones conectadas al mismo perfil de jugador.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <%= link_to "Ver clases", clases_path, class: "inline-flex justify-center bg-field px-6 py-3 text-sm font-black text-zinc-950 hover:bg-field-light" %>
+        <%= link_to "Entrenamientos", entrenamientos_path, class: "inline-flex justify-center border border-white/25 bg-white/10 px-6 py-3 text-sm font-black text-white hover:border-blue-300 hover:text-blue-100" %>
       </div>
     </div>
   </div>
 </section>
 
-<%# ── CTA FINAL ───────────────────────────────────────────────────── %>
 <% unless user_signed_in? %>
-<section class="py-24 bg-gray-950 border-t border-white/5">
-  <div class="max-w-4xl mx-auto px-4 text-center">
-    <h2 class="font-display text-6xl sm:text-7xl text-white mb-6">¿LISTO PARA<br><span class="text-field-light">JUGAR?</span></h2>
-    <p class="text-white/50 text-lg mb-10 max-w-xl mx-auto">Creá tu cuenta gratis y reservá tu primera cancha en minutos.</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <%= link_to "Crear cuenta gratis", new_user_registration_path, class: "inline-flex items-center justify-center gap-2 bg-field hover:bg-field-dark text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:shadow-lg hover:shadow-field/30" %>
-      <%= link_to "Ya tengo cuenta", new_user_session_path, class: "inline-flex items-center justify-center text-white/60 hover:text-white font-medium px-8 py-4 transition-colors" %>
+  <section class="bg-[#071323] py-24 text-center text-white">
+    <div class="mx-auto max-w-3xl px-4">
+      <p class="inline-flex border border-blue-300/25 bg-blue-500/15 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-blue-100">Empezá ahora</p>
+      <h2 class="mt-5 text-4xl font-black leading-tight sm:text-5xl">Registrate, reservá y armá tu partido.</h2>
+      <p class="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/60">Para jugadores y complejos deportivos. Disponible desde la web, sin instalar nada.</p>
+      <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <%= link_to "Crear cuenta", new_user_registration_path, class: "inline-flex justify-center bg-field px-6 py-3 text-sm font-black text-zinc-950 hover:bg-field-light" %>
+        <%= link_to "Iniciar sesión", new_user_session_path, class: "inline-flex justify-center border border-white/20 px-6 py-3 text-sm font-black text-white/85 hover:border-white/40 hover:text-white" %>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 <% end %>
 
-<%# ── ANIMACIONES (Motion vanilla) ───────────────────────────────── %>
 <script type="module">
   import { animate, inView, stagger } from 'https://cdn.jsdelivr.net/npm/motion@latest/+esm'
 
-  // Hero: entrada escalonada al cargar
-  animate('#hero-badge', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.1 })
-  animate('#hero-title', { opacity: [0, 1], y: [60, 0] }, { duration: 0.7, delay: 0.25, easing: [0.16, 1, 0.3, 1] })
-  animate('#hero-sub',   { opacity: [0, 1], y: [30, 0] }, { duration: 0.6, delay: 0.5  })
-  animate('#hero-cta',   { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.7  })
-  animate('#hero-stats', { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.9  })
+  animate('#hero-badge', { opacity: [0, 1], y: [12, 0] }, { duration: 0.45, delay: 0.05 })
+  animate('#hero-title', { opacity: [0, 1], y: [28, 0] }, { duration: 0.65, delay: 0.18, easing: [0.16, 1, 0.3, 1] })
+  animate('#hero-sub', { opacity: [0, 1], y: [18, 0] }, { duration: 0.55, delay: 0.32 })
+  animate('#hero-cta', { opacity: [0, 1], y: [14, 0] }, { duration: 0.5, delay: 0.45 })
 
-  // SVG del fondo: draw-on effect en las líneas de cancha
-  const lines = document.querySelectorAll('svg line, svg rect, svg circle, svg path')
-  animate(lines, { opacity: [0, 0.1] }, { duration: 1.5, delay: stagger(0.08) })
+  inView('#flow-grid', () => {
+    animate('#flow-grid > div', { opacity: [0, 1], y: [24, 0] }, { duration: 0.45, delay: stagger(0.08) })
+  }, { amount: 0.25 })
 
-  // Cards de servicios: aparecen al hacer scroll
-  inView('#services-grid', () => {
-    animate(
-      '#services-grid > div',
-      { opacity: [0, 1], y: [40, 0] },
-      { duration: 0.5, delay: stagger(0.12), easing: [0.16, 1, 0.3, 1] }
-    )
-  }, { amount: 0.2 })
-
-  // Sección de tipos de cancha: desliza desde la izquierda
-  inView('#court-types', () => {
-    animate('#court-types > div', { opacity: [0, 1], x: [-30, 0] }, { duration: 0.5, delay: stagger(0.1) })
-  }, { amount: 0.3 })
+  inView('#benefits-grid', () => {
+    animate('#benefits-grid > div', { opacity: [0, 1], y: [24, 0] }, { duration: 0.45, delay: stagger(0.05) })
+  }, { amount: 0.15 })
 </script>
 
-<%# ── FOOTER ──────────────────────────────────────────────────────── %>
-<footer class="bg-pitch border-t border-white/5 py-8">
-  <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+<footer class="border-t border-white/10 bg-[#071323] py-10">
+  <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 sm:flex-row">
     <div class="flex items-center gap-2">
-      <span class="text-field-light">⚽</span>
-      <span class="font-display text-lg tracking-wide text-white/60">GOL AHORA</span>
+      <span class="grid h-7 w-7 place-items-center bg-field text-xs font-black text-zinc-950">GA</span>
+      <span class="text-sm font-black tracking-[0.18em] text-white/60">GOL AHORA</span>
     </div>
-    <p class="text-white/30 text-sm">© <%= Date.current.year %> El Buen Deporte. Todos los derechos reservados.</p>
+    <p class="text-sm text-white/30">© <%= Date.current.year %> El Buen Deporte. Todos los derechos reservados.</p>
   </div>
 </footer>

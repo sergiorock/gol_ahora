@@ -25,8 +25,8 @@ select.country-tomselect {
 
 select.country-tomselect:focus {
   outline: none;
-  border-color: #22c55e;
-  box-shadow: 0 0 0 1px #22c55e;
+  border-color: #ff8a5c;
+  box-shadow: 0 0 0 1px #ff8a5c;
 }
 
 select.country-tomselect option {
@@ -58,8 +58,8 @@ select.country-tomselect option {
 }
 
 .ts-wrapper.focus .ts-control {
-  border-color: #22c55e !important;
-  box-shadow: 0 0 0 1px #22c55e !important;
+  border-color: #ff8a5c !important;
+  box-shadow: 0 0 0 1px #ff8a5c !important;
 }
 
 .ts-control input {
@@ -92,13 +92,13 @@ select.country-tomselect option {
 
 .ts-dropdown .option:hover,
 .ts-dropdown .option.active {
-  background-color: rgba(22, 163, 74, 0.2) !important;
-  color: #22c55e !important;
+  background-color: rgba(255, 107, 53, 0.16) !important;
+  color: #ff8a5c !important;
 }
 
 .ts-dropdown .option.selected {
-  background-color: rgba(22, 163, 74, 0.15) !important;
-  color: #22c55e !important;
+  background-color: rgba(255, 107, 53, 0.12) !important;
+  color: #ff8a5c !important;
   font-weight: 500;
 }
 
