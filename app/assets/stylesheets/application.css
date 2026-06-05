@@ -6,6 +6,57 @@ button, [type="submit"], [type="button"], [role="button"], a {
   cursor: pointer;
 }
 
+#site-navbar {
+  background: transparent;
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+#site-navbar.is-scrolled {
+  background: rgba(7, 19, 35, 0.9);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 32px rgba(2, 8, 18, 0.34);
+  backdrop-filter: blur(18px);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  #site-navbar.is-scrolled {
+    background: rgba(7, 19, 35, 0.97);
+  }
+}
+
+.goal-net-bg::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -70px -30px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-position: center;
+  background-size: 92px 68px;
+  mask-image: radial-gradient(ellipse at 50% 45%, black 0%, rgba(0, 0, 0, 0.78) 42%, transparent 78%);
+  opacity: 0.46;
+  transform: perspective(900px) rotateX(8deg) skewY(-1.5deg);
+  transform-origin: center;
+}
+
+.goal-net-bg::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 107, 53, 0.16), transparent 30%),
+    linear-gradient(180deg, rgba(7, 19, 35, 0.04), rgba(7, 19, 35, 0.82) 96%);
+}
+
+.goal-net-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* ── Tom Select — tema oscuro ───────────────────────────────────── */
 
 select.country-tomselect {
@@ -30,7 +81,7 @@ select.country-tomselect:focus {
 }
 
 select.country-tomselect option {
-  background: #111827;
+  background: #071323;
   color: #ffffff;
 }
 
@@ -71,7 +122,7 @@ select.country-tomselect option {
 }
 
 .ts-dropdown {
-  background-color: #111827 !important;
+  background-color: #071323 !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 0.75rem !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;

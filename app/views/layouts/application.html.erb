@@ -63,7 +63,7 @@
       }
       .ts-dark.ts-wrapper .ts-control input::placeholder { color: rgba(255,255,255,0.3); }
       .ts-dark.ts-wrapper .ts-dropdown {
-        background: #111827;
+        background: #071323;
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 0.75rem;
         margin-top: 4px;
@@ -90,7 +90,7 @@
   </head>
   <body class="bg-pitch text-white antialiased">
 
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#071323] border-b border-white/10 shadow-lg shadow-black/20">
+    <nav id="site-navbar" class="fixed top-0 left-0 right-0 z-50 border-b border-white/10" data-home-hero="<%= current_page?(root_path) %>">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <%= link_to root_path, class: "flex items-center gap-2 group" do %>
@@ -152,6 +152,23 @@
 
     <script>
       (() => {
+        const initNavbar = () => {
+          const nav = document.getElementById('site-navbar');
+          if (!nav) return;
+
+          const hasTransparentHero = nav.dataset.homeHero === 'true';
+          const update = () => {
+            nav.classList.toggle('is-scrolled', !hasTransparentHero || window.scrollY > 36);
+          };
+
+          update();
+          if (window.golAhoraNavbarUpdate) {
+            window.removeEventListener('scroll', window.golAhoraNavbarUpdate);
+          }
+          window.golAhoraNavbarUpdate = update;
+          window.addEventListener('scroll', update, { passive: true });
+        };
+
         const initDarkSelects = () => {
           if (typeof TomSelect === 'undefined') return;
 
@@ -181,8 +198,14 @@
           });
         };
 
-        document.addEventListener('DOMContentLoaded', initDarkSelects);
-        document.addEventListener('turbo:load', initDarkSelects);
+        document.addEventListener('DOMContentLoaded', () => {
+          initNavbar();
+          initDarkSelects();
+        });
+        document.addEventListener('turbo:load', () => {
+          initNavbar();
+          initDarkSelects();
+        });
       })();
     </script>
   </body>

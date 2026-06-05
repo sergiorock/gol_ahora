@@ -1,12 +1,5 @@
 <% content_for :title, "Gol Ahora - Reservas de canchas" %>
 
-<% stats = [
-  ["+2.000", "turnos concretados"],
-  ["+500", "jugadores activos"],
-  ["8", "canchas disponibles"],
-  ["24/7", "reservas online"]
-] %>
-
 <% steps = [
   ["01", "Elegí cancha", "Filtrá por formato, superficie y horario libre."],
   ["02", "Reservá el turno", "Bloqueá el horario con seña online y confirmación."],
@@ -30,13 +23,13 @@
       <source src="/videos/home/hero-goal.mp4" type="video/mp4">
     </video>
     <div class="absolute inset-0 bg-gradient-to-r from-[#071323]/90 via-[#071323]/56 to-[#071323]/5"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#071323]/70 via-transparent to-[#071323]/5"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#071323]/72 via-transparent to-[#071323]/5"></div>
   </div>
 
   <div class="relative mx-auto flex min-h-[780px] max-w-7xl items-center px-4 pb-20 pt-32 sm:min-h-[860px] sm:px-6 sm:pb-24 lg:px-8">
     <div class="max-w-3xl">
-      <div id="hero-badge" class="mb-6 inline-flex items-center gap-3 border border-blue-300/30 bg-blue-500/15 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-100">
-        <span class="h-2 w-2 bg-blue-300"></span>
+      <div id="hero-badge" class="mb-6 inline-flex items-center gap-3 border border-white/25 bg-black/20 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white/85 backdrop-blur">
+        <span class="h-2 w-2 bg-field"></span>
         Plataforma de reservas deportivas
       </div>
 
@@ -53,27 +46,27 @@
           Reservar una cancha
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         <% end %>
-        <%= link_to tournaments_path, class: "inline-flex items-center justify-center border border-white/25 bg-white/10 px-6 py-3 text-sm font-bold text-white transition hover:border-blue-300 hover:text-blue-100" do %>
+        <%= link_to tournaments_path, class: "inline-flex items-center justify-center border border-white/25 bg-white/10 px-6 py-3 text-sm font-bold text-white transition hover:border-field hover:text-field-light" do %>
           Ver competencias
         <% end %>
       </div>
 
       <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">
         <%= link_to "Soy jugador", new_user_registration_path, class: "text-field-light hover:text-white" %>
-        <%= link_to "Soy complejo", new_user_session_path, class: "text-blue-100 hover:text-white" %>
+        <%= link_to "Soy complejo", new_user_session_path, class: "text-white/80 hover:text-white" %>
       </div>
 
       <div class="mt-12 grid max-w-2xl gap-px border border-white/15 bg-white/15 sm:grid-cols-3">
-        <div class="bg-[#071323]/45 p-4 backdrop-blur">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-100">Formatos</p>
+        <div class="bg-black/35 p-4 backdrop-blur">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/65">Formatos</p>
           <p class="mt-2 text-lg font-black">F5 · F7 · F11</p>
         </div>
-        <div class="bg-[#071323]/45 p-4 backdrop-blur">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-100">Reserva</p>
+        <div class="bg-black/35 p-4 backdrop-blur">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/65">Reserva</p>
           <p class="mt-2 text-lg font-black">100% web</p>
         </div>
-        <div class="bg-[#071323]/45 p-4 backdrop-blur">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-100">Estado</p>
+        <div class="bg-black/35 p-4 backdrop-blur">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/65">Estado</p>
           <p class="mt-2 text-lg font-black">Confirmación online</p>
         </div>
       </div>
@@ -83,21 +76,21 @@
 
 <section class="bg-[#071323] text-white">
   <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px px-4 py-8 sm:px-6 lg:grid-cols-4 lg:px-8">
-    <% stats.each do |value, label| %>
+    <% @stats.each do |value, label| %>
       <div class="border-white/10 py-4 text-center lg:border-r last:border-r-0">
-        <p class="text-3xl font-black text-white"><%= value %></p>
+        <p class="text-3xl font-black text-white"><%= value.is_a?(Numeric) ? number_with_delimiter(value, delimiter: ".") : value %></p>
         <p class="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-orange-200"><%= label %></p>
       </div>
     <% end %>
   </div>
 </section>
 
-<section class="relative overflow-hidden bg-[#f4f7fb] py-24 text-[#071323]">
+<section class="relative overflow-hidden bg-[#f5f2ec] py-24 text-[#071323]">
   <div class="absolute inset-0 opacity-70" style="background-image: linear-gradient(rgba(7,19,35,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(7,19,35,0.055) 1px, transparent 1px); background-size: 48px 48px;"></div>
   <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-3xl text-center">
-      <p class="inline-flex items-center gap-2 border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-blue-700">
-        <span class="h-2 w-2 bg-blue-600"></span>
+      <p class="inline-flex items-center gap-2 border border-[#071323]/15 bg-white/60 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#071323]/70">
+        <span class="h-2 w-2 bg-field"></span>
         Cómo funciona
       </p>
       <h2 class="mt-5 text-4xl font-black leading-tight sm:text-5xl">
@@ -107,49 +100,49 @@
 
     <div id="flow-grid" class="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <% steps.each do |number, title, body| %>
-        <div class="border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="border border-[#071323]/12 bg-white/70 p-6 shadow-sm">
           <p class="inline-flex bg-field px-3 py-2 text-xs font-black text-zinc-950"><%= number %></p>
           <h3 class="mt-8 text-xl font-black"><%= title %></h3>
-          <p class="mt-3 text-sm leading-6 text-slate-600"><%= body %></p>
+          <p class="mt-3 text-sm leading-6 text-[#373737]/75"><%= body %></p>
         </div>
       <% end %>
     </div>
 
-    <div class="mt-6 grid gap-px border border-slate-200 bg-slate-200 md:grid-cols-3">
+    <div class="mt-6 grid gap-px border border-[#071323]/15 bg-[#071323]/15 md:grid-cols-3">
       <div class="bg-[#071323] p-5 text-white">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-200">Disponibilidad</p>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-field-light">Disponibilidad</p>
         <p class="mt-2 text-sm leading-6 text-white/70">La cancha publicada muestra horarios disponibles y evita consultas repetidas.</p>
       </div>
       <div class="bg-[#071323] p-5 text-white">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-200">Seña</p>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-field-light">Seña</p>
         <p class="mt-2 text-sm leading-6 text-white/70">El turno queda tomado con pago inicial y el complejo cobra el saldo al llegar.</p>
       </div>
       <div class="bg-[#071323] p-5 text-white">
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-200">Confirmación</p>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-field-light">Confirmación</p>
         <p class="mt-2 text-sm leading-6 text-white/70">Jugador y complejo comparten el mismo estado de la reserva.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="canchas" class="bg-white py-24 text-[#071323]">
+<section id="canchas" class="bg-[#faf9f6] py-24 text-[#071323]">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
       <div>
         <p class="text-xs font-bold uppercase tracking-[0.22em] text-field-dark">Beneficios</p>
         <h2 class="mt-4 text-4xl font-black sm:text-5xl">Una app para jugadores y para el complejo.</h2>
       </div>
-      <%= link_to "Ver canchas", courts_path, class: "inline-flex w-fit border border-slate-300 px-5 py-3 text-sm font-black text-[#071323] transition hover:border-field hover:text-field-dark" %>
+      <%= link_to "Ver canchas", courts_path, class: "inline-flex w-fit border border-[#071323]/20 px-5 py-3 text-sm font-black text-[#071323] transition hover:border-field hover:text-field-dark" %>
     </div>
 
     <div id="benefits-grid" class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <% benefits.each do |title, body, icon| %>
-        <div class="border border-slate-200 bg-[#f8fafc] p-6 shadow-sm">
-          <div class="mb-5 grid h-11 w-11 place-items-center bg-field/15 text-field-dark">
+        <div class="border border-[#071323]/12 bg-white p-6 shadow-sm">
+          <div class="mb-5 grid h-11 w-11 place-items-center bg-field/12 text-field-dark">
             <i class="ti ti-<%= icon %> text-2xl" aria-hidden="true"></i>
           </div>
           <h3 class="text-lg font-black"><%= title %></h3>
-          <p class="mt-3 text-sm leading-6 text-slate-600"><%= body %></p>
+          <p class="mt-3 text-sm leading-6 text-[#373737]/75"><%= body %></p>
         </div>
       <% end %>
     </div>
@@ -158,7 +151,7 @@
 
 <section class="relative min-h-[520px] overflow-hidden bg-[#071323] text-white">
   <%= image_tag "home/training-session-1920.jpg", alt: "", class: "absolute inset-0 h-full w-full object-cover object-center opacity-85" %>
-  <div class="absolute inset-0 bg-gradient-to-r from-[#071323]/92 via-[#071323]/62 to-[#071323]/15"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-[#071323]/90 via-[#071323]/54 to-[#071323]/10"></div>
   <div class="absolute inset-0 bg-gradient-to-t from-[#071323] via-transparent to-transparent"></div>
 
   <div class="relative mx-auto grid min-h-[520px] max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
@@ -170,16 +163,16 @@
       </p>
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         <%= link_to "Ver clases", clases_path, class: "inline-flex justify-center bg-field px-6 py-3 text-sm font-black text-zinc-950 hover:bg-field-light" %>
-        <%= link_to "Entrenamientos", entrenamientos_path, class: "inline-flex justify-center border border-white/25 bg-white/10 px-6 py-3 text-sm font-black text-white hover:border-blue-300 hover:text-blue-100" %>
+        <%= link_to "Entrenamientos", entrenamientos_path, class: "inline-flex justify-center border border-white/25 bg-white/10 px-6 py-3 text-sm font-black text-white hover:border-field hover:text-field-light" %>
       </div>
     </div>
   </div>
 </section>
 
 <% unless user_signed_in? %>
-  <section class="bg-[#071323] py-24 text-center text-white">
-    <div class="mx-auto max-w-3xl px-4">
-      <p class="inline-flex border border-blue-300/25 bg-blue-500/15 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-blue-100">Empezá ahora</p>
+  <section class="goal-net-bg relative overflow-hidden bg-[#071323] py-24 text-center text-white">
+    <div class="relative mx-auto max-w-3xl px-4">
+      <p class="inline-flex border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white/75">Empezá ahora</p>
       <h2 class="mt-5 text-4xl font-black leading-tight sm:text-5xl">Registrate, reservá y armá tu partido.</h2>
       <p class="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/60">Para jugadores y complejos deportivos. Disponible desde la web, sin instalar nada.</p>
       <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
