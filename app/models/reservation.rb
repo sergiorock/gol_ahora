@@ -51,6 +51,10 @@ class Reservation < ApplicationRecord
     payments.where(payment_type: :deposit, status: :approved).first
   end
 
+  def deposit_paid?
+    deposit_charge.present? || approved_deposit.present? || payments.where(payment_type: :deposit, status: :approved).exists?
+  end
+
   private
 
   def ends_after_starts
@@ -91,9 +95,5 @@ class Reservation < ApplicationRecord
       paid = deposit_charge.present? || approved_deposit.present? || payments.where(payment_type: :deposit, status: :approved).exists?
       errors.add(:base, "no se puede confirmar la reserva sin el pago de la seña") unless paid
     end
-  end
-
-  def deposit_paid?
-    deposit_charge.present? || approved_deposit.present? || payments.where(payment_type: :deposit, status: :approved).exists?
   end
 end
