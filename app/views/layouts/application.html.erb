@@ -142,12 +142,12 @@
     </nav>
 
     <% if notice %>
-      <div class="fixed top-20 right-4 z-40 bg-field text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium">
+      <div class="flash-message fixed top-20 right-4 z-40 bg-field text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium" style="transition: opacity 0.8s ease;">
         <%= notice %>
       </div>
     <% end %>
     <% if alert %>
-      <div class="fixed top-20 right-4 z-40 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium">
+      <div class="flash-message fixed top-20 right-4 z-40 bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium" style="transition: opacity 0.8s ease;">
         <%= alert %>
       </div>
     <% end %>
@@ -202,13 +202,24 @@
           });
         };
 
+        const initFlashMessages = () => {
+          document.querySelectorAll('.flash-message').forEach((el) => {
+            setTimeout(() => {
+              el.style.opacity = '0';
+              setTimeout(() => el.remove(), 800);
+            }, 5000);
+          });
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
           initNavbar();
           initDarkSelects();
+          initFlashMessages();
         });
         document.addEventListener('turbo:load', () => {
           initNavbar();
           initDarkSelects();
+          initFlashMessages();
         });
       })();
     </script>
