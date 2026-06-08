@@ -1,52 +1,52 @@
 /*
- * Overrides de color para el panel admin (Tabler + verde cancha)
+ * Overrides de color para el panel admin (Tabler + naranja field)
  */
 :root {
-  --tblr-primary:            #16a34a;
-  --tblr-primary-rgb:        22, 163, 74;
-  --tblr-primary-lt:         rgba(22, 163, 74, 0.1);
-  --tblr-primary-lt-rgb:     22, 163, 74;
-  --tblr-link-color:         #16a34a;
-  --tblr-link-hover-color:   #15803d;
+  --tblr-primary:            #ff6b35;
+  --tblr-primary-rgb:        255, 107, 53;
+  --tblr-primary-lt:         rgba(255, 107, 53, 0.1);
+  --tblr-primary-lt-rgb:     255, 107, 53;
+  --tblr-link-color:         #ff6b35;
+  --tblr-link-hover-color:   #e3521d;
 }
 
 /* Sidebar activo */
 .navbar-vertical .nav-link.active {
-  color: #22c55e !important;
-  background-color: rgba(22, 163, 74, 0.12) !important;
+  color: #ff8a5c !important;
+  background-color: rgba(255, 107, 53, 0.12) !important;
 }
 
 /* Sidebar hover */
 .navbar-vertical .nav-link:hover {
-  color: #22c55e !important;
+  color: #ff8a5c !important;
 }
 
 /* Botones primary */
 .btn-primary {
-  background-color: #16a34a !important;
-  border-color: #16a34a !important;
+  background-color: #ff6b35 !important;
+  border-color: #ff6b35 !important;
 }
 .btn-primary:hover {
-  background-color: #15803d !important;
-  border-color: #15803d !important;
+  background-color: #e3521d !important;
+  border-color: #e3521d !important;
 }
 
 /* Badges y estados */
-.bg-primary { background-color: #16a34a !important; }
-.text-primary { color: #16a34a !important; }
-.border-primary { border-color: #16a34a !important; }
+.bg-primary { background-color: #ff6b35 !important; }
+.text-primary { color: #ff6b35 !important; }
+.border-primary { border-color: #ff6b35 !important; }
 
 /* Avatar color por defecto */
 .avatar.bg-primary-lt {
-  background-color: rgba(22, 163, 74, 0.15) !important;
-  color: #16a34a !important;
+  background-color: rgba(255, 107, 53, 0.15) !important;
+  color: #ff6b35 !important;
 }
 
 /* Focus en inputs */
 .form-control:focus,
 .form-select:focus {
-  border-color: #16a34a;
-  box-shadow: 0 0 0 0.2rem rgba(22, 163, 74, 0.15);
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
 }
 
 /* Botones de acciones del header alineados horizontalmente */
