@@ -20,13 +20,14 @@
 
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label">Cliente</label>
-              <select name="walkin[user_id]" class="form-select">
+              <label class="form-label">Cliente <span class="text-danger">*</span></label>
+              <select name="walkin[user_id]" id="walkin-user" class="form-select" required>
                 <option value="">Seleccioná un cliente</option>
                 <% @users.each do |u| %>
                   <option value="<%= u.id %>"><%= u.full_name %> — <%= u.email %></option>
                 <% end %>
               </select>
+              <div class="invalid-feedback">Por favor seleccioná un cliente.</div>
             </div>
 
             <div class="col-md-6">
@@ -85,13 +86,13 @@
               <label class="form-label">Monto a cobrar</label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input type="number" id="walkin-amount" name="walkin[amount]" class="form-control fw-bold" placeholder="0" min="0" step="1">
+                <input type="number" id="walkin-amount" name="walkin[amount]" class="form-control fw-bold bg-light" placeholder="Calculado automáticamente" min="0" step="1" readonly>
               </div>
             </div>
           </div>
 
           <%# Resumen %>
-          <div id="walkin-summary" class="alert alert-success mt-3 d-none">
+          <div id="walkin-summary" class="alert alert-primary mt-3 d-none">
             <div class="d-flex justify-content-between">
               <span id="summary-text">—</span>
               <strong id="summary-amount">—</strong>
@@ -100,7 +101,7 @@
           </div>
 
           <div class="mt-4">
-            <button type="submit" class="btn btn-success btn-lg w-100">
+            <button type="submit" class="btn btn-primary btn-lg w-100">
               <i class="ti ti-check me-2"></i> Registrar y generar recibo
             </button>
           </div>
@@ -115,6 +116,7 @@
   const form        = document.getElementById('walkin-form');
   const prices      = JSON.parse(form.dataset.prices || '{}');
   const courtSel    = document.getElementById('walkin-court');
+  const userSel     = document.getElementById('walkin-user');
   const startSel    = document.getElementById('walkin-start');
   const endSel      = document.getElementById('walkin-end');
   const dateInput   = form.querySelector('input[name="walkin[date]"]');
@@ -197,7 +199,7 @@
 
     const total = price * (diff / 60);
     const dur   = diff % 60 === 0 ? `${diff/60}h` : `${Math.floor(diff/60)}h ${diff%60}min`;
-    amountInput.value        = Math.round(total).toLocaleString('es-AR');
+    amountInput.value        = Math.round(total);
     summaryText.textContent  = `${courtSel.options[courtSel.selectedIndex]?.text?.split(' —')[0]} · ${startSel.value}–${endSel.value} (${dur})`;
     summaryAmount.textContent = fmtARS(total);
     summary.classList.remove('d-none');
@@ -208,6 +210,18 @@
   dateInput.addEventListener('change', fetchAvailability);
   startSel.addEventListener('change', () => { updateEndOptions(); autoCompleteEnd(); recalculate(); });
   endSel.addEventListener('change', () => recalculate());
+
+  userSel.addEventListener('change', () => {
+    if (userSel.value) userSel.classList.remove('is-invalid');
+  });
+
+  form.addEventListener('submit', (e) => {
+    if (!userSel.value) {
+      e.preventDefault();
+      userSel.classList.add('is-invalid');
+      userSel.focus();
+    }
+  });
 
   // Carga disponibilidad si ya hay cancha y fecha
   if (courtSel.value && dateInput.value) {

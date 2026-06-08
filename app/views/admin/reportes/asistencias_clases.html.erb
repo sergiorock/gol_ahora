@@ -52,7 +52,7 @@
     <div class="card">
       <div class="card-body p-3 text-center">
         <div class="text-muted small mb-1">Presentes</div>
-        <div class="h2 mb-0 text-green"><%= @presentes %></div>
+        <div class="h2 mb-0 text-primary"><%= @presentes %></div>
       </div>
     </div>
   </div>
@@ -61,7 +61,7 @@
       <div class="card-body p-3 text-center">
         <div class="text-muted small mb-1">% Asistencia</div>
         <% pct = @asistencias.count > 0 ? (@presentes.to_f / @asistencias.count * 100).round(1) : 0 %>
-        <div class="h2 mb-0 <%= pct >= 70 ? "text-green" : pct >= 40 ? "text-orange" : "text-red" %>"><%= pct %>%</div>
+        <div class="h2 mb-0 <%= pct >= 70 ? "text-primary" : pct >= 40 ? "text-orange" : "text-red" %>"><%= pct %>%</div>
       </div>
     </div>
   </div>
@@ -92,7 +92,7 @@
               <td><%= a.user.full_name %></td>
               <td class="text-center">
                 <% if a.present %>
-                  <span class="badge bg-green-lt text-green"><i class="ti ti-check me-1"></i>Presente</span>
+                  <span class="badge bg-primary-lt text-primary"><i class="ti ti-check me-1"></i>Presente</span>
                 <% else %>
                   <span class="badge bg-secondary-lt text-secondary">Pendiente</span>
                 <% end %>

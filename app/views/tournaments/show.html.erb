@@ -10,7 +10,7 @@
       <p class="text-white/40 text-sm uppercase tracking-widest mb-1">Torneo</p>
       <h1 class="font-display text-5xl sm:text-7xl text-white leading-none"><%= @tournament.name.upcase %></h1>
       <div class="flex items-center gap-3 mt-3">
-        <span class="text-xs px-3 py-1 rounded-full font-medium <%= @tournament.in_progress? ? 'bg-blue-500/20 text-blue-400' : @tournament.open? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
+        <span class="text-xs px-3 py-1 rounded-full font-medium <%= @tournament.in_progress? ? 'bg-blue-500/20 text-blue-400' : @tournament.open? ? 'bg-orange-500/20 text-orange-400' : 'bg-white/10 text-white/40' %>">
           <%= @tournament.status_label %>
         </span>
         <span class="px-2 py-0.5 rounded bg-white/10 text-white/50 text-xs"><%= Tournament::FORMAT_LABELS[@tournament.format] %></span>
@@ -67,7 +67,7 @@
         <div class="bg-field/10 border border-field/30 rounded-2xl p-5">
           <h3 class="text-field-light text-xs font-semibold tracking-widest uppercase mb-3">Tu inscripción</h3>
           <% if my_enrollment&.active? %>
-            <p class="text-green-400 text-sm mb-3">✓ <strong><%= my_enrollment.team_name %></strong></p>
+            <p class="text-orange-400 text-sm mb-3">✓ <strong><%= my_enrollment.team_name %></strong></p>
             <%= button_to enrollment_path(my_enrollment), method: :delete, class: "text-red-400/60 hover:text-red-400 text-xs transition-colors", data: { confirm: "¿Cancelar?" } do %>Cancelar<% end %>
           <% elsif user_signed_in? && current_user.client? %>
             <%= form_with url: tournament_enrollments_path(@tournament), method: :post do %>

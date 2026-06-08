@@ -18,7 +18,7 @@
         <% current.each do |league| %>
           <%= link_to league_path(league), class: "group bg-white/5 border border-white/10 hover:border-field/50 rounded-2xl p-6 transition-all duration-300 block" do %>
             <div class="flex items-center gap-2 mb-4">
-              <span class="text-xs px-2.5 py-1 rounded-full font-medium <%= league.in_progress? ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400' %>">
+              <span class="text-xs px-2.5 py-1 rounded-full font-medium <%= league.in_progress? ? 'bg-blue-500/20 text-blue-400' : 'bg-orange-500/20 text-orange-400' %>">
                 <%= league.status_label %>
               </span>
             </div>

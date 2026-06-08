@@ -19,7 +19,7 @@
           <%= link_to tournament_path(tournament), class: "group bg-white/5 border border-white/10 hover:border-field/50 rounded-2xl p-6 transition-all duration-300 block" do %>
             <%# Badges %>
             <div class="flex items-center gap-2 mb-4">
-              <span class="text-xs px-2.5 py-1 rounded-full font-medium <%= tournament.in_progress? ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400' %>">
+              <span class="text-xs px-2.5 py-1 rounded-full font-medium <%= tournament.in_progress? ? 'bg-blue-500/20 text-blue-400' : 'bg-orange-500/20 text-orange-400' %>">
                 <%= tournament.status_label %>
               </span>
               <span class="text-xs px-2 py-0.5 rounded bg-white/10 text-white/40"><%= Tournament::FORMAT_LABELS[tournament.format] %></span>

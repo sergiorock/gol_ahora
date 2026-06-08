@@ -38,13 +38,13 @@
               <div class="d-flex align-items-center gap-2">
                 <span class="text-muted small"><%= clase.spots_taken %>/<%= clase.max_students %></span>
                 <div class="progress progress-sm flex-grow-1" style="width:60px">
-                  <div class="progress-bar <%= pct >= 100 ? 'bg-danger' : pct >= 70 ? 'bg-warning' : 'bg-success' %>"
+                  <div class="progress-bar <%= pct >= 100 ? 'bg-danger' : pct >= 70 ? 'bg-warning' : 'bg-primary' %>"
                        style="width:<%= pct %>%"></div>
                 </div>
               </div>
             </td>
             <td>
-              <span class="badge <%= clase.activa? ? 'bg-success-lt' : 'bg-secondary-lt' %>">
+              <span class="badge <%= clase.activa? ? 'bg-primary-lt' : 'bg-secondary-lt' %>">
                 <%= clase.activa? ? "Activa" : "Inactiva" %>
               </span>
             </td>

@@ -3,7 +3,7 @@
   <%= link_to admin_charges_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %>
   <%= link_to edit_admin_charge_path(@charge), class: "btn btn-warning" do %><i class="ti ti-pencil"></i> Editar<% end %>
   <% unless @charge.receipt %>
-    <%= link_to new_admin_receipt_path(charge_id: @charge.id), class: "btn btn-success" do %>
+    <%= link_to new_admin_receipt_path(charge_id: @charge.id), class: "btn btn-primary" do %>
       <i class="ti ti-file-plus"></i> Generar recibo
     <% end %>
   <% end %>
@@ -63,7 +63,7 @@
           </div>
         <% else %>
           <p class="text-muted">No se generó recibo para este cobro.</p>
-          <%= link_to new_admin_receipt_path(charge_id: @charge.id), class: "btn btn-success" do %>
+          <%= link_to new_admin_receipt_path(charge_id: @charge.id), class: "btn btn-primary" do %>
             <i class="ti ti-file-plus me-1"></i> Generar recibo
           <% end %>
         <% end %>

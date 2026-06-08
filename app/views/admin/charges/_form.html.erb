@@ -33,7 +33,7 @@
     <div class="col-md-3">
       <%= f.input :amount, label: "Monto ($)", placeholder: "0",
             input_html: { id: "charge-amount" } %>
-      <div id="discount-preview" class="small text-success mt-1 d-none"></div>
+      <div id="discount-preview" class="small text-primary mt-1 d-none"></div>
     </div>
     <div class="col-md-3">
       <%= f.input :date, label: "Fecha", as: :string, input_html: { type: "date", value: charge.date&.strftime("%Y-%m-%d") || Date.today.strftime("%Y-%m-%d") } %>

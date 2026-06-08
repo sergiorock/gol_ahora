@@ -54,7 +54,7 @@
                 <% if c.receipt %>
                   <%= link_to admin_receipt_path(c.receipt), class: "btn btn-sm btn-ghost-primary", title: "Ver recibo" do %><i class="ti ti-receipt"></i><% end %>
                 <% else %>
-                  <%= link_to new_admin_receipt_path(charge_id: c.id), class: "btn btn-sm btn-ghost-success", title: "Generar recibo" do %><i class="ti ti-file-plus"></i><% end %>
+                  <%= link_to new_admin_receipt_path(charge_id: c.id), class: "btn btn-sm btn-ghost-primary", title: "Generar recibo" do %><i class="ti ti-file-plus"></i><% end %>
                 <% end %>
                 <%= button_to admin_charge_path(c), method: :delete, class: "btn btn-sm btn-ghost-danger", data: { confirm: "¿Eliminar cobro?" } do %><i class="ti ti-trash"></i><% end %>
               </div>

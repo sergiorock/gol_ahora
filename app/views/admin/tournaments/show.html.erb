@@ -3,7 +3,7 @@
   <%= link_to admin_tournaments_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> Volver<% end %>
   <%= link_to edit_admin_tournament_path(@tournament), class: "btn btn-warning" do %><i class="ti ti-pencil"></i> Editar<% end %>
   <%= link_to new_admin_tournament_match_path(@tournament), class: "btn btn-primary" do %><i class="ti ti-plus"></i> Agregar partido<% end %>
-  <%= link_to new_admin_tournament_enrollment_path(@tournament), class: "btn btn-success" do %><i class="ti ti-user-plus"></i> Inscribir equipo<% end %>
+  <%= link_to new_admin_tournament_enrollment_path(@tournament), class: "btn btn-primary" do %><i class="ti ti-user-plus"></i> Inscribir equipo<% end %>
 <% end %>
 
 <div class="row g-4">
@@ -56,7 +56,7 @@
                   <td class="fw-semibold"><%= e.team_name %></td>
                   <td class="text-muted small"><%= e.user.full_name %></td>
                   <td class="text-muted small"><%= l e.enrolled_at, format: "%-d/%m/%Y" %></td>
-                  <td><span class="badge <%= e.active? ? 'bg-success-lt' : 'bg-secondary-lt' %>"><%= e.active? ? 'Activa' : 'Cancelada' %></span></td>
+                  <td><span class="badge <%= e.active? ? 'bg-primary-lt' : 'bg-secondary-lt' %>"><%= e.active? ? 'Activa' : 'Cancelada' %></span></td>
                   <td>
                     <div class="d-flex gap-1">
                       <%= link_to edit_admin_tournament_enrollment_path(@tournament, e), class: "btn btn-sm btn-ghost-warning" do %><i class="ti ti-pencil"></i><% end %>

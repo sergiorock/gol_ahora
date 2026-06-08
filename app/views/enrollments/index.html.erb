@@ -43,7 +43,7 @@
               <p class="text-white/40 text-xs">Inscripto el <%= l e.enrolled_at, format: "%-d de %B de %Y" %></p>
             </div>
             <div class="flex items-center gap-3 flex-shrink-0">
-              <span class="text-xs px-2.5 py-1 rounded-full <%= e.active? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
+              <span class="text-xs px-2.5 py-1 rounded-full <%= e.active? ? 'bg-orange-500/20 text-orange-400' : 'bg-white/10 text-white/40' %>">
                 <%= e.active? ? "Activa" : "Cancelada" %>
               </span>
               <% if e.active? %>
@@ -79,7 +79,7 @@
               <p class="text-white/40 text-xs"><%= a.asistible.schedule_label %></p>
             </div>
             <div class="flex items-center gap-3 flex-shrink-0">
-              <span class="text-xs px-2.5 py-1 rounded-full <%= a.present? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
+              <span class="text-xs px-2.5 py-1 rounded-full <%= a.present? ? 'bg-orange-500/20 text-orange-400' : 'bg-white/10 text-white/40' %>">
                 <%= a.present? ? "Presente" : "Inscripto" %>
               </span>
               <%= button_to a.asistible_type == "Clase" ? clase_asistencia_path(a.asistible, a) : entrenamiento_asistencia_path(a.asistible, a),

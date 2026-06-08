@@ -62,12 +62,12 @@
             <td>
               <% if r.confirmed? || r.in_progress? %>
                 <% if r.balance_charge %>
-                  <span class="badge bg-success-lt">Saldo cobrado</span>
+                  <span class="badge bg-primary-lt">Saldo cobrado</span>
                 <% else %>
                   <span class="badge bg-warning-lt">Saldo pendiente</span>
                 <% end %>
               <% elsif r.finished? %>
-                <span class="badge bg-success-lt">Pagada</span>
+                <span class="badge bg-primary-lt">Pagada</span>
               <% elsif r.cancelled? %>
                 <span class="badge bg-secondary-lt">—</span>
               <% else %>

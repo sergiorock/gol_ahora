@@ -63,7 +63,7 @@
     <div class="card">
       <div class="card-body p-3 text-center">
         <div class="text-muted small mb-1">Confirmadas/Finalizadas</div>
-        <div class="h2 mb-0 text-green"><%= @reservations.select { |r| %w[confirmed finished in_progress].include?(r.status) }.count %></div>
+        <div class="h2 mb-0 text-primary"><%= @reservations.select { |r| %w[confirmed finished in_progress].include?(r.status) }.count %></div>
       </div>
     </div>
   </div>

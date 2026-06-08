@@ -10,7 +10,7 @@
       <p class="text-white/40 text-sm uppercase tracking-widest mb-1">Liga</p>
       <h1 class="font-display text-5xl sm:text-7xl text-white leading-none"><%= @league.name.upcase %></h1>
       <div class="flex items-center gap-3 mt-3">
-        <span class="text-xs px-3 py-1 rounded-full font-medium <%= @league.in_progress? ? 'bg-blue-500/20 text-blue-400' : @league.open? ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white/40' %>">
+        <span class="text-xs px-3 py-1 rounded-full font-medium <%= @league.in_progress? ? 'bg-blue-500/20 text-blue-400' : @league.open? ? 'bg-orange-500/20 text-orange-400' : 'bg-white/10 text-white/40' %>">
           <%= @league.status_label %>
         </span>
         <% if @league.start_date %><span class="text-white/30 text-xs"><%= l @league.start_date, format: "%-d/%m/%Y" %><% if @league.end_date %> → <%= l @league.end_date, format: "%-d/%m/%Y" %><% end %></span><% end %>
@@ -66,7 +66,7 @@
         <div class="bg-field/10 border border-field/30 rounded-2xl p-5">
           <h3 class="text-field-light text-xs font-semibold tracking-widest uppercase mb-3">Tu inscripción</h3>
           <% if my_enrollment&.active? %>
-            <p class="text-green-400 text-sm mb-3">✓ <strong><%= my_enrollment.team_name %></strong></p>
+            <p class="text-orange-400 text-sm mb-3">✓ <strong><%= my_enrollment.team_name %></strong></p>
             <%= button_to enrollment_path(my_enrollment), method: :delete, class: "text-red-400/60 hover:text-red-400 text-xs transition-colors", data: { confirm: "¿Cancelar?" } do %>Cancelar inscripción<% end %>
           <% elsif user_signed_in? && current_user.client? %>
             <%= form_with url: league_enrollments_path(@league), method: :post do %>

@@ -9,6 +9,14 @@ class Admin::WalkinsController < Admin::BaseController
   def create
     authorize :walkin, :create?
 
+    if params[:walkin][:user_id].blank?
+      flash.now[:alert] = "Debe seleccionar un cliente."
+      @courts = Court.includes(:court_type).available.order(:name)
+      @users  = User.where(role: :client).order(:last_name, :first_name)
+      @court_prices = @courts.each_with_object({}) { |c, h| h[c.id.to_s] = c.court_type.price_per_hour.to_f }
+      return render :new, status: :unprocessable_entity
+    end
+
     court     = Court.find(params[:walkin][:court_id])
     user      = User.find(params[:walkin][:user_id])
     date      = params[:walkin][:date]

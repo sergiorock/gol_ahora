@@ -41,7 +41,7 @@
           <% if personal_deportivo.persisted? && personal_deportivo.certificacion_archivo.attached? %>
             <div class="form-text">
               Archivo actual:
-              <%= link_to personal_deportivo.certificacion_archivo.filename, rails_blob_path(personal_deportivo.certificacion_archivo, disposition: "inline"), target: "_blank", class: "text-success fw-semibold" %>
+              <%= link_to personal_deportivo.certificacion_archivo.filename, rails_blob_path(personal_deportivo.certificacion_archivo, disposition: "inline"), target: "_blank", class: "text-primary fw-semibold" %>
               — subí uno nuevo para reemplazarlo
             </div>
           <% end %>

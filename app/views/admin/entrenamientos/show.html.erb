@@ -13,7 +13,7 @@
       <div class="card-header">
         <h3 class="card-title">Datos del entrenamiento</h3>
         <div class="card-options">
-          <span class="badge <%= @entrenamiento.activo? ? 'bg-success-lt' : 'bg-secondary-lt' %>">
+          <span class="badge <%= @entrenamiento.activo? ? 'bg-primary-lt' : 'bg-secondary-lt' %>">
             <%= @entrenamiento.activo? ? "Activo" : "Inactivo" %>
           </span>
         </div>
@@ -71,7 +71,7 @@
               </div>
               <div class="col-auto">
                 <input type="hidden" name="asistencia[attended_on]" value="<%= @entrenamiento.scheduled_at&.to_date || Date.today %>">
-                <button type="submit" class="btn btn-success">Inscribir</button>
+                <button type="submit" class="btn btn-primary">Inscribir</button>
               </div>
             </div>
           <% end %>
@@ -93,7 +93,7 @@
                     <%= form_with url: admin_entrenamiento_asistencia_path(@entrenamiento, a), method: :patch, local: true do |f| %>
                       <div class="d-flex gap-1">
                         <button type="submit" name="present" value="true"
-                          class="btn btn-sm <%= a.present? ? 'btn-success' : 'btn-ghost-success' %>">
+                          class="btn btn-sm <%= a.present? ? 'btn-primary' : 'btn-ghost-primary' %>">
                           <i class="ti ti-check"></i> Presente
                         </button>
                         <button type="submit" name="present" value="false"

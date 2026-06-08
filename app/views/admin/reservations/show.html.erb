@@ -19,7 +19,7 @@
           prefill_concept:     "Saldo reserva #{@reservation.court.name} #{l @reservation.starts_at, format: '%-d/%m/%Y %H:%M'}",
           prefill_type:        "rental",
           prefill_reservation: @reservation.id
-        ), class: "btn btn-success" do %>
+        ), class: "btn btn-primary" do %>
       <i class="ti ti-cash me-1"></i> Registrar saldo ($<%= number_with_delimiter(balance) %>)
     <% end %>
   <% end %>
@@ -27,7 +27,7 @@
 
 <% balance_paid = @reservation.balance_charge.present? || @reservation.deposit_amount.to_i == 0 %>
 <% _transitions = {
-     "confirmed" => { label: "Confirmar",         icon: "check", css: "btn-success",   event: :confirm },
+     "confirmed" => { label: "Confirmar",         icon: "check", css: "btn-primary",   event: :confirm },
      "finished"  => { label: "Marcar finalizada", icon: "flag",  css: "btn-secondary", event: :finish,  only_if: balance_paid },
      "cancelled" => { label: "Cancelar reserva",  icon: "x",     css: "btn-danger",    event: :cancel }
    } %>
@@ -86,7 +86,7 @@
       <div class="card-header d-flex align-items-center justify-content-between border-bottom-0 pb-0">
         <h3 class="card-title mb-0">Resumen financiero</h3>
         <% if pending <= 0 %>
-          <span class="badge bg-success text-white px-3 py-2"><i class="ti ti-circle-check me-1"></i>Pago completo</span>
+          <span class="badge bg-primary text-white px-3 py-2"><i class="ti ti-circle-check me-1"></i>Pago completo</span>
         <% else %>
           <span class="badge bg-warning text-dark px-3 py-2"><i class="ti ti-clock me-1"></i>Pendiente $<%= number_with_delimiter(pending) %></span>
         <% end %>
@@ -113,7 +113,7 @@
                 </div>
                 <div class="col-auto text-end">
                   <div class="fw-bold">$<%= number_with_delimiter(p.amount.to_i) %></div>
-                  <span class="badge bg-success-lt text-success">Aprobado</span>
+                  <span class="badge bg-primary-lt text-primary">Aprobado</span>
                 </div>
               </div>
             <% end %>
@@ -134,7 +134,7 @@
 
         <div class="row align-items-center py-3 g-0 <%= !is_walkin ? 'border-bottom' : '' %> <%= !balance_c ? 'bg-warning-lt rounded px-2' : '' %>">
           <div class="col-auto me-3">
-            <span class="avatar avatar-sm <%= balance_c ? 'bg-green-lt text-green' : 'bg-warning-lt text-warning' %> rounded">
+            <span class="avatar avatar-sm <%= balance_c ? 'bg-primary-lt text-primary' : 'bg-warning-lt text-warning' %> rounded">
               <i class="ti ti-cash"></i>
             </span>
           </div>
@@ -155,7 +155,7 @@
           <div class="col-auto text-end">
             <div class="fw-bold">$<%= number_with_delimiter(total - @reservation.deposit_amount.to_i) %></div>
             <% if balance_c %>
-              <span class="badge bg-success-lt text-success">Cobrado</span>
+              <span class="badge bg-primary-lt text-primary">Cobrado</span>
             <% else %>
               <span class="badge bg-warning-lt text-warning">Pendiente</span>
             <% end %>
@@ -165,7 +165,7 @@
         <div class="row align-items-center pt-3 mt-1 g-0">
           <div class="col"><span class="text-muted fw-semibold">Total cobrado</span></div>
           <div class="col-auto">
-            <span class="fw-bold fs-4 <%= pending <= 0 ? 'text-success' : 'text-warning' %>">
+            <span class="fw-bold fs-4 <%= pending <= 0 ? 'text-primary' : 'text-warning' %>">
               $<%= number_with_delimiter(paid_total) %>
             </span>
             <span class="text-muted small"> / $<%= number_with_delimiter(total) %></span>
