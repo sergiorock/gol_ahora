@@ -12,6 +12,7 @@ class PersonalDeportivo < ApplicationRecord
 
   validates :nombre, :apellido, :tipo, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+  validates :fecha_certificacion, presence: true, on: :create
   validates :fecha_certificacion, comparison: { less_than_or_equal_to: -> { Date.today },
     message: "la fecha seleccionada no es válida" }, allow_blank: true
   validate :archivo_requerido, on: :create

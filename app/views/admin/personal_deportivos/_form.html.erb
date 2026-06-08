@@ -33,12 +33,12 @@
         </div>
         <div class="col-md-4">
           <%= f.input :fecha_certificacion, label: "Fecha de certificación",
-              as: :string, input_html: { type: "date", max: Date.today.to_s } %>
+              as: :string, input_html: { type: "date", max: Date.today.to_s, required: !personal_deportivo.persisted? } %>
         </div>
         <div class="col-md-8">
           <%= f.input :certificacion_archivo, label: "Archivo de certificación (PDF, imagen)",
               as: :file, input_html: { accept: ".pdf,.jpg,.jpeg,.png", required: !personal_deportivo.persisted? } %>
-          <% if personal_deportivo.certificacion_archivo.attached? %>
+          <% if personal_deportivo.persisted? && personal_deportivo.certificacion_archivo.attached? %>
             <div class="form-text">
               Archivo actual:
               <%= link_to personal_deportivo.certificacion_archivo.filename, rails_blob_path(personal_deportivo.certificacion_archivo, disposition: "inline"), target: "_blank", class: "text-success fw-semibold" %>
