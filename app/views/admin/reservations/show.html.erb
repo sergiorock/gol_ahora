@@ -113,7 +113,7 @@
                 </div>
                 <div class="col-auto text-end">
                   <div class="fw-bold">$<%= number_with_delimiter(p.amount.to_i) %></div>
-                  <span class="badge bg-primary-lt text-primary">Aprobado</span>
+                  <span class="badge bg-success-lt text-success">Aprobado</span>
                 </div>
               </div>
             <% end %>
@@ -155,7 +155,7 @@
           <div class="col-auto text-end">
             <div class="fw-bold">$<%= number_with_delimiter(total - @reservation.deposit_amount.to_i) %></div>
             <% if balance_c %>
-              <span class="badge bg-primary-lt text-primary">Cobrado</span>
+              <span class="badge bg-success-lt text-success">Cobrado</span>
             <% else %>
               <span class="badge bg-warning-lt text-warning">Pendiente</span>
             <% end %>

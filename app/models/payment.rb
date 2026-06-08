@@ -8,19 +8,11 @@ class Payment < ApplicationRecord
   validates :payment_type, :status, presence: true
   validates :last_four_digits, presence: true, format: { with: /\A\d{4}\z/, message: "deben ser 4 dígitos" }
   validates :cardholder_name, presence: true
-  validate :cardholder_matches_user
   validates :expiry_date, presence: true, format: { with: /\A(0[1-9]|1[0-2])\/\d{2}\z/, message: "debe tener formato MM/AA" }
 
   after_create :create_charge_for_deposit, if: :approved_deposit?
 
   private
-
-  def cardholder_matches_user
-    return unless cardholder_name.present? && reservation&.user.present?
-    unless cardholder_name.strip.downcase == reservation.user.full_name.strip.downcase
-      errors.add(:cardholder_name, "no coincide con el nombre registrado en tu cuenta. Corroborá tu identidad.")
-    end
-  end
 
   def approved_deposit?
     approved? && deposit?

@@ -96,4 +96,5 @@ class Reservation < ApplicationRecord
       errors.add(:base, "no se puede confirmar la reserva sin el pago de la seña") unless paid
     end
   end
+
 end
