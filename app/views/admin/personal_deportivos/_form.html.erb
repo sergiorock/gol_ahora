@@ -33,12 +33,11 @@
         </div>
         <div class="col-md-4">
           <%= f.input :fecha_certificacion, label: "Fecha de certificación",
-              as: :string, input_html: { type: "date" } %>
+              as: :string, input_html: { type: "date", max: Date.today.to_s } %>
         </div>
         <div class="col-md-8">
-          <label class="form-label">Archivo de certificación (PDF, imagen)</label>
-          <%= f.file_field :certificacion_archivo, class: "form-control",
-              accept: ".pdf,.jpg,.jpeg,.png" %>
+          <%= f.input :certificacion_archivo, label: "Archivo de certificación (PDF, imagen)",
+              as: :file, input_html: { accept: ".pdf,.jpg,.jpeg,.png", required: !personal_deportivo.persisted? } %>
           <% if personal_deportivo.certificacion_archivo.attached? %>
             <div class="form-text">
               Archivo actual:

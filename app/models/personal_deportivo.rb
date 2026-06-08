@@ -13,8 +13,9 @@ class PersonalDeportivo < ApplicationRecord
   validates :nombre, :apellido, :tipo, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   validates :fecha_certificacion, comparison: { less_than_or_equal_to: -> { Date.today },
-    message: "no puede ser una fecha futura" }, allow_blank: true
-  validate :archivo_requerido_si_hay_fecha
+    message: "la fecha seleccionada no es válida" }, allow_blank: true
+  validate :archivo_requerido, on: :create
+  validate :archivo_requerido_si_hay_fecha, on: :update
 
   def full_name
     "#{nombre} #{apellido}"
@@ -27,6 +28,12 @@ class PersonalDeportivo < ApplicationRecord
   end
 
   private
+
+  def archivo_requerido
+    unless certificacion_archivo.attached?
+      errors.add(:certificacion_archivo, "El archivo de certificación es obligatorio")
+    end
+  end
 
   def archivo_requerido_si_hay_fecha
     if fecha_certificacion.present? && !certificacion_archivo.attached?
