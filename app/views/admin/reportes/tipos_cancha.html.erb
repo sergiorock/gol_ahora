@@ -37,7 +37,7 @@
             <td class="text-muted"><%= ct.duration_label %></td>
             <td class="text-end fw-semibold">$<%= number_with_delimiter(ct.price_per_hour.to_i, delimiter: ".") %></td>
             <td class="text-center">
-              <span class="badge <%= ct.courts.count > 0 ? "bg-primary-lt text-primary" : "bg-secondary-lt text-secondary" %>">
+              <span class="badge <%= ct.courts.count > 0 ? "bg-success-lt text-success" : "bg-secondary-lt text-secondary" %>">
                 <%= ct.courts.count %>
               </span>
             </td>

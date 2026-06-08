@@ -1,4 +1,4 @@
-<% content_for :title, "\#{@tournament.name} — Gol Ahora" %>
+<% content_for :title, "#{@tournament.name} — Gol Ahora" %>
 
 <div class="max-w-5xl mx-auto pt-24 pb-16 px-4">
 
@@ -103,7 +103,7 @@
                 <span class="flex-1 font-semibold text-sm <%= m.played? && m.winner == :away ? 'text-field-light' : 'text-white' %>"><%= m.away_team %></span>
               </div>
               <% if m.played_at || m.court %>
-                <div class="text-center text-white/25 text-xs mt-2"><%= m.played_at ? l(m.played_at, format: "%-d %b, %H:%M") : "" %><%= m.court ? " · \#{m.court.name}" : "" %></div>
+                <div class="text-center text-white/25 text-xs mt-2"><%= m.played_at ? l(m.played_at, format: "%-d %b, %H:%M") : "" %><%= m.court ? " · #{m.court.name}" : "" %></div>
               <% end %>
             </div>
           <% end %>
