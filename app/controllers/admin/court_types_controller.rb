@@ -19,7 +19,7 @@ class Admin::CourtTypesController < Admin::BaseController
     @court_type = CourtType.new(court_type_params)
     authorize @court_type
     if @court_type.save
-      redirect_to admin_court_type_path(@court_type), notice: "Tipo de cancha creado correctamente."
+      redirect_to admin_court_types_path, notice: "Tipo de cancha creado correctamente."
     else
       render :new, status: :unprocessable_entity
     end
@@ -32,7 +32,7 @@ class Admin::CourtTypesController < Admin::BaseController
   def update
     authorize @court_type
     if @court_type.update(court_type_params)
-      redirect_to admin_court_type_path(@court_type), notice: "Tipo de cancha actualizado correctamente."
+      redirect_to admin_court_types_path, notice: "Tipo de cancha actualizado correctamente."
     else
       render :edit, status: :unprocessable_entity
     end
